@@ -1,0 +1,656 @@
+
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>La Bibliothèque des Mondes - Index</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+        --bg-color: #f4f4f9;
+        --card-bg: #ffffff;
+        --text-color: #333;
+        --accent-color: #2c3e50;
+        --link-color: #e74c3c;
+    }
+
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background: var(--accent-color);
+        color: white;
+        padding: 60px 20px;
+        text-align: center;
+        margin-bottom: 40px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        margin: 0;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.8;
+        margin-top: 10px;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 40px;
+        padding-bottom: 60px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .image-link {
+        display: block;
+        overflow: hidden;
+        height: 400px; /* Hauteur fixe pour uniformité */
+        position: relative;
+    }
+
+    .card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img {
+        transform: scale(1.05);
+    }
+
+    .card-content {
+        padding: 20px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .book-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--accent-color);
+        text-transform: uppercase;
+        text-decoration: none;
+        line-height: 1.4;
+    }
+
+    .book-author {
+        font-size: 0.95rem;
+        color: #7f8c8d;
+        font-style: italic;
+    }
+
+    .btn {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 20px;
+        background-color: transparent;
+        border: 2px solid var(--accent-color);
+        color: var(--accent-color);
+        text-decoration: none;
+        font-weight: bold;
+        border-radius: 30px;
+        transition: all 0.3s;
+    }
+
+    .card:hover .btn {
+        background-color: var(--accent-color);
+        color: white;
+    }
+
+    footer {
+        text-align: center;
+        padding: 40px;
+        background: #dde1e7;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Animation d'apparition */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .card {
+        animation: fadeIn 0.6s ease-out forwards;
+        opacity: 0;
+    }
+    
+    /* Décalage d'animation pour un effet cascade */
+    .card:nth-child(1) { animation-delay: 0.05s; }
+.card:nth-child(2) { animation-delay: 0.1s; }
+.card:nth-child(3) { animation-delay: 0.15000000000000002s; }
+.card:nth-child(4) { animation-delay: 0.2s; }
+.card:nth-child(5) { animation-delay: 0.25s; }
+.card:nth-child(6) { animation-delay: 0.30000000000000004s; }
+.card:nth-child(7) { animation-delay: 0.35000000000000003s; }
+.card:nth-child(8) { animation-delay: 0.4s; }
+.card:nth-child(9) { animation-delay: 0.45s; }
+.card:nth-child(10) { animation-delay: 0.5s; }
+.card:nth-child(11) { animation-delay: 0.55s; }
+.card:nth-child(12) { animation-delay: 0.6000000000000001s; }
+.card:nth-child(13) { animation-delay: 0.65s; }
+.card:nth-child(14) { animation-delay: 0.7000000000000001s; }
+.card:nth-child(15) { animation-delay: 0.75s; }
+.card:nth-child(16) { animation-delay: 0.8s; }
+.card:nth-child(17) { animation-delay: 0.8500000000000001s; }
+.card:nth-child(18) { animation-delay: 0.9s; }
+.card:nth-child(19) { animation-delay: 0.9500000000000001s; }
+.card:nth-child(20) { animation-delay: 1.0s; }
+.card:nth-child(21) { animation-delay: 1.05s; }
+.card:nth-child(22) { animation-delay: 1.1s; }
+.card:nth-child(23) { animation-delay: 1.1500000000000001s; }
+.card:nth-child(24) { animation-delay: 1.2000000000000002s; }
+.card:nth-child(25) { animation-delay: 1.25s; }
+.card:nth-child(26) { animation-delay: 1.3s; }
+.card:nth-child(27) { animation-delay: 1.35s; }
+.card:nth-child(28) { animation-delay: 1.4000000000000001s; }
+.card:nth-child(29) { animation-delay: 1.4500000000000002s; }
+.card:nth-child(30) { animation-delay: 1.5s; }
+.card:nth-child(31) { animation-delay: 1.55s; }
+.card:nth-child(32) { animation-delay: 1.6s; }
+.card:nth-child(33) { animation-delay: 1.6500000000000001s; }
+.card:nth-child(34) { animation-delay: 1.7000000000000002s; }
+.card:nth-child(35) { animation-delay: 1.75s; }
+.card:nth-child(36) { animation-delay: 1.8s; }
+.card:nth-child(37) { animation-delay: 1.85s; }
+.card:nth-child(38) { animation-delay: 1.9000000000000001s; }
+.card:nth-child(39) { animation-delay: 1.9500000000000002s; }
+.card:nth-child(40) { animation-delay: 2.0s; }</style>
+    </head>
+    <body>
+        <header>
+            <h1>La Bibliothèque des Mondes</h1>
+            <div class="subtitle">40 Romans • 40 Univers • Une infinité d'histoires</div>
+        </header>
+
+        <div class="container">
+            <div class="grid">
+                
+        <div class="card">
+            <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27BELLINGCAT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=94237" alt="Couverture de BELLINGCAT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html" class="book-title" target="_blank">BELLINGCAT</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CELUI%20QUI%20N%27EXISTAIT%20PAS%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=22932" alt="Couverture de CELUI QUI N'EXISTAIT PAS" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm" class="book-title" target="_blank">CELUI QUI N'EXISTAIT PAS</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="GHOST%20PROTOCOL%20-%20Interface.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27GHOST%20PROTOCOL%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=42372" alt="Couverture de GHOST PROTOCOL" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="GHOST%20PROTOCOL%20-%20Interface.html" class="book-title" target="_blank">GHOST PROTOCOL</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="GHOST%20PROTOCOL%20-%20Interface.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20G%C3%88NE%20DE%20QIN%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=96363" alt="Couverture de LE GÈNE DE QIN" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm" class="book-title" target="_blank">LE GÈNE DE QIN</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20PARADOXE%20DE%20CASSANDRE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=93259" alt="Couverture de LE PARADOXE DE CASSANDRE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html" class="book-title" target="_blank">LE PARADOXE DE CASSANDRE</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20PLUS%20GRAND%20DES%20SECRETS%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=75827" alt="Couverture de LE PLUS GRAND DES SECRETS" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm" class="book-title" target="_blank">LE PLUS GRAND DES SECRETS</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SYNDROME%20DE%20L%27IMPOSTEUR%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=79457" alt="Couverture de LE SYNDROME DE L'IMPOSTEUR" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html" class="book-title" target="_blank">LE SYNDROME DE L'IMPOSTEUR</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=59305" alt="Couverture de CE QUE LA MÉMOIRE OUBLIE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html" class="book-title" target="_blank">CE QUE LA MÉMOIRE OUBLIE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CELUI%20QUI%20RESTE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=64243" alt="Couverture de CELUI QUI RESTE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm" class="book-title" target="_blank">CELUI QUI RESTE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20FRACTURE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=57221" alt="Couverture de LA FRACTURE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html" class="book-title" target="_blank">LA FRACTURE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20MAISON%20DES%20AUTRES%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=21072" alt="Couverture de LA MAISON DES AUTRES" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html" class="book-title" target="_blank">LA MAISON DES AUTRES</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20NOTE%20DE%20FOND%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=8483" alt="Couverture de LA NOTE DE FOND" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm" class="book-title" target="_blank">LA NOTE DE FOND</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20SURFACE%20PARFAITE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=16905" alt="Couverture de LA SURFACE PARFAITE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm" class="book-title" target="_blank">LA SURFACE PARFAITE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27ARRANGEMENT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=68653" alt="Couverture de L'ARRANGEMENT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html" class="book-title" target="_blank">L'ARRANGEMENT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27AUTRE%20ALICE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=90352" alt="Couverture de L'AUTRE ALICE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html" class="book-title" target="_blank">L'AUTRE ALICE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20CALME%20ARTIFICIEL%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=12620" alt="Couverture de LE CALME ARTIFICIEL" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html" class="book-title" target="_blank">LE CALME ARTIFICIEL</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20CERCLE%20DE%20CONSOLATION%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=86369" alt="Couverture de LE CERCLE DE CONSOLATION" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html" class="book-title" target="_blank">LE CERCLE DE CONSOLATION</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20CERCLE%20PARFAIT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=28161" alt="Couverture de LE CERCLE PARFAIT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html" class="book-title" target="_blank">LE CERCLE PARFAIT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SUBSTITUT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=62951" alt="Couverture de LE SUBSTITUT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html" class="book-title" target="_blank">LE SUBSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=85629" alt="Couverture de LE SYNDROME DE PROMÉTHÉE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html" class="book-title" target="_blank">LE SYNDROME DE PROMÉTHÉE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SYNDROME%20DU%20SUBSTITUT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=12624" alt="Couverture de LE SYNDROME DU SUBSTITUT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html" class="book-title" target="_blank">LE SYNDROME DU SUBSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27EMPRISE%20MURALE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=45347" alt="Couverture de L'EMPRISE MURALE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html" class="book-title" target="_blank">L'EMPRISE MURALE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27ENFANT%20ARCHITECTE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=94673" alt="Couverture de L'ENFANT ARCHITECTE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html" class="book-title" target="_blank">L'ENFANT ARCHITECTE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27INSTITUT%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27INSTITUT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=16034" alt="Couverture de L'INSTITUT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27INSTITUT%20-%20Le%20Roman.html" class="book-title" target="_blank">L'INSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27INSTITUT%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=7926" alt="Couverture de CE QUE LA TERRE RÉCLAME" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm" class="book-title" target="_blank">CE QUE LA TERRE RÉCLAME</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=61307" alt="Couverture de CE QUE LE CHAGRIN NOUS A BÂTI" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html" class="book-title" target="_blank">CE QUE LE CHAGRIN NOUS A BÂTI</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=88508" alt="Couverture de CEUX QUI RESTENT SUR LA GLACE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm" class="book-title" target="_blank">CEUX QUI RESTENT SUR LA GLACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20MAISON%20D%27EN%20FACE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=42918" alt="Couverture de LA MAISON D'EN FACE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html" class="book-title" target="_blank">LA MAISON D'EN FACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LA%20MAISON%20T%C3%89MOIN%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=31142" alt="Couverture de LA MAISON TÉMOIN" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html" class="book-title" target="_blank">LA MAISON TÉMOIN</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20CODEX%20D%27%C3%89DEN%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=7482" alt="Couverture de LE CODEX D'ÉDEN" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm" class="book-title" target="_blank">LE CODEX D'ÉDEN</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20COMPAGNON%20PARFAIT%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=46346" alt="Couverture de LE COMPAGNON PARFAIT" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm" class="book-title" target="_blank">LE COMPAGNON PARFAIT</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20DERNIER%20SOUVENIR%20D%27ADAM%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=2581" alt="Couverture de LE DERNIER SOUVENIR D'ADAM" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm" class="book-title" target="_blank">LE DERNIER SOUVENIR D'ADAM</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20JARDIN%20DE%20CENDRE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=62472" alt="Couverture de LE JARDIN DE CENDRE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html" class="book-title" target="_blank">LE JARDIN DE CENDRE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20PROTOCOLE%20DE%20L%27OUBLI%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=78362" alt="Couverture de LE PROTOCOLE DE L'OUBLI" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html" class="book-title" target="_blank">LE PROTOCOLE DE L'OUBLI</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SCEAU%20CHROMATIQUE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=72861" alt="Couverture de LE SCEAU CHROMATIQUE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html" class="book-title" target="_blank">LE SCEAU CHROMATIQUE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20SOUFFLE%20DU%20LAC%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=63807" alt="Couverture de LE SOUFFLE DU LAC" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html" class="book-title" target="_blank">LE SOUFFLE DU LAC</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LE%20VOISIN%20D%27EN%20FACE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=34535" alt="Couverture de LE VOISIN D'EN FACE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm" class="book-title" target="_blank">LE VOISIN D'EN FACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27%C3%89CHO%20DES%20MURS%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=71913" alt="Couverture de L'ÉCHO DES MURS" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html" class="book-title" target="_blank">L'ÉCHO DES MURS</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=37224" alt="Couverture de LES ÉCHOS DU LÉTHÉ" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html" class="book-title" target="_blank">LES ÉCHOS DU LÉTHÉ</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm" class="image-link" target="_blank">
+                <img src="https://image.pollinations.ai/prompt/Book%20cover%20for%20novel%20%27L%27H%C3%89RITAGE%20ADAMIQUE%27%2C%20cinematic%2C%20highly%20detailed%2C%20award%20winning%20design%2C%208k%2C%20vertical%20orientation?width=400&height=600&nologo=true&model=flux&seed=15190" alt="Couverture de L'HÉRITAGE ADAMIQUE" class="card-img" loading="lazy">
+            </a>
+            <div class="card-content">
+                <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm" class="book-title" target="_blank">L'HÉRITAGE ADAMIQUE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm" class="btn" target="_blank">Découvrir l'univers</a>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Index généré automatiquement par Python & IA</p>
+        </footer>
+    </body>
+    </html>
+    
