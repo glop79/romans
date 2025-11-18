@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)file:///C:/Work/template/la_maison_des_autres_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LA MAISON DES AUTRES - Le Chantier</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500&display=swap');
+    
+    :root {
+        --bg: #f4f1ea;
+        --text: #3e3e3e;
+        --rose: #c27ba0;
+        --brick: #795548;
+        --concrete: #95a5a6;
+        --gold: #f1c40f;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Texture Papier / Mur */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.2), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Close%2520up%2520of%2520hands%2520holding%2520a%2520house%2520key%2520in%2520front%2520of%2520a%2520renovated%2520stone%2520house%252C%2520warm%2520sunlight%252C%2520new%2520beginning%2C%20architectural%20digest%20style%2C%20warm%20cinematic%20lighting%2C%20texture%20focus%20%28stone%2C%20wood%29%2C%20emotional%20storytelling%2C%20photorealistic%2C%208k%2C%20depth%20of%20field?width=1280&height=600&nologo=true&model=flux&seed=5029');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    /* Effet de plan d'architecte sur le header */
+    header::after {
+        content: "";
+        position: absolute;
+        top: 20px; left: 20px; right: 20px; bottom: 20px;
+        border: 2px solid white;
+        pointer-events: none;
+    }
+
+    h1 {
+        font-family: 'Lora', serif;
+        font-size: 5rem;
+        color: #2c3e50;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 0px white;
+        background: rgba(255,255,255,0.8);
+        padding: 20px 50px;
+        border-radius: 2px;
+    }
+
+    .tagline {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.4rem;
+        color: var(--brick);
+        margin-top: 20px;
+        font-weight: 500;
+        background: white;
+        padding: 10px 30px;
+        box-shadow: 5px 5px 0px rgba(0,0,0,0.1);
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis - Style "Note de chantier" */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 150px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-left: 5px solid var(--rose);
+        position: relative;
+        transform: rotate(-1deg);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Lora', serif; 
+        color: var(--brick); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; font-weight: 400; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Lora', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 50px;
+        height: 3px;
+        background: var(--brick);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        padding: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: 0.3s;
+    }
+    .char-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: sepia(20%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: sepia(0%); }
+    
+    .char-info { padding: 20px 10px; text-align: center; }
+    .char-name { color: var(--brick); font-family: 'Lora', serif; font-size: 1.5rem; margin: 0; }
+    .char-role { color: var(--concrete); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    .char-desc { font-size: 0.95rem; color: #666; }
+
+    /* Timeline - La Reconstruction */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--concrete), var(--gold)); /* Du béton à la lumière */
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 10px;
+        background: white;
+        box-shadow: 5px 5px 0px var(--concrete);
+    }
+    
+    .scene-img { width: 100%; display: block; }
+    
+    .scene-content { width: 45%; text-align: left; }
+    .scene:nth-child(even) .scene-content { text-align: right; }
+
+    .scene-title { 
+        font-family: 'Lora', serif; 
+        font-size: 1.8rem; 
+        margin-top: 0; 
+        color: var(--text);
+    }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: white;
+        color: #aaa;
+        font-family: 'Lora', serif;
+        font-size: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; text-align: left; }
+        .scene:nth-child(even) .scene-content { text-align: left; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LA MAISON DES AUTRES</h1>
+            <div class="tagline">"Il faut parfois tout démolir pour mieux reconstruire."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Projet</h2>
+                <div class="synopsis-text">
+        <strong>Douze ans de mariage dissous en une heure dans la froideur d'un tribunal.</strong><br><br>
+        Emma Laurent, architecte d'intérieur, se retrouve seule avec une liberté vertigineuse et terrifiante. Fuyant la vie aseptisée qu'elle partageait avec Thomas, elle commet une folie : elle achète une ruine. Une bâtisse délabrée aux murs éventrés et au toit percé, que tout le monde juge bonne à raser.<br><br>
+        Mais Emma voit ce que les autres ne voient pas : le potentiel. Au milieu des gravats et de la poussière, elle rencontre <strong>Marc</strong>, un artisan aux mains calleuses et au silence rassurant. Ensemble, ils ne vont pas seulement rebâtir des murs. Ils vont apprendre que l'amour, comme une maison, se construit pierre après pierre, et que la lumière est toujours plus belle quand elle traverse les fissures.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Artisans</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LA MAISON DES AUTRES - Le Chantier_files/portrait20of20a20determined20woman20in20her2030s2c20messy20bun2c20dust20on20her20face.jpg" class="char-img" alt="Emma Laurent">
+            <div class="char-info">
+                <h3 class="char-name">Emma Laurent</h3>
+                <span class="char-role">L'Architecte</span>
+                <p class="char-desc">Elle a passé sa vie à décorer les maisons des autres. Maintenant, elle construit la sienne. Elle est déterminée, créative et résiliente.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA MAISON DES AUTRES - Le Chantier_files/portrait20of20a20rugged20handsome20craftsman20man2c20stubble2c20wearing20a20plaid20shir.jpg" class="char-img" alt="Marc">
+            <div class="char-info">
+                <h3 class="char-name">Marc</h3>
+                <span class="char-role">L'Artisan</span>
+                <p class="char-desc">Solide, taiseux, compétent. Il est la lampe qui éclaire les pas d'Emma. Il répare les murs et les cœurs.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA MAISON DES AUTRES - Le Chantier_files/portrait20of20a20man20in20a20grey20business20suit2c20looking20away2c20cold20expression.jpg" class="char-img" alt="Thomas">
+            <div class="char-info">
+                <h3 class="char-name">Thomas</h3>
+                <span class="char-role">L'Ex-Mari</span>
+                <p class="char-desc">Froid, distant, engoncé dans son costume gris. Il représente la vie d'avant, celle des apparences et du vide.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA MAISON DES AUTRES - Le Chantier_files/wide20shot20of20an20old20dilapidated20stone20house20ruin20in20the20countryside2c20no20.jpg" class="char-img" alt="La Ruine">
+            <div class="char-info">
+                <h3 class="char-name">La Ruine</h3>
+                <span class="char-role">Le Projet</span>
+                <p class="char-desc">Une vieille bâtisse en pierre, envahie par le lierre, sans toit. Un squelette qui attend de reprendre vie.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">La Reconstruction</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON DES AUTRES - Le Chantier_files/interior20of20a20large20cold20courthouse20hallway20with20marble20columns2c20a20woman20s.jpg" class="scene-img" alt="La Salle des Pas Perdus">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Salle des Pas Perdus</h3>
+                <p class="scene-desc">Le début. Le tribunal froid, le marbre, Thomas qui s'éloigne. La fin d'un monde et le vertige du vide.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON DES AUTRES - Le Chantier_files/a20woman20standing20in20high20grass20looking20at20a20broken20stone20wall2c20holding20b.jpg" class="scene-img" alt="L&#39;Achat de la Folie">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Achat de la Folie</h3>
+                <p class="scene-desc">Emma devant la ruine. Personne ne comprend, mais elle sait. Elle voit les lignes de force sous les décombres.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON DES AUTRES - Le Chantier_files/a20man20and20a20woman20breaking20a20wall20with20sledgehammers2c20dust20flying2c20sunbe.jpg" class="scene-img" alt="Le Chantier">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Chantier</h3>
+                <p class="scene-desc">La poussière, l'effort. Emma et Marc travaillent côte à côte. Ils cassent pour reconstruire. La complicité naît dans l'effort.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON DES AUTRES - Le Chantier_files/intimate20shot20of20a20couple20sitting20on20the20floor20of20an20unfinished20room2c20ea.jpg" class="scene-img" alt="Le Dîner sur les Cartons">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Dîner sur les Cartons</h3>
+                <p class="scene-desc">Une pause. Ils mangent des pizzas sur des cartons au milieu du chantier. La simplicité du bonheur retrouvé.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON DES AUTRES - Le Chantier_files/interior20of20a20beautiful20renovated20bedroom2c20sunlight20hitting20a20white20bed2c20p.jpg" class="scene-img" alt="La Première Nuit">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Première Nuit</h3>
+                <p class="scene-desc">La maison est finie. Le rayon de soleil le matin. Emma est chez elle. Enfin.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Un site en construction pour LA MAISON DES AUTRES</p>
+            <p>Généré par IA | Basé sur l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>
