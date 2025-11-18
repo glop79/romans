@@ -1,0 +1,40 @@
+
+    body { font-family: 'Lato', sans-serif; background-color: #0a0a0a; color: #e0e0e0; }
+    .title-font { font-family: 'Cinzel', serif; letter-spacing: 3px; }
+    
+    /* Hero Section */
+    .hero-section {
+        height: 100vh;
+        background: url('https://image.pollinations.ai/prompt/Mysterious%20ancient%20babylonian%20tablet%20glowing%20in%20darkness%20cinematic?width=1920&height=1080&nologo=true') no-repeat center center/cover;
+        position: relative;
+    }
+    .overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.3), #0a0a0a);
+    }
+    .z-index-1 { position: relative; z-index: 1; }
+    
+    /* Titles & Text */
+    .section-title { border-bottom: 2px solid #d4af37; display: inline-block; padding-bottom: 10px; }
+    .text-warning { color: #d4af37 !important; } /* Gold color */
+    
+    /* Cards */
+    .char-card {
+        background: #1a1a1a; border: 1px solid #333; transition: transform 0.3s;
+    }
+    .char-card:hover { transform: translateY(-10px); border-color: #d4af37; }
+    .char-card img { height: 300px; object-fit: cover; filter: grayscale(30%); }
+    .char-card:hover img { filter: grayscale(0%); }
+    
+    /* Scenes */
+    .scene-img { border: 1px solid #333; transition: 0.3s; opacity: 0.8; }
+    .scene-row:hover .scene-img { opacity: 1; transform: scale(1.02); border-color: #d4af37; }
+    .scene-title { color: #d4af37; font-family: 'Cinzel', serif; }
+    
+    /* Animation */
+    .animate-title { animation: fadeInDown 1.5s ease-out; text-shadow: 0 0 20px rgba(0,0,0,0.8); }
+    @keyframes fadeInDown {
+        from { opacity: 0; transform: translateY(-50px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
