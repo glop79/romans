@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Murder Drones: High Fidelity</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', Courier, monospace; }
+        #ui-layer {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background: radial-gradient(circle, transparent 50%, black 100%); /* Vignette */
+        }
+        #crosshair {
+            position: absolute; top: 50%; left: 50%; width: 4px; height: 4px;
+            background: white; border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 4px white;
+            opacity: 0.8; z-index: 2;
+        }
+        #instructions {
+            position: absolute; top: 20px; left: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            pointer-events: auto;
+        }
+        h1 { margin: 0; font-size: 24px; letter-spacing: 2px; color: #b98eff; text-shadow: 0 0 10px #b98eff; }
+        p { margin: 5px 0; font-size: 12px; color: #aaa; }
+        .key { border: 1px solid #555; padding: 2px 6px; border-radius: 3px; background: #222; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div id="crosshair"></div>
+    <div id="ui-layer">
+        <div id="instructions">
+            <h1>COPPER-9 SIMULATION</h1>
+            <p>RENDER: PBR HIGH-FIDELITY</p>
+            <p>-- CONTROLS --</p>
+            <p><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> Move Unit</p>
+            <p><span class="key">SPACE</span> Thrusters</p>
+            <p><span class="key">P</span> Protocol: DANCE</p>
+            <p><span class="key">CLICK</span> Capture Mouse</p>
+        </div>
+    </div>
+
+    <!-- Three.js Import -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+        // --- PBR TEXTURE GENERATOR ---
+        // Generates maps for Roughness (matte vs shiny) and Metalness
+        function createMaterial(type, colorHex) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 128;
+            const ctx = canvas.getContext('2d');
+            
+            // Base Color
+            ctx.fillStyle = colorHex;
+            ctx.fillRect(0,0,128,128);
+
+            // Add Noise (Grimy texture)
+            for(let i=0; i<1000; i++) {
+                ctx.fillStyle = `rgba(0,0,0,${Math.random()*0.1})`;
+                ctx.fillRect(Math.random()*128, Math.random()*128, 2, 2);
+            }
+
+            const map = new THREE.CanvasTexture(canvas);
+            
+            const params = {
+                map: map,
+                color: 0xffffff,
+                roughness: 0.7, // Default fabric
+                metalness: 0.1
+            };
+
+            if (type === 'metal_skin') {
+                params.roughness = 0.2; // Shiny
+                params.metalness = 0.8; // Metallic
+                params.color = 0xeeeeee;
+            } else if (type === 'fabric') {
+                params.roughness = 0.9; // Matte
+                params.metalness = 0.0;
+                params.color = colorHex;
+            } else if (type === 'hair') {
+                params.roughness = 0.5;
+                params.metalness = 0.1;
+                params.color = colorHex;
+            } else if (type === 'glowing') {
+                params.emissive = colorHex;
+                params.emissiveIntensity = 2.0;
+                params.color = 0x000000;
+                params.roughness = 0.0;
+            }
+
+            return new THREE.MeshStandardMaterial(params);
+        }
+
+        // --- SCENE SETUP ---
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050510); // Deep space purple/black
+        scene.fog = new THREE.FogExp2(0x050510, 0.025);
+
+        const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping; // Cinematic look
+        renderer.toneMappingExposure = 1.1;
+        document.body.appendChild(renderer.domElement);
+
+        // --- LIGHTING ---
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.5); // Cool ambient
+        scene.add(ambientLight);
+
+        // The "Moon" light
+        const moonLight = new THREE.DirectionalLight(0xaaccff, 1.5);
+        moonLight.position.set(-20, 50, -20);
+        moonLight.castShadow = true;
+        moonLight.shadow.bias = -0.0001;
+        moonLight.shadow.mapSize.width = 2048;
+        moonLight.shadow.mapSize.height = 2048;
+        scene.add(moonLight);
+
+        // Atmosphere glow
+        const purpLight = new THREE.PointLight(0x8800ff, 0.8, 40);
+        purpLight.position.set(5, 10, 5);
+        scene.add(purpLight);
+
+        // --- MATERIALS LIBRARY ---
+        const mats = {
+            skin: createMaterial('metal_skin'),
+            blackFabric: createMaterial('fabric', '#111111'),
+            darkGrey: createMaterial('fabric', '#222222'),
+            purpleHair: createMaterial('hair', '#4b0082'),
+            silverHair: createMaterial('hair', '#dddddd'),
+            goldEye: createMaterial('glowing', '#ffaa00'),
+            purpleEye: createMaterial('glowing', '#aa00ff'),
+            snow: createMaterial('fabric', '#eefeff'),
+            stone: createMaterial('fabric', '#444455'),
+            acid: createMaterial('glowing', '#ccff00'),
+            beanie: createMaterial('fabric', '#0a0a0a')
+        };
+
+        // --- HELPER FUNCTIONS ---
+        function createBox(w, h, d, material, parent, x=0, y=0, z=0, rX=0, rY=0, rZ=0) {
+            const geom = new THREE.BoxGeometry(w, h, d);
+            const mesh = new THREE.Mesh(geom, material);
+            mesh.position.set(x, y, z);
+            mesh.rotation.set(rX, rY, rZ);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            if(parent) parent.add(mesh);
+            return mesh;
+        }
+
+        // --- COMPLEX CHARACTER BUILDER ---
+        class Drone {
+            constructor(type, x, z) {
+                this.group = new THREE.Group();
+                this.group.position.set(x, 0, z);
+                scene.add(this.group);
+                this.type = type;
+
+                // Skeleton
+                this.head = new THREE.Group();
+                this.torso = new THREE.Group();
+                this.armL = new THREE.Group();
+                this.armR = new THREE.Group();
+                this.legL = new THREE.Group();
+                this.legR = new THREE.Group();
+
+                this.group.add(this.torso);
+                this.torso.add(this.head);
+                this.torso.add(this.armL);
+                this.torso.add(this.armR);
+                this.torso.add(this.legL);
+                this.torso.add(this.legR);
+
+                if(type === 'uzi') this.buildUzi();
+                else this.buildN();
+            }
+
+            buildUzi() {
+                const s = 0.85; // Scale factor
+                this.group.scale.set(s,s,s);
+
+                // --- TORSO (Hoodie) ---
+                this.torso.position.y = 1.1;
+                // Main Body (Cropped Hoodie)
+                createBox(0.5, 0.55, 0.3, mats.blackFabric, this.torso, 0, 0, 0); 
+                // Zipper area
+                createBox(0.1, 0.56, 0.31, mats.darkGrey, this.torso, 0, 0, 0);
+                // Solver Symbol (Purple Quad)
+                createBox(0.15, 0.15, 0.02, mats.purpleHair, this.torso, 0, 0.05, 0.16);
+
+                // --- LEGS (Thick boots, thin legs) ---
+                this.legL.position.set(-0.15, -0.3, 0);
+                this.legR.position.set(0.15, -0.3, 0);
+                
+                // Thighs (Skinny)
+                createBox(0.08, 0.4, 0.08, mats.blackFabric, this.legL, 0, -0.2, 0);
+                createBox(0.08, 0.4, 0.08, mats.blackFabric, this.legR, 0, -0.2, 0);
+                
+                // Boots (Chunky)
+                createBox(0.22, 0.3, 0.25, mats.blackFabric, this.legL, 0, -0.55, 0.05);
+                createBox(0.22, 0.3, 0.25, mats.blackFabric, this.legR, 0, -0.55, 0.05);
+                // Boot laces
+                createBox(0.23, 0.02, 0.02, mats.purpleHair, this.legL, 0, -0.45, 0.18);
+                createBox(0.23, 0.02, 0.02, mats.purpleHair, this.legR, 0, -0.45, 0.18);
+
+                // --- ARMS (Sleeves + Hands) ---
+                this.armL.position.set(-0.3, 0.2, 0);
+                this.armR.position.set(0.3, 0.2, 0);
+
+                // Sleeves (Baggy)
+                createBox(0.18, 0.5, 0.18, mats.blackFabric, this.armL, 0, -0.2, 0);
+                createBox(0.18, 0.5, 0.18, mats.blackFabric, this.armR, 0, -0.2, 0);
+                // Striped cuffs
+                createBox(0.2, 0.05, 0.2, mats.darkGrey, this.armL, 0, -0.45, 0);
+                createBox(0.2, 0.05, 0.2, mats.darkGrey, this.armR, 0, -0.45, 0);
+                // Hands (Claws/Fingers)
+                createBox(0.08, 0.15, 0.08, mats.skin, this.armL, 0, -0.55, 0);
+                createBox(0.08, 0.15, 0.08, mats.skin, this.armR, 0, -0.55, 0);
+
+                // --- HEAD ---
+                this.head.position.y = 0.4;
+                // Face Screen
+                createBox(0.45, 0.45, 0.45, mats.skin, this.head); // White shell
+                createBox(0.4, 0.35, 0.46, mats.beanie, this.head); // Black screen backing
+
+                // Eyes (Ovals simulated by small boxes)
+                const eyeL = new THREE.Group(); eyeL.position.set(-0.12, 0, 0.24);
+                const eyeR = new THREE.Group(); eyeR.position.set(0.12, 0, 0.24);
+                this.head.add(eyeL); this.head.add(eyeR);
+
+                createBox(0.12, 0.18, 0.02, mats.purpleEye, eyeL);
+                createBox(0.12, 0.18, 0.02, mats.purpleEye, eyeR);
+                
+                // Beanie
+                createBox(0.5, 0.15, 0.5, mats.beanie, this.head, 0, 0.25, 0); // Rim
+                createBox(0.48, 0.2, 0.48, mats.beanie, this.head, 0, 0.35, 0); // Top
+                createBox(0.1, 0.1, 0.1, mats.darkGrey, this.head, 0, 0.5, 0); // Pom
+
+                // Hair (Purple strands)
+                // Bangs
+                createBox(0.1, 0.3, 0.1, mats.purpleHair, this.head, -0.23, 0, 0.1);
+                createBox(0.1, 0.3, 0.1, mats.purpleHair, this.head, 0.23, 0, 0.1);
+                // Back hair
+                createBox(0.48, 0.4, 0.1, mats.purpleHair, this.head, 0, -0.2, -0.2);
+            }
+
+            buildN() {
+                const s = 1.1;
+                this.group.scale.set(s,s,s);
+
+                // --- TORSO (Trench Coat) ---
+                this.torso.position.y = 1.2;
+                createBox(0.55, 0.7, 0.35, mats.blackFabric, this.torso); // Chest
+                // Fur Collar
+                createBox(0.6, 0.15, 0.4, mats.silverHair, this.torso, 0, 0.35, 0);
+                // Buttons
+                createBox(0.05, 0.05, 0.02, mats.goldEye, this.torso, -0.1, 0.1, 0.18);
+                createBox(0.05, 0.05, 0.02, mats.goldEye, this.torso, -0.1, -0.1, 0.18);
+
+                // Coat Tails (Attached to Torso, but lower)
+                const coatTail = new THREE.Group();
+                coatTail.position.set(0, -0.6, -0.1);
+                this.torso.add(coatTail);
+                createBox(0.6, 0.6, 0.1, mats.blackFabric, coatTail, 0, 0, 0, 0.2, 0, 0); // Flared out slightly
+
+                // --- LEGS ---
+                this.legL.position.set(-0.15, -0.35, 0);
+                this.legR.position.set(0.15, -0.35, 0);
+                createBox(0.12, 0.8, 0.12, mats.blackFabric, this.legL, 0, -0.4, 0);
+                createBox(0.12, 0.8, 0.12, mats.blackFabric, this.legR, 0, -0.4, 0);
+
+                // --- ARMS ---
+                this.armL.position.set(-0.35, 0.25, 0);
+                this.armR.position.set(0.35, 0.25, 0);
+                createBox(0.14, 0.8, 0.14, mats.blackFabric, this.armL, 0, -0.3, 0);
+                createBox(0.14, 0.8, 0.14, mats.blackFabric, this.armR, 0, -0.3, 0);
+                // Hands
+                createBox(0.1, 0.2, 0.1, mats.skin, this.armL, 0, -0.75, 0);
+                createBox(0.1, 0.2, 0.1, mats.skin, this.armR, 0, -0.75, 0);
+
+                // --- HEAD ---
+                this.head.position.y = 0.5;
+                // Face
+                createBox(0.48, 0.5, 0.48, mats.skin, this.head);
+                // Pilot Hat
+                createBox(0.6, 0.1, 0.6, mats.blackFabric, this.head, 0, 0.3, 0); // Rim
+                createBox(0.55, 0.2, 0.55, mats.blackFabric, this.head, 0, 0.4, 0); // Top
+                // Badge
+                createBox(0.1, 0.1, 0.05, mats.skin, this.head, 0, 0.4, 0.28);
+                
+                // Hair (Messy Fluff)
+                createBox(0.5, 0.15, 0.52, mats.silverHair, this.head, 0, 0.28, 0); // Under hat
+                createBox(0.15, 0.3, 0.15, mats.silverHair, this.head, -0.3, 0, 0); // Side tuft
+                createBox(0.15, 0.3, 0.15, mats.silverHair, this.head, 0.3, 0, 0); // Side tuft
+
+                // Eyes (X Shape roughly)
+                createBox(0.3, 0.1, 0.02, mats.goldEye, this.head, 0, 0, 0.25); // Band
+                
+                // --- WINGS (Attached to back) ---
+                const wingL = new THREE.Group(); wingL.position.set(-0.2, 0.2, -0.2);
+                const wingR = new THREE.Group(); wingR.position.set(0.2, 0.2, -0.2);
+                this.torso.add(wingL); this.torso.add(wingR);
+                
+                // Wing blades (Blades of death)
+                createBox(1.5, 0.1, 0.05, mats.skin, wingL, -0.7, 0.5, 0, 0, 0, 0.5);
+                createBox(0.05, 1.0, 0.05, mats.skin, wingL, -1.5, 0, 0); // Tip
+                
+                createBox(1.5, 0.1, 0.05, mats.skin, wingR, 0.7, 0.5, 0, 0, 0, -0.5);
+                createBox(0.05, 1.0, 0.05, mats.skin, wingR, 1.5, 0, 0); // Tip
+
+                // --- TAIL (Acid) ---
+                const tail = new THREE.Group();
+                tail.position.set(0, -0.3, -0.2);
+                this.torso.add(tail);
+                // Segments
+                for(let i=0; i<5; i++) {
+                    createBox(0.05, 0.2, 0.05, mats.darkGrey, tail, 0, -i*0.2, -i*0.1, 0.5, 0, 0);
+                }
+                // Acid vial
+                createBox(0.15, 0.3, 0.15, mats.acid, tail, 0, -1.2, -0.6, 0.5, 0, 0);
+            }
+
+            update(time, isParty) {
+                // BREATHING IDLE
+                this.torso.position.y += Math.sin(time * 2) * 0.002;
+
+                if (isParty) {
+                    const speed = 10;
+                    // Aggressive Techno Bob
+                    this.group.position.y = Math.abs(Math.cos(time * speed)) * 0.2;
+                    
+                    // Arm Swings
+                    this.armL.rotation.x = Math.sin(time * speed) * 0.8;
+                    this.armR.rotation.x = -Math.sin(time * speed) * 0.8;
+                    
+                    // Head Banging
+                    this.head.rotation.x = Math.sin(time * speed * 2) * 0.2;
+
+                    // Leg movement
+                    this.legL.rotation.x = Math.sin(time * speed) * 0.4;
+                    this.legR.rotation.x = -Math.sin(time * speed) * 0.4;
+
+                } else {
+                    // Smooth Idle Look
+                    this.head.rotation.y = Math.sin(time * 0.5) * 0.3;
+                    this.head.rotation.x = Math.sin(time * 0.3) * 0.05;
+                    
+                    // Reset limbs
+                    this.group.position.y = THREE.MathUtils.lerp(this.group.position.y, 0, 0.1);
+                    this.armL.rotation.x = THREE.MathUtils.lerp(this.armL.rotation.x, 0, 0.1);
+                    this.armR.rotation.x = THREE.MathUtils.lerp(this.armR.rotation.x, 0, 0.1);
+                }
+            }
+        }
+
+        // --- ENVIRONMENT GENERATION ---
+        const objects = [];
+        const blockGeo = new THREE.BoxGeometry(1,1,1);
+
+        // Floor
+        for(let x=-20; x<20; x+=2) {
+            for(let z=-20; z<20; z+=2) {
+                const h = Math.random() > 0.8 ? 1 : 0;
+                const mat = h===1 ? mats.stone : mats.snow;
+                const mesh = new THREE.Mesh(blockGeo, mat);
+                mesh.position.set(x, h-1, z);
+                mesh.scale.set(2,1,2);
+                mesh.receiveShadow = true;
+                scene.add(mesh);
+                objects.push(mesh);
+            }
+        }
+        
+        // Spikes (Ice Shards)
+        for(let i=0; i<20; i++) {
+            const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.5, 4, 4), mats.snow);
+            mesh.position.set(Math.random()*40-20, 1, Math.random()*40-20);
+            scene.add(mesh);
+        }
+
+        // --- SPAWN CHARACTERS ---
+        const uzi = new Drone('uzi', -2.5, 0);
+        const n = new Drone('n', 2.5, 0);
+        n.group.lookAt(-2.5, 0, 0); // Look at Uzi
+        uzi.group.lookAt(2.5, 0, 0); // Look at N
+
+        // --- PLAYER LOGIC ---
+        const controls = new PointerLockControls(camera, document.body);
+        const instructions = document.getElementById('ui-layer');
+        
+        document.addEventListener('click', () => controls.lock());
+        controls.addEventListener('lock', () => instructions.style.display = 'none');
+        controls.addEventListener('unlock', () => instructions.style.display = 'block');
+
+        camera.position.set(0, 2, 8);
+        const velocity = new THREE.Vector3();
+        const direction = new THREE.Vector3();
+        let moveF = false, moveB = false, moveL = false, moveR = false, canJump = false;
+
+        const onKey = (e, down) => {
+            switch(e.code) {
+                case 'KeyW': moveF = down; break;
+                case 'KeyS': moveB = down; break;
+                case 'KeyA': moveL = down; break;
+                case 'KeyD': moveR = down; break;
+                case 'Space': if(down && canJump) velocity.y += 15; canJump = false; break;
+                case 'KeyP': if(down) isParty = !isParty; break;
+            }
+        }
+        document.addEventListener('keydown', (e) => onKey(e, true));
+        document.addEventListener('keyup', (e) => onKey(e, false));
+
+        // --- GAME LOOP ---
+        let prevTime = performance.now();
+        let isParty = false;
+        
+        // Audio Context (Simple Kick)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let nextKick = 0;
+
+        function playKick(time) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(150, time);
+            osc.frequency.exponentialRampToValueAtTime(0.01, time + 0.5);
+            gain.gain.setValueAtTime(0.8, time);
+            gain.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
+            osc.start(time); osc.stop(time + 0.5);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const time = performance.now() / 1000;
+            const delta = (performance.now() - prevTime) / 1000;
+            prevTime = performance.now();
+
+            // Audio Loop
+            if(isParty && audioCtx.state === 'running') {
+                if(audioCtx.currentTime > nextKick) {
+                    playKick(audioCtx.currentTime);
+                    nextKick = audioCtx.currentTime + (60/128); // 128 BPM
+                    // Flash Lights
+                    purpLight.intensity = 2.0;
+                }
+            }
+            purpLight.intensity = THREE.MathUtils.lerp(purpLight.intensity, 0.8, 0.1);
+
+            // Character Updates
+            uzi.update(time, isParty);
+            n.update(time, isParty);
+
+            // Physics
+            if(controls.isLocked) {
+                velocity.x -= velocity.x * 10.0 * delta;
+                velocity.z -= velocity.z * 10.0 * delta;
+                velocity.y -= 30.0 * delta; // Gravity
+
+                direction.z = Number(moveF) - Number(moveB);
+                direction.x = Number(moveR) - Number(moveL);
+                direction.normalize();
+
+                if (moveF || moveB) velocity.z -= direction.z * 50.0 * delta;
+                if (moveL || moveR) velocity.x -= direction.x * 50.0 * delta;
+
+                controls.moveRight(-velocity.x * delta);
+                controls.moveForward(-velocity.z * delta);
+
+                if(controls.getObject().position.y < 2) {
+                    velocity.y = Math.max(0, velocity.y);
+                    controls.getObject().position.y = 2;
+                    canJump = true;
+                }
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+    </script>
+</body>
+</html>
