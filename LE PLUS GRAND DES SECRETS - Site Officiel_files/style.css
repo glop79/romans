@@ -25,7 +25,12 @@
     .char-card:hover { transform: translateY(-10px); border-color: #d4af37; }
     .char-card img { height: 300px; object-fit: cover; filter: grayscale(30%); }
     .char-card:hover img { filter: grayscale(0%); }
-    
+    /* Force la couleur blanche pour les textes des cartes */
+    .char-card .card-title, 
+    .char-card .card-subtitle, 
+    .char-card .card-text {
+        color: #ffffff !important;
+    }
     /* Scenes */
     .scene-img { border: 1px solid #333; transition: 0.3s; opacity: 0.8; }
     .scene-row:hover .scene-img { opacity: 1; transform: scale(1.02); border-color: #d4af37; }
@@ -37,4 +42,5 @@
         from { opacity: 0; transform: translateY(-50px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
     
