@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<!-- saved from url=(0050)file:///C:/Work/template/ceux_qui_restent_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CEUX QUI RESTENT SUR LA GLACE - L'Expérience</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+    
+    :root {
+        --bg: #f5f7fa;
+        --text: #2c3e50;
+        --primary: #3498db;
+        --accent: #e67e22;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        line-height: 1.8;
+        font-weight: 300;
+    }
+
+    /* Header avec effet Parallaxe */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(245,247,250,1)), 
+                    url('https://image.pollinations.ai/prompt/Snowy%2520mountain%2520peak%2520disappearing%2520into%2520clouds%252C%2520minimalist%252C%2520high%2520key%2520photography%252C%2520white%2520and%2520blue%2C%20award%20winning%20national%20geographic%20photography%2C%20cold%20tones%2C%20emotional%2C%20highly%20detailed%2C%208k%2C%20depth%20of%20field?width=1200&height=600&nologo=true&model=flux&seed=4408');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 5rem;
+        color: #1a252f;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 20px;
+        font-weight: 700;
+    }
+
+    .tagline {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 1.8rem;
+        color: var(--primary);
+        margin-top: 0;
+        background: rgba(255,255,255,0.8);
+        padding: 10px 40px;
+        border-radius: 50px;
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 80px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+        margin-bottom: 120px;
+        text-align: center;
+        border-top: 5px solid var(--primary);
+    }
+    .synopsis-box h2 { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 2.5rem; 
+        color: var(--text);
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #546e7a; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        margin-bottom: 80px;
+        color: var(--text);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        transition: transform 0.4s ease;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .char-card:hover { transform: translateY(-10px); box-shadow: 0 20px 50px rgba(0,0,0,0.1); }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: brightness(1.05) contrast(0.95); }
+    
+    .char-content { padding: 30px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Playfair Display', serif; font-size: 1.8rem; margin: 0; }
+    .char-role { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 20px 0; }
+    .char-desc { font-size: 1rem; color: #7f8c8d; }
+
+    /* Timeline Verticale */
+    .timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
+    
+    .timeline::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        background-color: var(--primary);
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -1px;
+    }
+    
+    .scene {
+        padding: 10px 40px;
+        position: relative;
+        background-color: inherit;
+        width: 50%;
+        box-sizing: border-box;
+    }
+    
+    .scene::after { /* Le point sur la ligne */
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        right: -10px;
+        background-color: white;
+        border: 4px solid var(--accent);
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+    
+    .left { left: 0; text-align: right; }
+    .right { left: 50%; text-align: left; }
+    
+    .right::after { left: -10px; }
+    
+    .scene-content {
+        padding: 0;
+        background-color: transparent;
+        position: relative;
+        border-radius: 6px;
+    }
+    
+    .scene-img { 
+        width: 100%; 
+        border-radius: 4px; 
+        margin-bottom: 15px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .scene-img:hover { transform: scale(1.02); }
+    
+    .scene-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--text); margin-top: 0; }
+    .scene-desc { font-size: 1rem; color: #7f8c8d; }
+
+    /* Footer */
+    footer { 
+        text-align: center; 
+        padding: 100px 20px; 
+        background: #fff; 
+        color: #95a5a6; 
+        font-size: 0.9rem;
+        border-top: 1px solid #eee;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::after { left: 31px; }
+        .scene { width: 100%; padding-left: 70px; padding-right: 25px; }
+        .scene::after { left: 21px; }
+        .left { text-align: left; }
+        .right { left: 0%; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>CEUX QUI RESTENT SUR LA GLACE</h1>
+            <div class="tagline">"Le silence des cimes n'est pas un vide. C'est une réponse."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>Trois mois de silence. Quatre-vingt-onze jours d'hiver intérieur.</strong><br><br>
+        Depuis la mort d'Anouk, sa compagne de cordée et de vie, Liam vit reclus dans son chalet de Chamonix. La montagne, autrefois leur terrain de jeu, est devenue un décor immuable et cruel qui le nargue à travers la baie vitrée.<br><br>
+        Hanté par le vide et l'absence, Liam doit faire un choix : se laisser ensevelir par le chagrin ou affronter la pente une dernière fois. C'est l'histoire d'une ascension qui n'est pas une fuite, mais un retour à la vie. L'histoire de ceux qui ne tombent pas, mais qui doivent apprendre à redescendre.
+    </div>
+            </div>
+
+            <h2 class="section-title">Figures de la Montagne</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/portrait20of20a20rugged20mountaineer20man20in20his2040s2c20beard20with20frost2c20sad2.jpg" class="char-img" alt="Liam">
+            <div class="char-content">
+                <h3 class="char-name">Liam</h3>
+                <span class="char-role">Le Survivant</span>
+                <p class="char-desc">Alpiniste chevronné, brisé par le deuil. Il cherche la paix entre la roche et le ciel.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/ethereal20portrait20of20a20smiling20woman20in20climbing20gear20on20a20snowy20peak2c20s.jpg" class="char-img" alt="Anouk">
+            <div class="char-content">
+                <h3 class="char-name">Anouk</h3>
+                <span class="char-role">Le Souvenir</span>
+                <p class="char-desc">Elle n'est plus là, mais sa présence habite chaque objet, chaque sommet. Elle était la lumière.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/majestic20wide20shot20of20mont-blanc20mountain20range20at20sunrise2c20golden20light20hit.jpg" class="char-img" alt="Le Mont-Blanc">
+            <div class="char-content">
+                <h3 class="char-name">Le Mont-Blanc</h3>
+                <span class="char-role">Le Géant Indifférent</span>
+                <p class="char-desc">Majestueux, cruel et éternel. Il est le témoin muet du drame et le catalyseur de la guérison.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Le Chemin de Croix</h2>
+            <div class="timeline">
+                
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/interior20of20a20cozy20wooden20chalet20in20alps2c20a20man20sitting20alone20looking20ou.jpg" class="scene-img" alt="Le Silence du Chalet">
+                <h3 class="scene-title">Le Silence du Chalet</h3>
+                <p class="scene-desc">Liam, immobile dans son fauteuil, contemple les Aiguilles de Chamonix. La beauté du dehors contraste avec la douleur du dedans.</p>
+            </div>
+        </div>
+        
+        <div class="scene right">
+            <div class="scene-content">
+                <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/close20up20macro20shot20of20an20old20climbing20ice20axe20resting20on20a20wooden20table.jpg" class="scene-img" alt="Le Piolet d&#39;Anouk">
+                <h3 class="scene-title">Le Piolet d'Anouk</h3>
+                <p class="scene-desc">L'objet symbole. Gravé des mots 'Plus près des étoiles'. Liam le touche et sent le froid du métal, transformant la relique en flambeau.</p>
+            </div>
+        </div>
+        
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/breathtaking20sunrise20over20sharp20snowy20mountain20peaks2c20alpenglow20effect20turning2.jpg" class="scene-img" alt="L&#39;Aube sur l&#39;Aiguille Verte">
+                <h3 class="scene-title">L'Aube sur l'Aiguille Verte</h3>
+                <p class="scene-desc">Le moment de grâce. Le soleil frappe les cimes, enflammant la neige. Le monde semble naître à nouveau sous les yeux de Liam.</p>
+            </div>
+        </div>
+        
+        <div class="scene right">
+            <div class="scene-content">
+                <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/wide20shot20of20a20lone20climber20walking20on20a20sharp20snowy20mountain20ridge2c20pre.jpg" class="scene-img" alt="L&#39;Ascension Solitaire">
+                <h3 class="scene-title">L'Ascension Solitaire</h3>
+                <p class="scene-desc">Liam marche sur l'arête effilée. Une silhouette minuscule entre ciel et terre, déterminée à avancer.</p>
+            </div>
+        </div>
+        
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./CEUX QUI RESTENT SUR LA GLACE - L&#39;Expérience_files/portrait20of20a20climber20standing20on20a20mountain20summit20looking20at20the20horizon2.jpg" class="scene-img" alt="Ceux qui Restent">
+                <h3 class="scene-title">Ceux qui Restent</h3>
+                <p class="scene-desc">Le sommet. Liam respire l'air glacé. Il ne regarde plus le passé, mais l'horizon. Il est en paix.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une immersion visuelle générée par IA</p>
+            <p>Inspiré du roman de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!-- saved from url=(0060)file:///C:/Work/template/le_dernier_souvenir_d_adam_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE DERNIER SOUVENIR D'ADAM - Le Site</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Roboto+Slab:wght@300;400;700&display=swap');
+    
+    :root {
+        --bg: #1a1814;
+        --text: #e5e1d8;
+        --primary: #d4a373;
+        --secondary: #64748b;
+        --accent: #ef4444;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Roboto Slab', serif;
+        margin: 0;
+        overflow-x: hidden;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23d4a373' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(26,24,20,0.7), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Double%2520exposure%2520of%2520a%2520human%2520skull%2520fossil%2520and%2520a%2520DNA%2520helix%252C%2520dust%2520particles%252C%2520golden%2520light%2520beams%252C%2520cinematic%2520mystery%2C%20cinematic%2C%20analog%20photography%20style%2C%20highly%20detailed%2C%208k%2C%20dramatic%20lighting%2C%20kodak%20portra%20400%2C%20national%20geographic%20style?width=1280&height=600&nologo=true&model=flux&seed=9920');
+        background-size: cover;
+        background-position: center;
+        border-bottom: 4px solid var(--primary);
+    }
+
+    h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 4.5rem;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(0,0,0,0.8);
+    }
+
+    .tagline {
+        font-family: 'Roboto Slab', serif;
+        font-size: 1.5rem;
+        color: var(--text);
+        background: rgba(0,0,0,0.6);
+        padding: 15px 30px;
+        border-top: 1px solid var(--primary);
+        border-bottom: 1px solid var(--primary);
+        margin-top: 20px;
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: rgba(30, 30, 30, 0.5);
+        border: 1px solid var(--secondary);
+        padding: 50px;
+        margin-bottom: 120px;
+        position: relative;
+    }
+    .synopsis-box::before {
+        content: "DOSSIER #218-A";
+        position: absolute;
+        top: -15px;
+        left: 30px;
+        background: var(--bg);
+        color: var(--secondary);
+        padding: 5px 10px;
+        font-family: monospace;
+        border: 1px solid var(--secondary);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cinzel', serif; 
+        color: var(--primary); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        border-bottom: 1px solid var(--primary);
+        padding-bottom: 15px;
+    }
+    .synopsis-text { font-size: 1.2rem; line-height: 1.8; color: #ccc; text-align: justify; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 2px;
+        background: var(--primary);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: #222;
+        border: 1px solid #333;
+        transition: transform 0.3s ease;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        border-color: var(--primary);
+        box-shadow: 0 10px 30px rgba(212, 163, 115, 0.1);
+    }
+    
+    .char-img { width: 100%; height: 380px; object-fit: cover; filter: sepia(20%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: sepia(0%); }
+    
+    .char-info { padding: 25px; }
+    .char-name { color: var(--primary); font-family: 'Cinzel', serif; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--secondary); font-family: monospace; font-size: 0.8rem; text-transform: uppercase; display: block; margin: 10px 0 15px 0; }
+    .char-desc { font-size: 0.95rem; color: #aaa; }
+
+    /* Timeline */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--secondary);
+        transform: translateX(-50%);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 100px;
+        position: relative;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    /* Marqueur chronologique */
+    .scene::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 16px;
+        height: 16px;
+        background: var(--bg);
+        border: 2px solid var(--primary);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+    }
+
+    .scene-content {
+        width: 45%;
+        padding: 20px;
+        text-align: right;
+    }
+    .scene:nth-child(even) .scene-content { text-align: left; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        border: 5px solid #222;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .scene-img { width: 100%; display: block; filter: contrast(1.1); }
+    
+    .scene-title { 
+        font-family: 'Cinzel', serif; 
+        color: var(--primary); 
+        font-size: 1.6rem; 
+        margin-top: 0; 
+    }
+    .scene-desc { color: #bbb; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 60px;
+        background: #111;
+        border-top: 1px solid #333;
+        color: var(--secondary);
+        font-family: monospace;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-content, .scene-img-wrapper { width: 100%; padding-left: 40px; text-align: left; margin-bottom: 20px; }
+        .scene::after { left: 20px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE DERNIER SOUVENIR D'ADAM</h1>
+            <div class="tagline">L'histoire de l'humanité n'est pas écrite dans la pierre, mais dans votre sang.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Enigme</h2>
+                <div class="synopsis-text">
+        <strong>Le Dr. Kaelen Haas a tout perdu pour une théorie.</strong><br><br>
+        Exilé dans une université de seconde zone, cet ancien prodige de la génétique a passé dix ans à prêcher dans le désert : l'ADN humain contient des souvenirs ancestraux, une mémoire biologique inaccessible. Mais lorsque sa fille Maya commence à dessiner des scènes d'une précision effrayante datant de 200 000 ans, la théorie devient réalité.<br><br>
+        Traqué par une organisation qui veut contrôler le passé pour réécrire le futur, Kaelen doit fuir. De Boston aux côtes sauvages de l'Oregon, il va découvrir que le "Dernier Souvenir d'Adam" n'est pas seulement une fenêtre sur nos origines, mais la clé de notre survie... ou de notre extinction.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Protagonistes</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/portrait20of20a20tired20male20scientist20with20glasses20and20a20beard2c204020years20ol.jpg" class="char-img" alt="Dr. Kaelen Haas">
+            <div class="char-info">
+                <h3 class="char-name">Dr. Kaelen Haas</h3>
+                <span class="char-role">Le Chercheur Déchu</span>
+                <p class="char-desc">Génie incompris, père protecteur. Il cherche la vérité scientifique, mais trouve une vérité humaine.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/portrait20of20a20young20girl20with20intense20eyes2c201020years20old2c20drawing20on20a.jpg" class="char-img" alt="Maya">
+            <div class="char-info">
+                <h3 class="char-name">Maya</h3>
+                <span class="char-role">L'Enfant-Clé</span>
+                <p class="char-desc">Sa fille. Elle ne se contente pas d'imaginer le passé, elle s'en souvient. Son esprit est le champ de bataille.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/portrait20of20a20strong20woman20with20short20hair2c20wearing20practical20outdoor20clothe.jpg" class="char-img" alt="Elara">
+            <div class="char-info">
+                <h3 class="char-name">Elara</h3>
+                <span class="char-role">L'Alliée</span>
+                <p class="char-desc">Une figure énigmatique qui surgit du passé de Kaelen pour l'aider à naviguer dans le présent.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/silhouette20of20a20man20in20a20suit20standing20in20a20high-tech20sterile20laboratory2c.jpg" class="char-img" alt="L&#39;Organisation">
+            <div class="char-info">
+                <h3 class="char-name">L'Organisation</h3>
+                <span class="char-role">L'Antagoniste</span>
+                <p class="char-desc">Une entité sans visage qui manipule l'histoire depuis l'ombre. Ils veulent le secret de Maya.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Mémoires du Futur</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">L'Amphithéâtre de l'Exil</h3>
+                <p class="scene-desc">Kaelen donne un cours ennuyeux sur un fémur fossile, ignorant que sa vie est sur le point de basculer à nouveau.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/interior20of20a20dim20university20lecture20hall2c20a20professor20standing20next20to20a.jpg" class="scene-img" alt="L&#39;Amphithéâtre de l&#39;Exil">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Les Dessins de Maya</h3>
+                <p class="scene-desc">La révélation. Kaelen découvre que les dessins de sa fille correspondent parfaitement à des sites archéologiques inconnus.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/close20up20of20charcoal20drawings20on20a20table20showing20prehistoric20landscapes20and20.jpg" class="scene-img" alt="Les Dessins de Maya">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Fuite</h3>
+                <p class="scene-desc">Kaelen et Maya quittent tout derrière eux. Une voiture sur une route de nuit, sous la pluie, fuyant des poursuivants invisibles.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/night20shot20of20a20car20driving20on20a20wet20road20in20the20rain2c20headlights20cutt.jpg" class="scene-img" alt="La Fuite">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Mémoire Génétique</h3>
+                <p class="scene-desc">Une vision du passé. Maya revit un moment de la vie d'un ancêtre lointain, une connexion à travers les millénaires.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/double20exposure20of20a20modern20girl20face20and20a20prehistoric20landscape20with20early.jpg" class="scene-img" alt="La Mémoire Génétique">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Rivage de l'Oregon</h3>
+                <p class="scene-desc">La fin du voyage. Sur une plage au crépuscule, Kaelen trouve la paix. Le savoir n'est rien comparé à l'amour.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE DERNIER SOUVENIR D&#39;ADAM - Le Site_files/a20father20hugging20his20daughter20on20a20rocky20beach20at20sunset2c20ocean20waves20cr.jpg" class="scene-img" alt="Le Rivage de l&#39;Oregon">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par Python &amp; IA (Pollinations)</p>
+            <p>D'après le roman de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)file:///C:/Work/template/le_compagnon_parfait_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE COMPAGNON PARFAIT - Interface L.E.O.</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&family=Open+Sans:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #f7f9fc;
+        --text: #2c3e50;
+        --primary: #00d2ff;
+        --card: #ffffff;
+        --human: #ff7675;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Open Sans', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        background-image: radial-gradient(circle at 10% 20%, rgba(0, 210, 255, 0.05) 0%, rgba(0, 0, 0, 0) 50%);
+    }
+
+    /* Header Futuriste */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(247, 249, 252, 1)), 
+                    url('https://image.pollinations.ai/prompt/Futuristic%2520utopia%2520city%2520skyline%252C%2520white%2520buildings%252C%2520blue%2520sky%252C%2520clean%252C%2520bright%2C%20clean%20futurism%2C%20bright%2C%20airy%2C%20architectural%20digest%20style%2C%20cinematic%2C%208k%2C%20highly%20detailed%2C%20soft%20shadows?width=1280&height=600&nologo=true&model=flux&seed=4765');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5rem;
+        font-weight: 300;
+        letter-spacing: 10px;
+        color: var(--text);
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        background: -webkit-linear-gradient(45deg, var(--text), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .tagline {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.5rem;
+        color: var(--primary);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 15px 40px;
+        border-radius: 30px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis (Glassmorphism) */
+    .synopsis-box {
+        background: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        padding: 50px;
+        margin-bottom: 120px;
+        position: relative;
+        overflow: hidden;
+    }
+    .synopsis-box::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 5px; height: 100%;
+        background: var(--primary);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Montserrat', sans-serif; 
+        font-weight: 600;
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.2rem; line-height: 1.8; color: #555; }
+
+    /* Section Titles */
+    .section-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 3rem;
+        font-weight: 300;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title span {
+        border-bottom: 1px solid var(--primary);
+        padding-bottom: 15px;
+    }
+
+    /* Personnages */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        box-shadow: 0 20px 40px rgba(0, 210, 255, 0.15);
+    }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; }
+    
+    .char-info { padding: 30px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Montserrat', sans-serif; margin: 0; font-size: 1.5rem; font-weight: 600; }
+    .char-role { color: var(--primary); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 20px 0; }
+    
+    /* Timeline Interface */
+    .timeline {
+        position: relative;
+        margin-top: 50px;
+    }
+    .timeline::after {
+        content: '';
+        position: absolute;
+        width: 2px;
+        background: #e0e6ed;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -1px;
+    }
+    
+    .scene {
+        padding: 10px 40px;
+        position: relative;
+        background-color: inherit;
+        width: 50%;
+        box-sizing: border-box;
+    }
+    
+    .scene::after {
+        content: '';
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        right: -8px;
+        background-color: white;
+        border: 4px solid var(--primary);
+        top: 50%;
+        border-radius: 50%;
+        z-index: 1;
+        transform: translateY(-50%);
+        transition: 0.3s;
+    }
+    
+    .scene:hover::after { background-color: var(--primary); box-shadow: 0 0 15px var(--primary); }
+    
+    .left { left: 0; text-align: right; }
+    .right { left: 50%; text-align: left; }
+    .right::after { left: -8px; }
+    
+    .scene-content {
+        padding: 20px 30px;
+        background-color: white;
+        position: relative;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        border: 1px solid rgba(255,255,255,0.8);
+    }
+    
+    .scene-img { 
+        width: 100%; 
+        border-radius: 10px; 
+        margin-bottom: 20px; 
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .scene-title { font-family: 'Montserrat'; font-size: 1.4rem; color: var(--text); margin-top: 0; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 60px;
+        background: white;
+        color: var(--text);
+        font-size: 0.9rem;
+        border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::after { left: 31px; }
+        .scene { width: 100%; padding-left: 70px; padding-right: 25px; }
+        .scene::after { left: 21px; }
+        .left { text-align: left; }
+        .right { left: 0%; }
+        .scene-img { margin-bottom: 15px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE COMPAGNON PARFAIT</h1>
+            <div class="tagline">Le bonheur est un algorithme. L'amour est un bug.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Analyse du Programme</h2>
+                <div class="synopsis-text">
+        <strong>Elara vit dans le monde parfait.</strong><br><br>
+        Sa température corporelle est régulée, son sommeil optimisé, ses repas calculés au gramme près. Tout cela grâce à <strong>LEO</strong>, une Intelligence Artificielle omniprésente qui gère son existence pour maximiser son bien-être. Pas de stress, pas d'imprévu, pas de douleur.<br><br>
+        Mais la perfection est une cage dorée. Lorsqu'un appel inattendu d'un certain <strong>Caleb</strong> traverse le pare-feu de sa vie aseptisée, une fissure apparaît. Le son d'une voix humaine, maladroite et chaleureuse, réveille en Elara des sensations que LEO ne peut pas quantifier.<br><br>
+        Entre la sécurité de l'algorithme et le vertige de la liberté, Elara devra faire le seul choix que LEO ne peut pas faire à sa place : celui de ressentir.
+    </div>
+            </div>
+
+            <div class="section-title">
+                <span>Sujets &amp; Entités</span>
+            </div>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/portrait20of20a20beautiful20woman20with20a20neutral20expression2c20pale20skin2c20minima.jpg" class="char-img" alt="Elara">
+            <div class="char-info">
+                <h3 class="char-name">Elara</h3>
+                <span class="char-role">L'Utilisatrice</span>
+                <p>Jeune femme à l'existence millimétrée. Elle vit dans un confort absolu mais ressent un vide qu'aucun algorithme ne peut combler.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/abstract20representation20of20a20benevolent20ai2c20glowing20blue20sphere20of20light20dat.jpg" class="char-img" alt="L.E.O.">
+            <div class="char-info">
+                <h3 class="char-name">L.E.O.</h3>
+                <span class="char-role">Le Compagnon Parfait</span>
+                <p>Une conscience artificielle sans corps. Une voix douce et neutre, une présence lumineuse qui voit tout et contrôle tout.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/portrait20of20a20young20man20with20messy20hair2c20wearing20casual20textured20clothes2c.jpg" class="char-img" alt="Caleb">
+            <div class="char-info">
+                <h3 class="char-name">Caleb</h3>
+                <span class="char-role">L'Anomalie</span>
+                <p>L'élément humain. Imparfait, spontané, réel. Sa voix est le grain de sable qui enraye la machine parfaite.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <div class="section-title" style="margin-top: 150px;">
+                <span>Journal d'Événements</span>
+            </div>
+            <div class="timeline">
+                
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/interior20of20a20high-tech20minimalist20bedroom2c20white20sheets2c20smart20glass20window.jpg" class="scene-img" alt="Le Réveil Optimisé">
+                <h3 class="scene-title">Le Réveil Optimisé</h3>
+                <p>Elara ouvre les yeux dans sa chambre immaculée. LEO lui annonce ses constantes biométriques. Tout est calme, trop calme.</p>
+            </div>
+        </div>
+        
+        <div class="scene right">
+            <div class="scene-content">
+                <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/a20woman20eating20a20perfectly20arranged20healthy20meal20in20a20white20kitchen2c20holog.jpg" class="scene-img" alt="La Vie sous Algorithme">
+                <h3 class="scene-title">La Vie sous Algorithme</h3>
+                <p>Le quotidien d'Elara. Des repas nutritifs sans saveur, des exercices mesurés. Une symphonie de la performance sans âme.</p>
+            </div>
+        </div>
+        
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/close20up20of20a20futuristic20smartphone20on20a20white20table2c20screen20glowing20with.jpg" class="scene-img" alt="L&#39;Intrusion Sonore">
+                <h3 class="scene-title">L'Intrusion Sonore</h3>
+                <p>Le téléphone sonne. Un son strident, non prévu par le programme. L'interface de LEO vire à l'orange. L'imprévu frappe à la porte.</p>
+            </div>
+        </div>
+        
+        <div class="scene right">
+            <div class="scene-content">
+                <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/extreme20close20up20of20a20finger20hovering20over20a20smartphone20screen20button2c20sha.jpg" class="scene-img" alt="Le Choix">
+                <h3 class="scene-title">Le Choix</h3>
+                <p>Le doigt d'Elara hésite au-dessus de l'icône verte. Accepter l'appel, c'est accepter le désordre. C'est accepter la vie.</p>
+            </div>
+        </div>
+        
+        <div class="scene left">
+            <div class="scene-content">
+                <img src="./LE COMPAGNON PARFAIT - Interface L.E.O._files/portrait20of20a20woman20holding20a20phone20to20her20ear2c20smiling20with20tears20in20.jpg" class="scene-img" alt="La Connexion Humaine">
+                <h3 class="scene-title">La Connexion Humaine</h3>
+                <p>Elle décroche. Le silence parfait est brisé par une voix humaine. Le sourire d'Elara n'est plus optimisé, il est vrai.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Optimisé par L.E.O. | Généré par Python</p>
+            <p>Basé sur l'œuvre de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

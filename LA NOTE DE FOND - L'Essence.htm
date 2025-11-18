@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Work/template/la_note_de_fond_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LA NOTE DE FOND - L'Essence</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+    
+    :root {
+        --bg: #0f0f0f;
+        --text: #fdfbf7;
+        --gold: #d4af37;
+        --scent: #e6b8b8;
+        --glass: rgba(255, 255, 255, 0.05);
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Playfair Display', serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Fond particules dorées (poussière de parfum) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='1' fill='%23d4af37' opacity='0.3'/%3E%3C/svg%3E");
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: -1;
+        animation: float 10s infinite linear;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(15,15,15,0.6), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520swirling%2520golden%2520liquid%2520and%2520smoke%252C%2520perfume%2520essence%252C%2520luxury%2520background%2C%20luxury%20perfume%20advertisement%20style%2C%20cinematic%20lighting%2C%20macro%20details%2C%20bokeh%2C%20golden%20tones%2C%20highly%20detailed%2C%208k%2C%20photorealistic?width=1280&height=600&nologo=true&model=flux&seed=696');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-bottom: 1px solid var(--gold);
+    }
+
+    h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 5rem;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 10px;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        border: 1px solid var(--gold);
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+    }
+
+    .tagline {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        font-size: 1.5rem;
+        color: var(--text);
+        margin-top: 20px;
+        font-weight: 300;
+        letter-spacing: 2px;
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis - Style Carton d'Invitation / Etiquette */
+    .synopsis-box {
+        background: linear-gradient(135deg, #1a1a1a, #111);
+        padding: 80px;
+        margin-bottom: 150px;
+        border: 1px solid var(--gold);
+        text-align: center;
+        position: relative;
+        box-shadow: 0 0 50px rgba(212, 175, 55, 0.1);
+    }
+    
+    .synopsis-box::before {
+        content: "EAU DE PARFUM";
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Cinzel', serif;
+        font-size: 0.8rem;
+        color: var(--gold);
+        letter-spacing: 5px;
+    }
+
+    .synopsis-box h2 { 
+        font-family: 'Cinzel', serif; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 20px; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.3rem; color: #ccc; font-weight: 400; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        font-size: 3rem;
+        margin-bottom: 100px;
+        color: var(--gold);
+        position: relative;
+    }
+    .section-title::after {
+        content: "♦";
+        display: block;
+        font-size: 1.5rem;
+        margin-top: 20px;
+        color: var(--text);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 50px;
+    }
+    .char-card {
+        background: var(--glass);
+        border: 1px solid #333;
+        transition: 0.5s ease;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        border-color: var(--gold);
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+    
+    .char-img { width: 100%; height: 380px; object-fit: cover; filter: sepia(20%) contrast(1.1); transition: 0.5s; }
+    .char-card:hover .char-img { filter: sepia(0%); }
+    
+    .char-info { padding: 30px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Cinzel', serif; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--scent); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; font-family: sans-serif; }
+    .char-desc { font-size: 0.95rem; color: #999; font-style: italic; }
+
+    /* Timeline - Style "Sillage" */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    /* Ligne dorée */
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 10px;
+        border: 1px solid #333;
+    }
+    .scene-img { 
+        width: 100%; 
+        display: block; 
+        filter: brightness(0.9);
+    }
+    
+    .scene-content { width: 40%; text-align: center; }
+    
+    .scene-title { 
+        font-family: 'Cinzel', serif; 
+        font-size: 1.8rem; 
+        margin-top: 0; 
+        color: var(--gold);
+        text-shadow: 0 0 10px rgba(0,0,0,1);
+    }
+    .scene-desc { color: #aaa; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: #000;
+        color: var(--gold);
+        font-family: 'Cinzel', serif;
+        font-size: 0.9rem;
+        border-top: 1px solid #333;
+    }
+
+    @keyframes float {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 100px; }
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; letter-spacing: 3px; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LA NOTE DE FOND</h1>
+            <div class="tagline">"Un parfum peut être une armure. Il peut aussi être une clé."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>La Composition</h2>
+                <div class="synopsis-text">
+        <strong>Certains souvenirs ne s'effacent pas. Ils s'évaporent.</strong><br><br>
+        Alice est un "Nez" d'exception. Dans le monde scintillant de la haute parfumerie, elle compose des fragrances comme d'autres écrivent des symphonies. Mais sa vie est un flacon scellé, contrôlé par David, son compagnon charismatique et possessif.<br><br>
+        Lors d'une soirée au Grand Palais, alors que les effluves de champagne et de tubéreuse saturent l'air, Alice comprend que son existence n'est qu'une note de tête : brillante, mais éphémère. Pour trouver sa note de fond – sa véritable identité – elle devra retourner dans son laboratoire et confronter les deux parfums qui définissent sa vie : "Signature 12", l'odeur de sa soumission, et "Brume", l'odeur de sa liberté.<br><br>
+        Une histoire envoûtante sur la mémoire olfactive et la reconstruction de soi.
+    </div>
+            </div>
+
+            <h2 class="section-title">La Pyramide Olfactive</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LA NOTE DE FOND - L&#39;Essence_files/portrait20of20a20elegant20woman20smelling20a20perfume20strip2c20eyes20closed20in20conce.jpg" class="char-img" alt="Alice">
+            <div class="char-info">
+                <h3 class="char-name">Alice</h3>
+                <span class="char-role">Le Nez / La Créatrice</span>
+                <p class="char-desc">Sensible et observatrice. Elle perçoit le monde par les odeurs. Elle cherche la formule chimique de sa propre liberté.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA NOTE DE FOND - L&#39;Essence_files/portrait20of20a20handsome20man20in20a20bespoke20tuxedo2c20intense20possessive20gaze2c2.jpg" class="char-img" alt="David">
+            <div class="char-info">
+                <h3 class="char-name">David</h3>
+                <span class="char-role">Le Possessif</span>
+                <p class="char-desc">Magnifique, solide, rassurant... et étouffant. Il porte son costume comme une armure et considère Alice comme son plus beau trophée.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA NOTE DE FOND - L&#39;Essence_files/interior20of20the20grand20palais20in20paris20at20night20during20a20gala2c20glass20roof.jpg" class="char-img" alt="Le Grand Palais">
+            <div class="char-info">
+                <h3 class="char-name">Le Grand Palais</h3>
+                <span class="char-role">La Cage Dorée</span>
+                <p class="char-desc">Une verrière immense, des lumières, du bruit feutré. Le théâtre des apparences où Alice étouffe.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LA NOTE DE FOND - L&#39;Essence_files/artistic20product20photography20of20a20perfume20bottle20named2027brume272c20sea20spray.jpg" class="char-img" alt="Brume">
+            <div class="char-info">
+                <h3 class="char-name">Brume</h3>
+                <span class="char-role">L'Essence</span>
+                <p class="char-desc">Le parfum de la liberté. Sel, falaise, vent. L'odeur de ce qu'Alice veut devenir.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Le Sillage</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA NOTE DE FOND - L&#39;Essence_files/abstract20visual20representation20of20scents20mixing20in20the20air2c20gold20and20purple.jpg" class="scene-img" alt="La Symphonie Olfactive">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Symphonie Olfactive</h3>
+                <p class="scene-desc">Au milieu du gala, Alice est assaillie par les parfums des autres. Le cuir, la tubéreuse, le chypre. Un orchestre invisible et saturé.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA NOTE DE FOND - L&#39;Essence_files/interior20of20a20perfumer27s20organ2c20shelves20filled20with20amber20glass20bottles2c2.jpg" class="scene-img" alt="Le Laboratoire">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Laboratoire</h3>
+                <p class="scene-desc">Le refuge d'Alice. Des rangées de flacons, une balance de précision, le silence. Là où la chimie devient magie.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA NOTE DE FOND - L&#39;Essence_files/close20up20of20female20hands20placing20a20perfume20bottle20into20a20metal20box2c20labe.jpg" class="scene-img" alt="L&#39;Archivage du Passé">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Archivage du Passé</h3>
+                <p class="scene-desc">Alice enferme le flacon 'Signature 12' dans une boîte en métal. Elle ne jette pas le passé, elle le classe.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA NOTE DE FOND - L&#39;Essence_files/macro20shot20of20perfume20mist20being20sprayed20on20a20woman27s20wrist2c20droplets20in.jpg" class="scene-img" alt="L&#39;Asperion">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Asperion</h3>
+                <p class="scene-desc">Le rituel. Alice vaporise 'Brume' sur son poignet. Le choc froid de l'alcool, puis la chaleur de la peau qui révèle l'odeur.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA NOTE DE FOND - L&#39;Essence_files/portrait20of20a20woman20breathing20in20the20scent20on20her20wrist2c20expression20of20p.jpg" class="scene-img" alt="La Note de Fond">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Note de Fond</h3>
+                <p class="scene-desc">La fin. Alice respire son poignet. Elle n'est plus la femme de David. Elle est elle-même. L'odeur de la liberté.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Création Olfactive Numérique</p>
+            <p>Inspiré du roman de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///C:/Work/template/la_maison_d_en_face_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LA MAISON D'EN FACE - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #1a1a1d;
+        --text: #e0e0e0;
+        --primary: #4e6e5d;
+        --accent: #cfa06f;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        line-height: 1.8;
+        font-weight: 300;
+    }
+
+    /* Header Atmosphérique */
+    header {
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: radial-gradient(circle at center, rgba(0,0,0,0.2), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Raindrops%2520on%2520a%2520window%2520pane%2520looking%2520out%2520at%2520a%2520suburban%2520house%252C%2520moody%2520blue%2520hour%252C%2520cinematic%2C%20cinematic%2C%20analog%20photography%20style%2C%20soft%20lighting%2C%20emotional%2C%20highly%20detailed%2C%208k%2C%20kodak%20portra%20400?width=1024&height=576&nologo=true&model=flux&seed=4988');
+        background-size: cover;
+        background-position: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-family: 'Cormorant Garmond', serif;
+        font-size: 6rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 10px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 30px rgba(0,0,0,0.8);
+        font-style: italic;
+    }
+
+    .tagline {
+        font-family: 'Cormorant Garmond', serif;
+        font-size: 2rem;
+        color: var(--accent);
+        background: rgba(26, 26, 29, 0.8);
+        padding: 15px 40px;
+        border-top: 1px solid var(--accent);
+        border-bottom: 1px solid var(--accent);
+    }
+
+    /* Layout */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: linear-gradient(145deg, #1f1f22, #161619);
+        padding: 60px;
+        border-radius: 2px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        margin-bottom: 120px;
+        border-left: 4px solid var(--primary);
+        position: relative;
+    }
+    .synopsis-box::before {
+        content: "“";
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 10rem;
+        position: absolute;
+        top: -50px;
+        left: 20px;
+        color: rgba(255,255,255,0.05);
+    }
+    
+    .synopsis-box h2 { 
+        color: var(--text); 
+        font-family: 'Cormorant Garamond', serif; 
+        font-size: 3rem; 
+        margin-top: 0;
+        border-bottom: 1px solid #333;
+        padding-bottom: 20px;
+    }
+    .synopsis-text { font-size: 1.3rem; color: #b0b0b0; text-align: justify; }
+
+    /* Titres de sections */
+    .section-title {
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4rem;
+        margin-bottom: 80px;
+        color: var(--primary);
+        font-style: italic;
+    }
+
+    /* Personnages (Cartes Élégantes) */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: transparent;
+        transition: transform 0.5s ease;
+    }
+    .char-card:hover { transform: translateY(-10px); }
+    
+    .char-img-container {
+        height: 320px;
+        overflow: hidden;
+        border-radius: 200px 200px 0 0; /* Forme d'arche/fenêtre */
+        border: 1px solid #333;
+        position: relative;
+    }
+    .char-img { width: 100%; height: 100%; object-fit: cover; filter: sepia(20%) contrast(0.9); transition: 0.5s; }
+    .char-card:hover .char-img { filter: sepia(0%) contrast(1); transform: scale(1.1); }
+    
+    .char-info { padding: 20px 0; text-align: center; }
+    .char-name { color: var(--accent); margin: 10px 0; font-size: 1.8rem; font-family: 'Cormorant Garamond', serif; }
+    .char-role { color: #666; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
+    .char-desc { font-size: 1rem; color: #999; font-style: italic; }
+
+    /* Timeline (Style 'Polaroids') */
+    .timeline { display: flex; flex-direction: column; gap: 150px; }
+    
+    .scene {
+        display: flex;
+        align-items: center;
+        gap: 60px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        flex: 1;
+        background: white;
+        padding: 15px 15px 60px 15px; /* Look Polaroid */
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        transform: rotate(-2deg);
+        transition: 0.3s;
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(2deg); }
+    .scene-img-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 10; }
+    
+    .scene-img { width: 100%; display: block; filter: grayscale(30%); }
+    
+    .scene-content { flex: 1; }
+    .scene-num { font-family: 'Cormorant Garamond'; color: var(--primary); font-size: 5rem; line-height: 0.5; opacity: 0.5; display: block; margin-bottom: 20px; }
+    .scene-title { font-size: 2.5rem; margin: 0 0 20px 0; font-family: 'Cormorant Garamond', serif; color: white; }
+    .scene-desc { font-size: 1.2rem; color: #aaa; border-left: 1px solid var(--accent); padding-left: 20px; }
+
+    /* Footer */
+    footer { 
+        text-align: center; 
+        padding: 80px; 
+        background: #111; 
+        color: #555; 
+        font-family: 'Cormorant Garamond';
+        border-top: 1px solid #222;
+    }
+    
+    @media (max-width: 768px) {
+        h1 { font-size: 3.5rem; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-img-wrapper { transform: rotate(0deg) !important; width: 90%; margin: 0 auto; }
+        .synopsis-box { padding: 30px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LA MAISON D'EN FACE</h1>
+            <div class="tagline">L'herbe est-elle vraiment plus verte chez les voisins ?</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>Le silence n'est jamais complet quand on écoute la vie des autres.</strong><br><br>
+        Sarah vit au rythme des pleurs de son bébé et du bourdonnement de son frigo. Son seul échappatoire ? La fenêtre de sa cuisine. De là, elle observe obsessionnellement la vie parfaite de ses voisins d'en face, Mélanie et Thomas.<br><br>
+        Une pelouse impeccable, une Volvo grise qui part à heure fixe, des rosiers blancs immaculés. Une horlogerie du bonheur qui contraste violemment avec le brouillard cotonneux de l'existence de Sarah.<br><br>
+        Mais quand l'illusion de la perfection se fissure dans le jardin d'en face, Sarah réalise que les murs ne cachent pas seulement des secrets, mais aussi des miroirs. Une histoire sur les apparences, l'isolement et la redécouverte de la lumière.
+    </div>
+            </div>
+
+            <h2 class="section-title">Dramatis Personae</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-container">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/portrait20of20a20tired20young20mother20with20messy20hair2c20holding20a20warm20coffee20.jpg" class="char-img" alt="Sarah">
+            </div>
+            <div class="char-info">
+                <span class="char-role">L'Observatrice</span>
+                <h3 class="char-name">Sarah</h3>
+                <p class="char-desc">Jeune mère épuisée, elle vit par procuration à travers sa fenêtre, cherchant un sens dans la géométrie de la vie des autres.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/close20up20of20a20cute20620month20old20baby20boy20sleeping20peacefully20in20a20crib2c.jpg" class="char-img" alt="Léo">
+            </div>
+            <div class="char-info">
+                <span class="char-role">L'Ancre</span>
+                <h3 class="char-name">Léo</h3>
+                <p class="char-desc">Son bébé de six mois. La source de son épuisement mais aussi le lien qui la retient fermement au présent.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/portrait20of20an20elegant20woman20gardening20in20a20perfect20suburban20garden2c20wearing.jpg" class="char-img" alt="Mélanie">
+            </div>
+            <div class="char-info">
+                <span class="char-role">La Voisine Parfaite</span>
+                <h3 class="char-name">Mélanie</h3>
+                <p class="char-desc">L'image de la perfection. Elle arrose ses géraniums et vit une vie qui semble sans accroc.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/man20washing20a20grey20volvo20car20in20a20driveway2c20suburban20setting2c20clean20and.jpg" class="char-img" alt="Thomas">
+            </div>
+            <div class="char-info">
+                <span class="char-role">Le Mari Mécanique</span>
+                <h3 class="char-name">Thomas</h3>
+                <p class="char-desc">Il tond la pelouse le samedi à la même heure. L'architecte de cette vie de façade.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Fragments de Vie</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/view20from20inside20a20dark20messy20kitchen20looking20out20a20window20at20a20beautiful.jpg" class="scene-img" alt="La Fenêtre sur Cour">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">01</span>
+                <h3 class="scene-title">La Fenêtre sur Cour</h3>
+                <p class="scene-desc">Le point de vue de Sarah. Une cuisine en désordre, une tasse tiède, et au loin, la maison d'en face, brillante et inaccessible.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/a20grey20volvo20station20wagon20leaving20a20perfect20driveway20of20a20white20suburban20.jpg" class="scene-img" alt="L&#39;Horlogerie du Quotidien">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">02</span>
+                <h3 class="scene-title">L'Horlogerie du Quotidien</h3>
+                <p class="scene-desc">La routine immuable des voisins. La Volvo grise qui quitte l'allée à 8h30 précises.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/abstract20representation20of20exhaustion20and20isolation2c20blurry20domestic20objects2c20.jpg" class="scene-img" alt="Le Brouillard Cotonneux">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">03</span>
+                <h3 class="scene-title">Le Brouillard Cotonneux</h3>
+                <p class="scene-desc">L'état mental de Sarah. Une succession de tétées et de bruits domestiques qui l'isolent du monde.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/a20small20child20rolling20on20green20grass20laughing2c20looking20up20at20the20sky2c20.jpg" class="scene-img" alt="L&#39;Incident du Jardin">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">04</span>
+                <h3 class="scene-title">L'Incident du Jardin</h3>
+                <p class="scene-desc">Un enfant tombe dans l'herbe. Le silence suspendu avant l'éclat de rire qui brise la tension.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA MAISON D&#39;EN FACE - Le Roman_files/a20mother20hugging20her20baby20tenderly20against20the20light20of20a20window2c20dust20m.jpg" class="scene-img" alt="La Renaissance">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">05</span>
+                <h3 class="scene-title">La Renaissance</h3>
+                <p class="scene-desc">Sarah serre son fils contre elle. La douleur s'efface, la vie continue. Un sourire sincère.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une expérience visuelle générée par Python &amp; IA</p>
+            <p style="font-style:italic;">Basé sur le roman "LA MAISON D'EN FACE"</p>
+        </footer>
+    
+    
+    </body></html>

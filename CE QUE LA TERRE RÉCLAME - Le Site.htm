@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<!-- saved from url=(0057)file:///C:/Work/template/ce_que_la_terre_reclame_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CE QUE LA TERRE RÉCLAME - Le Site</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;500&display=swap');
+    
+    :root {
+        --bg: #1c211e;
+        --text: #d3dcd6;
+        --primary: #4a7c59;
+        --accent: #8c3f3f;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        line-height: 1.8;
+    }
+
+    /* Texture de fond (Bruit/Grain) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(28,33,30,0.6), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/A%2520dark%2520forest%2520road%2520with%2520a%2520car%2520driving%2520away%252C%2520misty%252C%2520mysterious%252C%2520cinematic%2520title%2520background%2C%20cinematic%2C%20moody%2C%20dark%20green%20tones%2C%20organic%20textures%2C%20hyperrealistic%2C%208k%2C%20psychological%20thriller%20atmosphere?width=1024&height=576&nologo=true&model=flux&seed=8925');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+        z-index: 1;
+    }
+
+    h1 {
+        font-family: 'Lora', serif;
+        font-size: 4.5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 10px;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+        border-top: 1px solid rgba(255,255,255,0.3);
+        border-bottom: 1px solid rgba(255,255,255,0.3);
+        padding: 20px 0;
+    }
+
+    .tagline {
+        font-family: 'Lora', serif;
+        font-style: italic;
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-top: 20px;
+        text-shadow: 0 2px 10px rgba(0,0,0,1);
+    }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; position: relative; z-index: 1; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: rgba(255,255,255,0.03);
+        border-left: 3px solid var(--accent);
+        padding: 50px;
+        margin-bottom: 120px;
+        backdrop-filter: blur(5px);
+    }
+    .synopsis-box h2 { 
+        font-family: 'Lora', serif; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.2rem; color: #bdc3c7; }
+
+    /* Section Titles */
+    .section-title {
+        text-align: center;
+        font-family: 'Lora', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--primary);
+        position: relative;
+    }
+    .section-title::after {
+        content: "~~~";
+        display: block;
+        font-size: 1.5rem;
+        color: #555;
+        margin-top: 10px;
+    }
+
+    /* Personnages */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: #141816;
+        transition: transform 0.4s ease;
+        border: 1px solid #2a332e;
+    }
+    .char-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+    
+    .char-img { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover; 
+        filter: sepia(30%) contrast(0.9) brightness(0.8);
+        transition: 0.4s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%) contrast(1) brightness(1); }
+    
+    .char-info { padding: 25px; }
+    .char-name { color: white; font-family: 'Lora', serif; font-size: 1.6rem; margin: 0 0 5px 0; }
+    .char-role { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 15px; }
+    .char-desc { font-size: 0.95rem; color: #888; }
+
+    /* Timeline / Scènes */
+    .timeline { position: relative; padding: 20px 0; }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; left: 50%;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+        opacity: 0.5;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 120px;
+        gap: 60px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+    }
+    .scene-img { 
+        width: 100%; 
+        border-radius: 2px; 
+        box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        filter: grayscale(20%);
+    }
+    
+    .scene-content { width: 45%; }
+    .scene-title { font-family: 'Lora', serif; font-size: 2rem; color: var(--text); margin-top: 0; }
+    .scene-desc { color: #999; font-size: 1.1rem; border-left: 2px solid var(--primary); padding-left: 20px; }
+
+    /* Footer */
+    footer { 
+        text-align: center; 
+        padding: 80px 20px; 
+        background: #111311; 
+        color: #444; 
+        border-top: 1px solid #222;
+        font-family: 'Lora', serif;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; gap: 30px; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-img-wrapper, .scene-content { width: 100%; padding-left: 40px; box-sizing: border-box; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <div>
+                <h1>CE QUE LA TERRE RÉCLAME</h1>
+                <div class="tagline">"On ne quitte jamais vraiment Arberie. On l'emporte avec soi."</div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>Un refuge. Une prison. Une promesse.</strong><br><br>
+        Fuyant le souvenir insupportable de la mort de leur fils Léo, David et Anne s'installent à <strong>Arberie</strong>, une station de recherche isolée au cœur d'une vallée où la végétation semble trop vivante, trop verte.<br><br>
+        Ils espèrent le silence et l'oubli. Mais le silence qui s'installe entre eux est lourd de non-dits, et la nature environnante ne se contente pas d'observer. Elle s'infiltre.<br><br>
+        Alors que David tente de maintenir le cap et qu'Anne s'efface dans son chagrin, leur fille de huit ans, <strong>Chloé</strong>, commence à changer. Ce qu'ils ont réveillé à Arberie ne les laissera pas repartir intacts. Une histoire envoûtante sur le deuil, la culpabilité et les racines qui nous lient à la terre.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Protagonistes</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/portrait20of20a20tired20man20in20his2040s20driving20an20old20car2c20hands20gripping20.jpg" class="char-img" alt="David">
+            <div class="char-info">
+                <h3 class="char-name">David</h3>
+                <span class="char-role">Le Père / Le Conducteur</span>
+                <p class="char-desc">Rongé par la culpabilité, il cherche à fuir en avant. Il tient le volant, mais a perdu le contrôle de sa vie.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/portrait20of20a20pale20woman20looking20out20a20car20window20with20a20vacant20expression.jpg" class="char-img" alt="Anne">
+            <div class="char-info">
+                <h3 class="char-name">Anne</h3>
+                <span class="char-role">La Mère / L'Ombre</span>
+                <p class="char-desc">Une esquisse pâle contre la vitre. Le deuil est devenu sa seconde peau, l'isolant du monde et de sa famille.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/portrait20of20an20820year20old20blonde20girl20drawing20in20a20notebook2c20intense20foc.jpg" class="char-img" alt="Chloé">
+            <div class="char-info">
+                <h3 class="char-name">Chloé</h3>
+                <span class="char-role">L'Enfant / Le Vaisseau</span>
+                <p class="char-desc">8 ans. Silencieuse et observatrice. Elle ne se plaint pas, mais quelque chose en elle a commencé à germer.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Scènes Clés</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/an20old20grey20volvo20driving20on20a20winding20mountain20road20surrounded20by20dark20de.jpg" class="scene-img" alt="La Route vers l&#39;Oubli">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Route vers l'Oubli</h3>
+                <p class="scene-desc">Une vieille Volvo grise peinant sur une route de montagne, entourée d'une végétation d'un vert surnaturel qui semble vouloir avaler le bitume.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/interior20car20shot2c20a20man20driving20and20a20woman20looking20away2c20distance20betw.jpg" class="scene-img" alt="Le Silence dans l&#39;Habitacle">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Silence dans l'Habitacle</h3>
+                <p class="scene-desc">L'intérieur de la voiture. Trois personnes ensemble mais seules. Le poids du deuil remplit l'espace comme un brouillard.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/a20modern20concrete20research20station20building20deep20in20a20dark20forest2c20vines20a.jpg" class="scene-img" alt="Arberie">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Arberie</h3>
+                <p class="scene-desc">La station de recherche. Un bâtiment moderne de béton et de verre, isolé, qui semble être assiégé par la forêt environnante.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/night20shot20of20a20car20driving20away20on20a20dark20road2c20headlights20cutting20thro.jpg" class="scene-img" alt="La Fuite Nocturne">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Fuite Nocturne</h3>
+                <p class="scene-desc">La voiture repart dans la nuit. Les phares découpent un chemin incertain. Ils fuient, mais le danger est déjà à l'intérieur.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA TERRE RÉCLAME - Le Site_files/close20up20of20a20car20rearview20mirror20reflecting20a20sleeping20child20in20the20back.jpg" class="scene-img" alt="Le Regard dans le Rétroviseur">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Regard dans le Rétroviseur</h3>
+                <p class="scene-desc">David regarde Chloé dormir à l'arrière. Elle respire doucement, mais il réalise avec terreur qu'elle n'est plus tout à fait la même.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré automatiquement pour le roman "CE QUE LA TERRE RÉCLAME"</p>
+            <p>Images par IA (Pollinations) • Design Atmosphérique</p>
+        </footer>
+    
+    
+    </body></html>

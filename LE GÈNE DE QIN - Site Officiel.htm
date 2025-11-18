@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Work/template/le_gene_de_qin_webpage.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LE GÈNE DE QIN - Site Officiel</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+
+        :root {
+            --primary: #00f2ff;
+            --bg-dark: #050a10;
+            --bg-card: #0f1520;
+            --text: #e0e0e0;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg-dark);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* HERO SECTION */
+        header {
+            height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(5,10,16,0.3), var(--bg-dark)), 
+                        url('https://image.pollinations.ai/prompt/Abstract%20dna%20strand%20made%20of%20blue%20ice%20crystals%2C%20dark%20cinematic%20background%2C%208k?width=1024&height=1024&seed=42&nologo=true&model=flux');
+            background-size: cover;
+            background-position: center;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            text-transform: uppercase;
+            color: white;
+            text-shadow: 0 0 20px var(--primary);
+            margin: 0;
+            letter-spacing: 10px;
+            animation: glow 3s infinite alternate;
+        }
+
+        .tagline {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: var(--primary);
+            background: rgba(0,0,0,0.7);
+            padding: 10px 30px;
+            border: 1px solid var(--primary);
+        }
+
+        /* SYNOPSIS */
+        .synopsis-section {
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 40px;
+            background: rgba(15, 21, 32, 0.8);
+            border-left: 5px solid var(--primary);
+            line-height: 1.8;
+            font-size: 1.2rem;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* CHARACTERS */
+        .characters-section {
+            padding: 50px 5%;
+        }
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        .character-card {
+            background: var(--bg-card);
+            border: 1px solid #333;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+        .character-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+            border-color: var(--primary);
+        }
+        .char-img-container {
+            height: 350px;
+            overflow: hidden;
+        }
+        .char-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .character-card:hover img {
+            transform: scale(1.1);
+        }
+        .char-info {
+            padding: 20px;
+        }
+        .char-info h3 {
+            margin: 0;
+            color: white;
+            font-family: 'Orbitron';
+        }
+        .role {
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* SCENES / TIMELINE */
+        .scenes-section {
+            padding: 100px 5%;
+        }
+        .scene-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 100px;
+            gap: 50px;
+        }
+        .row-reverse {
+            flex-direction: row-reverse;
+        }
+        .scene-image {
+            flex: 1;
+            height: 400px;
+            overflow: hidden;
+            border-radius: 10px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 30px rgba(0,0,0,0.7);
+        }
+        .scene-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .scene-text {
+            flex: 1;
+        }
+        .scene-text h2 {
+            font-family: 'Orbitron';
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+        .scene-text p {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 50px;
+            background: black;
+            color: #555;
+            border-top: 1px solid #222;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary); }
+            to { text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .scene-container {
+                flex-direction: column;
+            }
+            .row-reverse {
+                flex-direction: column;
+            }
+            .scene-image {
+                width: 100%;
+                height: 300px;
+            }
+            h1 { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LE GÈNE DE QIN</h1>
+        <div class="tagline">L'immortalité n'est pas un don. C'est une invasion.</div>
+    </header>
+
+    <div class="synopsis-section">
+        
+        <strong>221 av. J.-C., Tibet.</strong> Une expédition impériale découvre un secret terrifiant dans une grotte pulsante de vie. Un secret qui ne devait jamais sortir.<br><br>
+        <strong>2025, Montagnes du Kunlun.</strong> Le Dr Aris Thorne extrait de la glace un corps parfaitement conservé depuis deux millénaires. Ce n'est pas une momie. Ses cellules sont intactes. Il est en pause biologique.<br><br>
+        Pour le jeune généticien <strong>Léo Valmont</strong>, c'est la clé pour vaincre la mort. Mais en acceptant l'offre du milliardaire Julian Sterling, il ne sait pas qu'il vient d'ouvrir la boîte de Pandore. Des laboratoires aseptisés de Genève aux abysses de Yonaguni, la course pour le contrôle du génome éternel a commencé. <br><br>
+        <em>Mais attention : ce qui dort dans la glace ne rêve pas de nous sauver. Il rêve de nous remplacer.</em>
+    
+    </div>
+
+    <section class="characters-section">
+        <div style="text-align: center;">
+            <h2 class="section-title">Protagonistes</h2>
+        </div>
+        <div class="char-grid">
+            
+        <div class="character-card">
+            <div class="char-img-container">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/hyperrealistic-portrait-of-a-handsome-young-male-geneticist-28-years-old-tired-eyes-messy-hair-l.jpg" alt="Dr. Léo Valmont" loading="lazy">
+            </div>
+            <div class="char-info">
+                <h3>Dr. Léo Valmont</h3>
+                <span class="role">Le Généticien</span>
+                <p>Jeune, brillant, hanté par la mort de sa sœur. Il cherche à corriger le code de la vie.</p>
+            </div>
+        </div>
+        
+        <div class="character-card">
+            <div class="char-img-container">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/hyperrealistic-portrait-of-a-tough-female-mercenary-35-years-old-tactical-gear-scar-on-eyebrow-i.jpg" alt="Samira &#39;Sam&#39; Belkacem" loading="lazy">
+            </div>
+            <div class="char-info">
+                <h3>Samira 'Sam' Belkacem</h3>
+                <span class="role">La Gardienne</span>
+                <p>Chef de la sécurité. Froide, létale, elle protège Léo tout en le surveillant pour Sterling.</p>
+            </div>
+        </div>
+        
+        <div class="character-card">
+            <div class="char-img-container">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/hyperrealistic-portrait-of-a-wealthy-older-man-charismatic-cold-blue-eyes-wearing-a-futuristic-ex.jpg" alt="Julian Sterling" loading="lazy">
+            </div>
+            <div class="char-info">
+                <h3>Julian Sterling</h3>
+                <span class="role">Le Marionnettiste</span>
+                <p>Milliardaire transhumaniste. Il veut devenir Dieu, quel qu'en soit le prix.</p>
+            </div>
+        </div>
+        
+        <div class="character-card">
+            <div class="char-img-container">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/hyperrealistic-portrait-of-a-blonde-russian-female-agent-cold-beauty-wearing-winter-arctic-gear-h.jpg" alt="Anja Petrova" loading="lazy">
+            </div>
+            <div class="char-info">
+                <h3>Anja Petrova</h3>
+                <span class="role">L'Agent du SVR</span>
+                <p>Experte en bio-armement. Elle connaît la sombre histoire soviétique du virus.</p>
+            </div>
+        </div>
+        
+        </div>
+    </section>
+
+    <section class="scenes-section">
+        <div style="text-align: center;">
+            <h2 class="section-title">Les Temps Forts</h2>
+        </div>
+        
+        <div class="scene-container row">
+            <div class="scene-text">
+                <h2>1. L'Anomalie sous la Glace</h2>
+                <p>Découverte du corps de Bao, le scribe de l'Antiquité, figé dans un bloc de glace parfait avec une fiole de bronze.</p>
+            </div>
+            <div class="scene-image">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/cinematic-shot-of-a-frozen-block-of-ice-containing-an-ancient-chinese-man-holding-a-bronze-vial-sci.jpg" alt="L&#39;Anomalie sous la Glace" loading="lazy">
+            </div>
+        </div>
+        
+        <div class="scene-container row-reverse">
+            <div class="scene-text">
+                <h2>2. Le Monastère des Murmures</h2>
+                <p>Au Bhoutan, l'équipe découvre des moines millénaires maintenus en vie par une fréquence sonore.</p>
+            </div>
+            <div class="scene-image">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/interior-of-an-ancient-dark-stone-monastery-in-himalayas-bioluminescent-moss-on-walls-ancient-monk.jpg" alt="Le Monastère des Murmures" loading="lazy">
+            </div>
+        </div>
+        
+        <div class="scene-container row">
+            <div class="scene-text">
+                <h2>3. L'Enfer Blanc</h2>
+                <p>La base soviétique abandonnée Vostok-7 en Antarctique. Un tombeau de glace cachant les premières expériences.</p>
+            </div>
+            <div class="scene-image">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/wide-shot-of-an-abandoned-soviet-base-buried-in-snow-in-antarctica-blizzard-rusty-metal-structures.jpg" alt="L&#39;Enfer Blanc" loading="lazy">
+            </div>
+        </div>
+        
+        <div class="scene-container row-reverse">
+            <div class="scene-text">
+                <h2>4. La Cité Engloutie</h2>
+                <p>Sous l'eau, à Yonaguni, la vérité se révèle : une structure organique titanesque abritant la Créature-Mère.</p>
+            </div>
+            <div class="scene-image">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/underwater-shot-of-a-massive-alien-organic-city-structure-deep-in-the-ocean-glowing-blue-veins-sub.jpg" alt="La Cité Engloutie" loading="lazy">
+            </div>
+        </div>
+        
+        <div class="scene-container row">
+            <div class="scene-text">
+                <h2>5. Le Sacrifice</h2>
+                <p>Face à la mutation monstrueuse de Sterling, Léo doit faire le choix ultime pour sauver l'humanité.</p>
+            </div>
+            <div class="scene-image">
+                <img src="./LE GÈNE DE QIN - Site Officiel_files/sci-fi-laboratory-exploding-with-energy-a-young-man-running-towards-a-glowing-core-holding-a-syring.jpg" alt="Le Sacrifice" loading="lazy">
+            </div>
+        </div>
+        
+    </section>
+
+    <footer>
+        <p>Généré automatiquement par Script Python | Images par Pollinations AI</p>
+        <p>© 2025 Basé sur le manuscrit</p>
+    </footer>
+
+
+
+</body></html>

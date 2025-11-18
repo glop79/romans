@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)file:///C:/Work/template/ghost_protocol_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>GHOST PROTOCOL - Interface</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Montserrat:wght@300;400;700&display=swap');
+    
+    :root {
+        --bg: #0a0a0a;
+        --text: #c0c0c0;
+        --primary: #ffbf00;
+        --accent: #00ff41;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    /* Effet CRT / Scanline */
+    .crt::before {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        z-index: 2;
+        background-size: 100% 2px, 3px 100%;
+        pointer-events: none;
+    }
+
+    /* Typography */
+    h1, h2, h3, .mono { font-family: 'Share Tech Mono', monospace; }
+    
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.6), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Strasbourg%2520city%2520streets%2520at%2520night%2520with%2520digital%2520data%2520overlay%2520rain%2520cyber%2520atmosphere%2C%20cinematic%2C%20hyperrealistic%2C%20atmospheric%2C%20sharp%20focus%2C%208k?width=1024&height=576&nologo=true&model=flux&seed=691');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    .glitch-title {
+        font-size: 5rem;
+        color: white;
+        text-transform: uppercase;
+        position: relative;
+        animation: glitch-anim 2s infinite;
+    }
+    
+    .subtitle {
+        color: var(--primary);
+        font-size: 1.5rem;
+        letter-spacing: 5px;
+        margin-top: 10px;
+    }
+
+    /* Sections */
+    .container { max-width: 1100px; margin: 0 auto; padding: 80px 20px; }
+    
+    .section-header {
+        border-left: 5px solid var(--accent);
+        padding-left: 20px;
+        margin-bottom: 50px;
+    }
+    .section-header h2 { font-size: 2.5rem; color: white; margin: 0; }
+
+    /* Synopsis */
+    .synopsis-text {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        background: rgba(255,255,255,0.05);
+        padding: 30px;
+        border: 1px solid #333;
+    }
+
+    /* Personnages */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 40px;
+    }
+    
+    .char-card {
+        background: #0f0f0f;
+        border: 1px solid #333;
+        transition: 0.3s;
+    }
+    .char-card:hover { border-color: var(--primary); box-shadow: 0 0 20px rgba(255, 191, 0, 0.1); }
+    
+    .char-img-wrapper { position: relative; overflow: hidden; height: 380px; }
+    .char-img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(80%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: grayscale(0%); transform: scale(1.05); }
+    
+    .char-info { padding: 20px; }
+    .char-role { color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Timeline */
+    .scene {
+        display: flex;
+        margin-bottom: 100px;
+        align-items: center;
+        gap: 50px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img {
+        flex: 1;
+        border-radius: 4px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border: 1px solid #333;
+    }
+    
+    .scene-content { flex: 1; }
+    .time-stamp { color: var(--primary); font-family: 'Share Tech Mono'; font-size: 1.2rem; display: block; margin-bottom: 10px; }
+
+    /* Footer */
+    footer { 
+        text-align: center; 
+        padding: 50px; 
+        border-top: 1px solid #333; 
+        color: #555;
+        font-family: 'Share Tech Mono';
+    }
+
+    /* Animations */
+    @keyframes glitch-anim {
+        0% { transform: translate(0) }
+        20% { transform: translate(-2px, 2px) }
+        40% { transform: translate(-2px, -2px) }
+        60% { transform: translate(2px, 2px) }
+        80% { transform: translate(2px, -2px) }
+        100% { transform: translate(0) }
+    }
+    </style>
+    </head>
+    <body class="crt">
+        <header>
+            <h1 class="glitch-title">GHOST PROTOCOL</h1>
+            <div class="subtitle mono">Le Piège Temporel</div>
+            <div style="margin-top: 30px; border: 1px solid var(--accent); padding: 10px 20px; color: var(--accent);" class="mono">
+                STATUS: BOUCLE ACTIVE
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="section-header">
+                <h2>// DONNÉES RÉCUPÉRÉES</h2>
+            </div>
+            <div class="synopsis-text">
+                
+        <strong>Strasbourg, Octobre. 16h23.</strong><br><br>
+        Pour <strong>Adrian Voss</strong>, le monde n'est pas fait de chair et de pierre, mais de données brutes. La Place Kléber est une grille de coordonnées, les passants des vulnérabilités ambulantes, et l'odeur du pain d'épices une simple signature chimique.<br><br>
+        Mais le code de la réalité commence à se fissurer. Une boucle temporelle s'est enclenchée, un "Ghost Protocol" qui piège la ville dans une répétition perpétuelle. Seul Adrian voit les glitches. Seule <strong>Anna</strong>, à travers les archives d'un futur incertain, peut comprendre le sacrifice nécessaire pour briser le cycle.<br><br>
+        Entre un présent numérisé et un avenir qui s'efface, la traque commence. La cible ? Le temps lui-même.
+    
+            </div>
+
+            <div class="section-header" style="margin-top: 100px;">
+                <h2>// ENTITÉS DÉTECTÉES</h2>
+            </div>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./GHOST PROTOCOL - Interface_files/cinematic20portrait20of20a20young20man20with20intense20eyes2c20wearing20a20hoodie2c20s.jpg" class="char-img" alt="Adrian Voss">
+            </div>
+            <div class="char-info">
+                <h3 class="mono" style="color:white; margin-bottom:5px;">Adrian Voss</h3>
+                <span class="char-role">Le Hackeur de Réalité</span>
+                <p style="font-size: 0.95rem; color: #aaa; margin-top: 15px;">Il perçoit le monde comme un flux d'octets. Froid, analytique, il est le seul à voir la prison temporelle se refermer.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./GHOST PROTOCOL - Interface_files/portrait20of20a20determined20woman20in20a20trench20coat2c20walking20on20a20bridge20in.jpg" class="char-img" alt="Anna">
+            </div>
+            <div class="char-info">
+                <h3 class="mono" style="color:white; margin-bottom:5px;">Anna</h3>
+                <span class="char-role">La Gardienne de la Mémoire</span>
+                <p style="font-size: 0.95rem; color: #aaa; margin-top: 15px;">Celle qui reste. Elle enquête à travers les strates du temps pour retrouver la trace du fantôme qui l'a sauvée.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./GHOST PROTOCOL - Interface_files/silhouette20of20a20man20dissolving20into20digital20pixels20and20mist2c20standing20on20a.jpg" class="char-img" alt="Le Fantôme">
+            </div>
+            <div class="char-info">
+                <h3 class="mono" style="color:white; margin-bottom:5px;">Le Fantôme</h3>
+                <span class="char-role">L'Anomalie</span>
+                <p style="font-size: 0.95rem; color: #aaa; margin-top: 15px;">Une silhouette faite d'ombre et de lumière qui hante le pont au petit matin. Une distorsion dans la matrice.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./GHOST PROTOCOL - Interface_files/portrait20of20a20young20clerk20in20a20dusty20archive20room20with20endless20shelves20of.jpg" class="char-img" alt="L&#39;Archiviste">
+            </div>
+            <div class="char-info">
+                <h3 class="mono" style="color:white; margin-bottom:5px;">L'Archiviste</h3>
+                <span class="char-role">Le Gardien du Seuil</span>
+                <p style="font-size: 0.95rem; color: #aaa; margin-top: 15px;">Employé des Archives Nationales, il détient la boîte scellée contenant la vérité du Protocole.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <div class="section-header" style="margin-top: 100px;">
+                <h2>// FLUX TEMPOREL</h2>
+            </div>
+            <div class="timeline">
+                
+        <div class="scene">
+            <img src="./GHOST PROTOCOL - Interface_files/strasbourg20kleber20square20christmas20market20construction2c20seen20through20a20digital2.jpg" class="scene-img" alt="Place Kléber : Vision Code">
+            <div class="scene-content">
+                <span class="time-stamp">// SEQUENCE_01</span>
+                <h3 class="mono" style="font-size: 1.8rem; color: white;">Place Kléber : Vision Code</h3>
+                <p>Adrian observe le marché de Noël en construction. Pour lui, la lumière dorée n'est qu'une saturation de couleur et les touristes des cibles potentielles.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <img src="./GHOST PROTOCOL - Interface_files/beautiful20old20architecture20of20strasbourg20cathedral20glitching20and20pixelating20into2.jpg" class="scene-img" alt="La Fissure Temporelle">
+            <div class="scene-content">
+                <span class="time-stamp">// SEQUENCE_02</span>
+                <h3 class="mono" style="font-size: 1.8rem; color: white;">La Fissure Temporelle</h3>
+                <p>Le moment où la réalité décroche. Les bâtiments historiques de Strasbourg commencent à pixeliser et à se déformer.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <img src="./GHOST PROTOCOL - Interface_files/close20up20on20hands20opening20an20old20black20leather20book20with20gold20title2027gho.jpg" class="scene-img" alt="Le Dossier 46">
+            <div class="scene-content">
+                <span class="time-stamp">// SEQUENCE_03</span>
+                <h3 class="mono" style="font-size: 1.8rem; color: white;">Le Dossier 46</h3>
+                <p>Dans les Archives Nationales, Anna ouvre la boîte scellée. Pas de clé USB, juste un livre en cuir noir : le protocole.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <img src="./GHOST PROTOCOL - Interface_files/wide20shot20of20a20bridge20in20strasbourg20at20dawn2c20heavy20fog2c20a20modern20tramw.jpg" class="scene-img" alt="L&#39;Aube sur le Pont">
+            <div class="scene-content">
+                <span class="time-stamp">// SEQUENCE_04</span>
+                <h3 class="mono" style="font-size: 1.8rem; color: white;">L'Aube sur le Pont</h3>
+                <p>06:00. Le tramway passe. La brume se lève. Anna voit la silhouette lui faire un signe d'adieu avant de se dissoudre.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <img src="./GHOST PROTOCOL - Interface_files/abstract20visualization20of20a20digital20mind2c20tunnels20of20binary20code20and20light2.jpg" class="scene-img" alt="La Matrice de Données">
+            <div class="scene-content">
+                <span class="time-stamp">// SEQUENCE_05</span>
+                <h3 class="mono" style="font-size: 1.8rem; color: white;">La Matrice de Données</h3>
+                <p>L'intérieur de l'esprit d'Adrian. Un tourbillon de chiffres et de code qui constitue la trame de l'univers.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>GÉNÉRATION TERMINÉE. FIN DU PROTOCOLE.</p>
+            <p>© 2025 GHOST PROTOCOL</p>
+        </footer>
+    
+    
+    </body></html>

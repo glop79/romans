@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Work/template/celui_qui_n_existait_pas_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CELUI QUI N'EXISTAIT PAS - Le Dossier</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Playfair+Display:wght@700&display=swap');
+    
+    :root {
+        --bg: #0f111a;
+        --text: #e2e8f0;
+        --primary: #38bdf8;
+        --accent: #f43f5e;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    /* Effet de grain "Film" */
+    body::after {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 999;
+    }
+
+    /* Hero Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(15,17,26,0.3), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Snowy%2520computer%2520screen%2520in%2520a%2520dark%2520room%2520with%2520digital%2520code%2520rain%2520and%2520a%2520child%2520silhouette%252C%2520mystery%2520thriller%2C%20cinematic%2C%20dramatic%20lighting%2C%20detailed%2C%208k%2C%20thriller%20movie%20still%2C%20color%20graded?width=1024&height=576&nologo=true&model=flux&seed=448');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 20px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 30px rgba(0,0,0,0.8);
+        opacity: 0;
+        animation: fadeIn 2s forwards 0.5s;
+    }
+
+    .tagline {
+        font-size: 1.5rem;
+        color: var(--primary);
+        background: rgba(0,0,0,0.7);
+        padding: 10px 20px;
+        border-left: 3px solid var(--accent);
+        opacity: 0;
+        animation: fadeIn 2s forwards 1.5s;
+    }
+
+    /* Container */
+    .container { max-width: 1200px; margin: 0 auto; padding: 80px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: #161b22;
+        border: 1px solid #30363d;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        margin-bottom: 100px;
+    }
+    .synopsis-box h2 { color: var(--accent); font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-top: 0; }
+    .synopsis-text { font-size: 1.2rem; color: #c9d1d9; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 60px;
+        color: white;
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 3px;
+        background: var(--primary);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+    .char-card {
+        background: #161b22;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease;
+        border: 1px solid #30363d;
+    }
+    .char-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: saturate(0.8); }
+    .char-info { padding: 20px; }
+    .char-name { color: var(--primary); margin: 0; font-size: 1.4rem; font-family: 'Playfair Display', serif; }
+    .char-role { color: #8b949e; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px; }
+
+    /* Scènes / Timeline */
+    .timeline { position: relative; max-width: 1000px; margin: 0 auto; }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background: var(--primary);
+        opacity: 0.3;
+    }
+    .scene {
+        display: flex;
+        justify-content: flex-end;
+        padding-bottom: 80px;
+        position: relative;
+        width: 50%;
+    }
+    .scene:nth-child(odd) { align-self: flex-start; justify-content: flex-start; text-align: right; }
+    .scene:nth-child(even) { align-self: flex-end; left: 50%; text-align: left; }
+    
+    .scene-content {
+        background: #161b22;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        border: 1px solid #30363d;
+        position: relative;
+    }
+    .scene-img { width: 100%; border-radius: 4px; margin-bottom: 15px; filter: contrast(1.1); }
+    .scene-title { color: var(--accent); font-family: 'Playfair Display', serif; margin-top: 0; }
+
+    /* Footer */
+    footer { text-align: center; padding: 50px; border-top: 1px solid #30363d; color: #8b949e; font-size: 0.9rem; }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { left: 20px; }
+        .scene { width: 100%; left: 0 !important; text-align: left !important; padding-left: 50px; box-sizing: border-box; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>CELUI QUI N'EXISTAIT PAS</h1>
+            <div class="tagline">La forteresse la plus sûre est celle qui vous enferme.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Dossier</h2>
+                <div class="synopsis-text">
+        <strong>Hélène croyait protéger sa fille en construisant des murs numériques. Elle s'est trompée.</strong><br><br>
+        Hélène Sorel a tout verrouillé : alarmes, contrôles parentaux, surveillance constante. Mais lorsque sa fille de 8 ans, Chloé, commence à parler à un "Gardien" dans un jeu en ligne, Hélène réalise que le danger est déjà à l'intérieur.<br><br>
+        Du jour au lendemain, Chloé disparaît. La police croit à une fugue. Hélène sait que c'est un enlèvement. De son appartement parisien aux steppes glacées de Sibérie, cette mère ordinaire va devoir devenir une experte en cyber-renseignement (OSINT) pour traquer un fantôme nommé <strong>Sébastien Leduc</strong>.<br><br>
+        <em>Une course contre la montre où chaque pixel compte.</em>
+    </div>
+            </div>
+
+            <h2 class="section-title">Profils &amp; Suspects</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/portrait20of20a20worried20woman2c203820years20old2c20dark20circles20under20eyes2c20lo.jpg" class="char-img" alt="Hélène Sorel">
+            <div class="char-info">
+                <h3 class="char-name">Hélène Sorel</h3>
+                <span class="char-role">La Mère / L'Enquêtrice</span>
+                <p>Graphiste devenue traqueuse numérique. Elle transforme sa paranoïa en arme de guerre.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/portrait20of20an20innocent20820year20old20girl20with20blonde20hair2c20holding20a20draw.jpg" class="char-img" alt="Chloé">
+            <div class="char-info">
+                <h3 class="char-name">Chloé</h3>
+                <span class="char-role">L'Enfant / La Proie</span>
+                <p>8 ans, innocente et solitaire. Elle cherche un ami et trouve un monstre.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/portrait20of20a20mysterious20man20in20shadows2c2040s2c20sad20expression2c20wearing20a.jpg" class="char-img" alt="Sébastien Leduc (Maxime)">
+            <div class="char-info">
+                <h3 class="char-name">Sébastien Leduc (Maxime)</h3>
+                <span class="char-role">Le Fantôme / Le Ravisseur</span>
+                <p>Ingénieur brillant brisé par le deuil. Il se croit le sauveur des enfants perdus.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/portrait20of20a20tired20police20detective20in20a20trench20coat2c205020years20old2c20r.jpg" class="char-img" alt="Capitaine Duroc">
+            <div class="char-info">
+                <h3 class="char-name">Capitaine Duroc</h3>
+                <span class="char-role">Le Flic Sceptique</span>
+                <p>Pragmatique et fatigué. Il ne croit pas aux fantômes numériques, jusqu'à ce qu'il soit trop tard.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 100px;">Chronologie de l'Enquête</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/close20up20of20a20child27s20drawing20on20paper2c20depicting20a20little20girl20holding.jpg" class="scene-img" alt="L&#39;Ami Imaginaire">
+                <h3 class="scene-title">Act. 1 : L'Ami Imaginaire</h3>
+                <p>Hélène découvre un dessin terrifiant : Chloé tenant la main d'une silhouette sans visage, avec un ovale noir à la place de la tête.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/overhead20shot20of20a20desk20covered20in20notes20and20maps2c20computer20screens20displa.jpg" class="scene-img" alt="La Traque OSINT">
+                <h3 class="scene-title">Act. 2 : La Traque OSINT</h3>
+                <p>Nuit blanche devant les écrans. Hélène apprend à utiliser les outils de traçage numérique pour retrouver l'adresse IP du ravisseur.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/wide20shot20of20soviet20brutalist20architecture20buildings20in20a20snowy20forest20in20si.jpg" class="scene-img" alt="Le Berceau du Monstre">
+                <h3 class="scene-title">Act. 3 : Le Berceau du Monstre</h3>
+                <p>L'arrivée à Akademgorodok, la cité des savants en Sibérie. Des bâtiments soviétiques perdus dans une forêt de bouleaux enneigée.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/an20abandoned20observatory20dome20in20a20snowy20forest2c20glowing20light20from20inside2.jpg" class="scene-img" alt="L&#39;Observatoire">
+                <h3 class="scene-title">Act. 4 : L'Observatoire</h3>
+                <p>La confrontation finale. Une datcha isolée transformée en bunker high-tech au milieu de la taïga.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <img src="./CELUI QUI N&#39;EXISTAIT PAS - Le Dossier_files/a20woman20carrying20a20child20running20through20deep20snow20in20a20forest2c20exhaustion.jpg" class="scene-img" alt="La Fuite dans la Neige">
+                <h3 class="scene-title">Act. 5 : La Fuite dans la Neige</h3>
+                <p>Hélène portant Chloé dans ses bras, fuyant à travers la forêt glaciale alors que l'aube se lève.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par Python &amp; IA | Basé sur le roman "CELUI QUI N'EXISTAIT PAS"</p>
+        </footer>
+    
+    
+    </body></html>
