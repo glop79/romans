@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Work/template/le_cercle_de_consolation_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE CERCLE DE CONSOLATION - Expérience</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Raleway:wght@300;400;600&display=swap');
+    
+    :root {
+        --bg: #f5f5f5;
+        --text: #2c3e50;
+        --navy: #1e3799;
+        --wood: #d4a373;
+        --concrete: #95a5a6;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Raleway', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Texture murale subtile */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(245,245,245,0.2), rgba(245,245,245,0.8)), 
+                    url('https://image.pollinations.ai/prompt/Minimalist%2520luxury%2520living%2520room%2520at%2520night%252C%2520huge%2520window%2520overlooking%2520city%2520lights%252C%2520reflection%2520of%2520a%2520lonely%2520woman%252C%2520melancholic%2C%20interior%20design%20photography%20style%2C%20cinematic%20lighting%2C%20soft%20textures%2C%20emotional%2C%208k%2C%20photorealistic%2C%20architectural%20digest%20aesthetic?width=1280&height=600&nologo=true&model=flux&seed=4623');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 20px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 5rem;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.8);
+        padding: 30px 50px;
+        border: 1px solid var(--concrete);
+    }
+
+    .tagline {
+        font-family: 'Raleway', sans-serif;
+        font-size: 1.4rem;
+        color: var(--text);
+        margin-top: 20px;
+        font-weight: 300;
+        letter-spacing: 2px;
+        background: white;
+        padding: 10px 30px;
+        border-left: 3px solid var(--navy);
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis - Style Magazine Déco */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 150px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+        border-top: 5px solid var(--wood);
+        position: relative;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Playfair Display', serif; 
+        color: var(--navy); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; font-weight: 400; text-align: justify; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 100px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: var(--navy);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        transition: 0.5s ease;
+        border: 1px solid #eee;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        box-shadow: 0 15px 40px rgba(30, 55, 153, 0.1);
+    }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: saturate(0.8); transition: 0.5s; }
+    .char-card:hover .char-img { filter: saturate(1); }
+    
+    .char-info { padding: 30px; text-align: center; }
+    .char-name { color: var(--navy); font-family: 'Playfair Display', serif; font-size: 1.5rem; margin: 0; }
+    .char-role { color: var(--concrete); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 20px 0; }
+    .char-desc { font-size: 0.95rem; color: #777; }
+
+    /* Timeline - Élégante et Fluide */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--concrete);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        box-shadow: 20px 20px 0px var(--bg), 20px 20px 0px 2px var(--wood); /* Cadre décalé */
+    }
+    
+    .scene-img { width: 100%; display: block; filter: contrast(1.05); }
+    
+    .scene-content { width: 40%; text-align: left; }
+    .scene:nth-child(even) .scene-content { text-align: right; }
+
+    .scene-title { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 2rem; 
+        margin-top: 0; 
+        color: var(--navy);
+    }
+    .scene-desc { color: #666; font-size: 1.1rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: var(--navy);
+        color: white;
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 50px; }
+        .scene-img-wrapper, .scene-content { width: 100%; text-align: left; }
+        .scene:nth-child(even) .scene-content { text-align: left; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE CERCLE DE CONSOLATION</h1>
+            <div class="tagline">Le deuil n'est pas une maladie à guérir. C'est une pièce à habiter.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Espace du Deuil</h2>
+                <div class="synopsis-text">
+        <strong>Le silence a un poids. Eva Keller le porte depuis six mois.</strong><br><br>
+        Architecte d'intérieur renommée, Eva a conçu sa maison sur les hauteurs de Lyon comme un chef-d'œuvre de lumière et de lignes pures. Mais depuis la mort accidentelle de Martin, son mari, la perfection de cet espace est devenue un sarcophage. Chaque surface lisse, chaque angle droit lui renvoie l'image de son absence.<br><br>
+        Errant dans les pulls en cachemire du disparu, cherchant une odeur qui s'efface, Eva doit affronter la solitude la plus totale. C'est l'histoire d'une femme qui arrête de fuir le vide pour apprendre à l'habiter, transformant son deuil non pas en une fin, mais en un espace à soi.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Figures</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE CERCLE DE CONSOLATION - Expérience_files/portrait20of20a20sophisticated20woman20in20her2030s2c20interior20designer2c20wearing20a.jpg" class="char-img" alt="Eva Keller">
+            <div class="char-info">
+                <h3 class="char-name">Eva Keller</h3>
+                <span class="char-role">L'Architecte du Vide</span>
+                <p class="char-desc">Élégante et brisée. Elle cherche sa place dans une maison trop parfaite pour une seule personne.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE CERCLE DE CONSOLATION - Expérience_files/artistic20double20exposure20of20a20handsome20man20smiling20and20a20texture20of20old20bo.jpg" class="char-img" alt="Martin">
+            <div class="char-info">
+                <h3 class="char-name">Martin</h3>
+                <span class="char-role">L'Absent</span>
+                <p class="char-desc">Il n'est plus qu'une odeur de bois de santal et de café, un souvenir qui s'estompe lentement.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE CERCLE DE CONSOLATION - Expérience_files/interior20architecture20photography20of20a20minimalist20living20room20in20lyon2c20waxed2.jpg" class="char-img" alt="La Maison">
+            <div class="char-info">
+                <h3 class="char-name">La Maison</h3>
+                <span class="char-role">Le Mausolée</span>
+                <p class="char-desc">Béton ciré, chêne clair, baies vitrées. Une beauté architecturale devenue froide sans la vie qui l'animait.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE CERCLE DE CONSOLATION - Expérience_files/night20photography20of20a20city20canal20with20lights20reflecting20in20the20dark20water2.jpg" class="char-img" alt="La Ville">
+            <div class="char-info">
+                <h3 class="char-name">La Ville</h3>
+                <span class="char-role">Le Décor Indifférent</span>
+                <p class="char-desc">Lyon et ses lumières, le canal, la vie qui continue dehors, belle et cruelle.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">La Traversée</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE DE CONSOLATION - Expérience_files/a20woman20standing20alone20in20a20large20modern20empty20living20room2c20wearing20an20o.jpg" class="scene-img" alt="Le Poids du Silence">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Poids du Silence</h3>
+                <p class="scene-desc">Eva dans le salon vide. La perfection du décor contraste avec le chaos de son cœur. Elle porte le pull bleu marine.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE DE CONSOLATION - Expérience_files/close20up20of20a20woman20burying20her20face20in20a20blue20fabric20texture2c20emotional.jpg" class="scene-img" alt="La Quête de l&#39;Odeur">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Quête de l'Odeur</h3>
+                <p class="scene-desc">Le moment de désespoir. Enfouir son visage dans le tissu pour retrouver une trace de lui. Le parfum s'en va.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE DE CONSOLATION - Expérience_files/a20woman20opening20a20large20glass20window20at20night2c20wind20blowing20her20hair2c20.jpg" class="scene-img" alt="La Fenêtre Ouverte">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Fenêtre Ouverte</h3>
+                <p class="scene-desc">Le tournant. Eva ouvre la baie vitrée. L'air frais entre. Elle cesse de lutter contre le vide.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE DE CONSOLATION - Expérience_files/portrait20of20a20woman20sitting20peacefully20by20a20window20with20a20glass20of20water2.jpg" class="scene-img" alt="L&#39;Espace à Soi">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Espace à Soi</h3>
+                <p class="scene-desc">La réalisation. La solitude n'est plus une punition, c'est un espace. Elle respire enfin.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE DE CONSOLATION - Expérience_files/artistic20shot20of20city20lights20reflecting20on20dark20water2c20ripples2c20abstract20c.jpg" class="scene-img" alt="La Nouvelle Palette">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Nouvelle Palette</h3>
+                <p class="scene-desc">La fin. Les lumières de la ville dansent sur l'eau. Le deuil devient juste une couleur de plus dans sa vie.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une lecture visuelle générée par IA</p>
+            <p>D'après l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)file:///C:/Work/template/le_substitut_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE SUBSTITUT - Le Livre</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #fdfcfc;
+        --text: #4a4a4a;
+        --rose: #e0a3b5;
+        --blue: #a4b0be;
+        --shadow: rgba(0,0,0,0.05);
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.9;
+        font-weight: 300;
+    }
+
+    /* Fond texture papier aquarelle */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.5), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Empty%2520child%2527s%2520room%2520with%2520sunlight%2520hitting%2520a%2520dust%2520bunny%252C%2520poetic%252C%2520emotional%252C%2520soft%2520focus%2C%20cinematic%20drama%2C%20soft%20lighting%2C%20emotional%20storytelling%2C%20photorealistic%2C%208k%2C%20depth%20of%20field%2C%20muted%20pastel%20colors?width=1280&height=600&nologo=true&model=flux&seed=2085');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 5rem;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 1rem;
+        font-weight: 400;
+        text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+    }
+
+    .tagline {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: 1.6rem;
+        color: var(--rose);
+        margin-top: 20px;
+        background: rgba(255,255,255,0.9);
+        padding: 10px 40px;
+        border-radius: 2px;
+        box-shadow: 0 5px 20px var(--shadow);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 80px;
+        margin-bottom: 150px;
+        box-shadow: 0 20px 60px var(--shadow);
+        border-top: 1px solid var(--rose);
+        text-align: center;
+        position: relative;
+    }
+    
+    .synopsis-box::before {
+        content: "I";
+        position: absolute;
+        top: -25px; left: 50%; transform: translateX(-50%);
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3rem;
+        color: var(--blue);
+        background: var(--bg);
+        padding: 0 20px;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cormorant Garamond', serif; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #666; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        font-style: italic;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 60px;
+    }
+    .char-card {
+        background: transparent;
+        transition: 0.5s ease;
+        text-align: center;
+    }
+    .char-card:hover { transform: translateY(-10px); }
+    
+    .char-img-wrapper {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 50% 50% 0 0; /* Forme arche */
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px var(--shadow);
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        filter: sepia(10%) brightness(1.05);
+        transition: 0.5s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%); transform: scale(1.05); }
+    
+    .char-name { color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin: 0; }
+    .char-role { color: var(--rose); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    .char-desc { font-size: 0.95rem; color: #888; }
+
+    /* Timeline Fluide */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, var(--rose), var(--blue));
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 15px;
+        background: white;
+        box-shadow: 0 15px 40px var(--shadow);
+        transform: rotate(1deg);
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(-1deg); }
+    
+    .scene-img { width: 100%; display: block; opacity: 0.9; }
+    
+    .scene-content { width: 40%; text-align: center; }
+    
+    .scene-title { 
+        font-family: 'Cormorant Garamond', serif; 
+        font-size: 2rem; 
+        margin-top: 0; 
+        color: var(--blue);
+    }
+    .scene-desc { color: #777; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: #f8f8f8;
+        color: #aaa;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; transform: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE SUBSTITUT</h1>
+            <div class="tagline">"On ne guérit pas de l'absence. On apprend à l'habiter."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Récit</h2>
+                <div class="synopsis-text">
+        <strong>Six mois de silence. Cent quatre-vingt-trois jours dans un mausolée.</strong><br><br>
+        Léa Keller est une pédiatre qui ne soigne plus personne, surtout pas elle-même. Depuis la disparition de sa fille Clara, sa maison est devenue un sanctuaire figé dans le temps, où chaque objet est une pièce à conviction d'un bonheur volé.<br><br>
+        Mais alors que l'odeur de fraise du shampoing de sa fille s'estompe, Léa doit faire face à la terrifiante réalité : le souvenir s'efface. Entre la tentation de sombrer dans l'eau du bain et celle de se relever, Léa va découvrir que survivre n'est pas oublier. C'est transformer l'horreur en action, et le vide en une fondation nouvelle pour aider les autres.<br><br>
+        <em>Un récit bouleversant sur la résilience et la métamorphose de la douleur.</em>
+    </div>
+            </div>
+
+            <h2 class="section-title">Mémoire des Disparus</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/portrait20of20a20sad20beautiful20woman20in20her2030s20sitting20on20a20bathroom20floor2.jpg" class="char-img" alt="Léa Keller">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Léa Keller</h3>
+                <span class="char-role">La Mère / La Survivante</span>
+                <p class="char-desc">Pédiatre brisée qui apprend à porter son deuil comme une seconde peau. Elle passe de la prostration à l'action.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/ethereal20concept20art20of20a20child27s20silhouette20fading20into20light20in20a20bedroo.jpg" class="char-img" alt="Clara">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Clara</h3>
+                <span class="char-role">L'Absente</span>
+                <p class="char-desc">Une odeur de fraise, un lit défait, un livre ouvert à la page douze. Elle est partout et nulle part.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/interior20of20a20child27s20bedroom20perfectly20tidy2c20untouched20toys2c20soft20morning.jpg" class="char-img" alt="La Chambre">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">La Chambre</h3>
+                <span class="char-role">Le Sanctuaire</span>
+                <p class="char-desc">Un lieu sacré où le temps s'est arrêté. Les jouets y sont des reliques, la poussière y est interdite.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/close20up20of20water20rippling20in20a20bathtub2c20reflections20of20light2c20calm20blue.jpg" class="char-img" alt="L&#39;Eau">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">L'Eau</h3>
+                <span class="char-role">Le Catalyseur</span>
+                <p class="char-desc">L'élément de transition. D'abord tentation de noyade, elle devient l'outil de la purification et du réveil.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Étapes du Dégel</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/close20up20of20a20woman20burying20her20face20in20a20pile20of20folded20child20clothes2.jpg" class="scene-img" alt="Le Parfum Fantôme">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Parfum Fantôme</h3>
+                <p class="scene-desc">Léa cherche l'odeur de fraise dans les pyjamas. Le moment où elle réalise que l'odeur a disparu pour toujours.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/macro20shot20of20a20wooden20dollhouse20with20tiny20furniture2c20dust20particles20in20a.jpg" class="scene-img" alt="La Maison de Poupée">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Maison de Poupée</h3>
+                <p class="scene-desc">Léa observe les jouets figés. La vie s'est arrêtée au milieu d'un jeu.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/underwater20shot20of20a20woman20submerged20in20a20bathtub2c20eyes20closed2c20hair20flo.jpg" class="scene-img" alt="Le Bain">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Bain</h3>
+                <p class="scene-desc">L'immersion. Léa sous l'eau. Le silence absolu. Puis le choix de remonter à la surface.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/view20from20a20window20looking20out20at20a20city20skyline20at20night2c20bokeh20lights.jpg" class="scene-img" alt="La Ville la Nuit">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Ville la Nuit</h3>
+                <p class="scene-desc">Léa sort sur son balcon ou regarde par la fenêtre. Les lumières de la ville sont une promesse de combat.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SUBSTITUT - Le Livre_files/a20woman20standing20in20a20living20room20drinking20coffee2c20looking20out20a20window20.jpg" class="scene-img" alt="La Décision">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Décision</h3>
+                <p class="scene-desc">Le matin d'après. Léa boit son café. Elle est prête à retourner au comité. La vie reprend, différente.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Page générée par IA pour LE SUBSTITUT</p>
+        </footer>
+    
+    
+    </body></html>
