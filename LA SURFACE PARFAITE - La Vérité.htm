@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!-- saved from url=(0053)file:///C:/Work/template/la_surface_parfaite_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LA SURFACE PARFAITE - La Vérité</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600;800&family=Montserrat:wght@400;700&display=swap');
+    
+    :root {
+        --bg-start: #e0f7fa;
+        --bg-end: #000000;
+        --text: #263238;
+        --accent: #ff6b6b;
+        --social: #405de6;
+    }
+    
+    body {
+        background: linear-gradient(180deg, var(--bg-start) 0%, #4fc3f7 30%, #0277bd 60%, var(--bg-end) 100%);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.6;
+        min-height: 400vh; /* Pour bien voir le dégradé */
+    }
+
+    /* Interface UI Overlay */
+    .ui-overlay {
+        position: fixed;
+        top: 20px; right: 20px;
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 10px 20px;
+        border-radius: 20px;
+        color: white;
+        font-family: 'Montserrat';
+        font-weight: bold;
+        z-index: 100;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    /* Header Style "Story Instagram" */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: url('https://image.pollinations.ai/prompt/Beautiful%2520sailboat%2520on%2520turquoise%2520water%252C%2520bright%2520sun%252C%2520lens%2520flare%252C%2520dreamy%2520travel%2520photography%2C%20cinematic%2C%20photorealistic%2C%208k%2C%20highly%20detailed%2C%20instagram%20aesthetic%20mixed%20with%20dark%20thriller%20atmosphere%2C%20sharp%20focus?width=1280&height=600&nologo=true&model=flux&seed=6665') center/cover;
+        position: relative;
+    }
+    
+    header::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%);
+    }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 5rem;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin: 0;
+        font-weight: 800;
+    }
+
+    .tagline {
+        font-size: 1.5rem;
+        background: var(--accent);
+        color: white;
+        padding: 5px 20px;
+        display: inline-block;
+        transform: rotate(-2deg);
+        margin-top: 20px;
+        font-weight: 600;
+        box-shadow: 5px 5px 0px rgba(0,0,0,0.2);
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 50px;
+        border-radius: 15px;
+        margin-bottom: 150px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+        position: relative;
+        margin-top: -50px; /* Chevauchement */
+        z-index: 3;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Montserrat', sans-serif; 
+        color: var(--social); 
+        font-size: 2rem; 
+        margin-top: 0; 
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    /* Personnages style "Profils" */
+    .section-title {
+        text-align: center;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: white;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+    .char-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: 0.3s;
+        position: relative;
+    }
+    .char-card:hover { transform: scale(1.03); z-index: 10; }
+    
+    /* Cercle "Story" autour de l'image */
+    .char-img-container {
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+    }
+    .char-img-ring {
+        padding: 4px;
+        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        border-radius: 50%;
+    }
+    .char-img { 
+        width: 150px; 
+        height: 150px; 
+        object-fit: cover; 
+        border-radius: 50%; 
+        border: 4px solid white;
+        display: block;
+    }
+    
+    .char-info { padding: 0 25px 25px 25px; text-align: center; }
+    .char-name { color: black; font-family: 'Montserrat'; font-weight: 700; font-size: 1.3rem; margin: 0; }
+    .char-role { color: var(--social); font-size: 0.8rem; font-weight: bold; margin-bottom: 10px; display: block; }
+    .char-desc { font-size: 0.9rem; color: #666; }
+
+    /* Timeline Verticale "Feed" */
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 100px;
+        margin-top: 50px;
+    }
+    
+    .scene {
+        display: flex;
+        align-items: center;
+        gap: 50px;
+        background: rgba(0,0,0,0.4); /* Fond sombre pour le bas de page */
+        backdrop-filter: blur(5px);
+        padding: 30px;
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        flex: 1;
+        position: relative;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+    }
+    .scene-img { width: 100%; display: block; border-radius: 5px; }
+    
+    /* Interface Like/Comment */
+    .scene-ui {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: var(--accent);
+    }
+
+    .scene-content { flex: 1; }
+    .scene-title { font-family: 'Montserrat'; font-size: 1.8rem; margin-top: 0; color: var(--accent); }
+    .scene-desc { opacity: 0.9; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: black;
+        color: white;
+        font-family: 'Montserrat';
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+    }
+    
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .scene { flex-direction: column !important; text-align: center; }
+        .tagline { font-size: 1rem; }
+    }
+    </style>
+    </head>
+    <body>
+        <div class="ui-overlay">LIVE • 2.3M Viewers</div>
+        <header>
+            <div class="header-content">
+                <h1>LA SURFACE PARFAITE</h1>
+                <div class="tagline">"Derrière chaque filtre se cache une prison."</div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Derrière le Filtre</h2>
+                <div class="synopsis-text">
+        <strong>2,3 millions d'abonnés. Un voilier de rêve. Un mensonge mortel.</strong><br><br>
+        Pour le monde entier, Clara et Léo sont le couple idéal. À bord de <em>L'Odyssée</em>, ils documentent leur "Vie Solaire" faite de couchers de soleil et de liberté absolue. Mais hors caméra, le paradis est un enfer. Léo n'est pas un simple influenceur, c'est un fugitif traqué par une corporation biotechnologique, et Clara n'est pas sa partenaire, mais son otage.<br><br>
+        Alors qu'ils dérivent au milieu de l'Atlantique, coupés du monde par un sabotage calculé, Clara découvre que l'homme qu'elle aime transporte un secret capable de détruire des millions de vies. Pour survivre, elle devra utiliser la seule arme qu'il lui reste : son audience.
+    </div>
+            </div>
+
+            <h2 class="section-title">Le Casting</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-container">
+                <div class="char-img-ring">
+                    <img src="./LA SURFACE PARFAITE - La Vérité_files/portrait20of20a20beautiful20young20woman20on20a20sailboat2c20golden20hour20lighting2c2.jpg" class="char-img" alt="Clara">
+                </div>
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">@clara</h3>
+                <span class="char-role">La Prisonnière Visible</span>
+                <p class="char-desc">Influenceuse malgré elle. Elle sourit pour la caméra tout en hurlant à l'intérieur. Elle transformera sa cage dorée en arme.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <div class="char-img-ring">
+                    <img src="./LA SURFACE PARFAITE - La Vérité_files/portrait20of20a20handsome20tanned20man20with20sun-bleached20hair2c20holding20a20gopro2c.jpg" class="char-img" alt="Léo">
+                </div>
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">@léo</h3>
+                <span class="char-role">Le Metteur en Scène</span>
+                <p class="char-desc">Charismatique, paranoïaque et impitoyable. Il a troqué sa blouse d'ingénieur pour un masque de aventurier. Il contrôle tout, sauf la fin.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <div class="char-img-ring">
+                    <img src="./LA SURFACE PARFAITE - La Vérité_files/close20up20of20a20futuristic20silver20cryogenic20vial20held20in20a20hand2c20cold20vapo.jpg" class="char-img" alt="La Clé Cryogénique">
+                </div>
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">@la_clé_cryogénique</h3>
+                <span class="char-role">Le Secret</span>
+                <p class="char-desc">Un petit cylindre de métal froid contenant un virus mortel. L'objet pour lequel on tue, caché au paradis.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-container">
+                <div class="char-img-ring">
+                    <img src="./LA SURFACE PARFAITE - La Vérité_files/aerial20view20of20a20white20sailboat20alone20in20the20middle20of20a20dark20blue20ocean.jpg" class="char-img" alt="L&#39;Odyssée">
+                </div>
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">@l'odyssée</h3>
+                <span class="char-role">Le Huis-Clos</span>
+                <p class="char-desc">Un voilier blanc immaculé sur un océan indifférent. Une cellule de prison à ciel ouvert.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Le Fil d'Actualité</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA SURFACE PARFAITE - La Vérité_files/selfie20style20shot20of20a20couple20on20a20boat20deck20at20sunset2c20lens20flare2c20.jpg" class="scene-img" alt="Le Sourire Forcé">
+                <div class="scene-ui">♥ 15460 J'aime</div>
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">POST #1 : Le Sourire Forcé</h3>
+                <p class="scene-desc">Départ de La Rochelle. Léo filme. Clara salue. La mise en scène de la liberté commence, cachant la fuite éperdue.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA SURFACE PARFAITE - La Vérité_files/dark20rainy20street20in20paris20at20night2c20car20headlights20illuminating20rain20drops.jpg" class="scene-img" alt="La Nuit de Pluie">
+                <div class="scene-ui">♥ 11998 J'aime</div>
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">POST #2 : La Nuit de Pluie</h3>
+                <p class="scene-desc">Le flashback traumatique. Paris, la pluie, le choc. L'instant où Léo a décidé de leur destin en écrasant l'accélérateur.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA SURFACE PARFAITE - La Vérité_files/close20up20of20a20hand20holding20a20black20military20gps20jammer20device20inside20a20b.jpg" class="scene-img" alt="Le Sabotage">
+                <div class="scene-ui">♥ 11495 J'aime</div>
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">POST #3 : Le Sabotage</h3>
+                <p class="scene-desc">Clara découvre la vérité. Le fil débranché, le brouilleur GPS. Ils ne sont pas perdus, ils sont cachés.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA SURFACE PARFAITE - La Vérité_files/a20black20helicopter20hovering20very20low20over20a20sailboat2c20water20spray2c20heavy2.jpg" class="scene-img" alt="L&#39;Hélicoptère Noir">
+                <div class="scene-ui">♥ 23624 J'aime</div>
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">POST #4 : L'Hélicoptère Noir</h3>
+                <p class="scene-desc">La confrontation. GenoLife les retrouve. Le bruit assourdissant des pales, le vent, l'homme armé sur le pont.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LA SURFACE PARFAITE - La Vérité_files/close20up20of20a20smartphone20screen20displaying20a20social20media20post20with20a20blac.jpg" class="scene-img" alt="Le Carré Noir">
+                <div class="scene-ui">♥ 19245 J'aime</div>
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">POST #5 : Le Carré Noir</h3>
+                <p class="scene-desc">Le SOS. Clara poste un écran noir sur Instagram. La fissure finale dans la surface parfaite.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>CE COMPTE A ÉTÉ SUPPRIMÉ.</p>
+            <p>Histoire basée sur le roman de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>
