@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<!-- saved from url=(0044)file:///C:/Work/template/l_institut_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>L'INSTITUT - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500&display=swap');
+    
+    :root {
+        --bg: #f0eee9;
+        --text: #2b2b2b;
+        --wood: #8d6e63;
+        --city: #607d8b;
+        --light: #fff9c4;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Texture poussière */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(240, 238, 233, 0.4), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/View%2520from%2520inside%2520a%2520dark%2520room%2520looking%2520at%2520a%2520closed%2520door%2520with%2520light%2520leaking%2520underneath%252C%2520mystery%252C%2520hope%2C%20cinematic%2C%20analog%20photography%20style%2C%20film%20grain%2C%20natural%20lighting%2C%20emotional%2C%20highly%20detailed%2C%208k%2C%20kodak%20portra%20400?width=1280&height=600&nologo=true&model=flux&seed=4658');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-bottom: 5px solid var(--wood);
+    }
+
+    h1 {
+        font-family: 'Lora', serif;
+        font-size: 5rem;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.7);
+        padding: 20px 40px;
+        border: 1px solid #999;
+    }
+
+    .tagline {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.4rem;
+        color: var(--wood);
+        margin-top: 20px;
+        font-weight: 500;
+        background: #fff;
+        padding: 10px 30px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 120px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-radius: 2px;
+        position: relative;
+        border-top: 3px solid var(--city);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Lora', serif; 
+        color: var(--wood); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+        font-style: italic;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; font-weight: 300; text-align: justify; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Lora', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: var(--wood);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        transition: 0.4s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    .char-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover; 
+        filter: sepia(20%);
+        transition: 0.5s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%); }
+    
+    .char-info { padding: 25px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Lora', serif; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--wood); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    
+    /* Timeline - Effet "Porte qui s'ouvre" */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #ccc;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 10px;
+        background: white;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        transform: rotate(1deg);
+        transition: 0.3s;
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(-1deg); }
+    .scene-img-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 10; }
+    
+    .scene-img { width: 100%; display: block; filter: contrast(1.05); }
+    
+    .scene-content { width: 45%; text-align: center; }
+    
+    .scene-title { 
+        font-family: 'Lora', serif; 
+        font-size: 1.8rem; 
+        margin-top: 0; 
+        color: var(--text);
+    }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: #e6e2dd;
+        color: #777;
+        font-family: 'Lora', serif;
+        font-size: 1rem;
+        border-top: 1px solid #d1cdc7;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; transform: none !important; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>L'INSTITUT</h1>
+            <div class="tagline">"Trois verrous. Un an de silence. Et un seul pas pour tout changer."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Enfermement</h2>
+                <div class="synopsis-text">
+        <strong>Le 14 octobre. Un an jour pour jour.</strong><br><br>
+        Pour Alice Dubois, l'appartement 502 n'est pas un logement, c'est une forteresse. Depuis 365 jours, elle n'a pas senti le vent sur son visage. Sa vie est réduite à une chorégraphie de rituels : vérifier le pêne dormant, tendre la chaîne de sécurité, observer le monde à travers une vitre qui ne s'ouvre jamais.<br><br>
+        Mais aujourd'hui est différent. Une valise est prête. Un taxi attend en bas. Alice a décidé de briser le cycle. Entre elle et la liberté, il y a trois verrous et une peur paralysante. C'est l'histoire d'une femme qui décide d'ouvrir la porte, non pas pour laisser entrer quelqu'un, mais pour enfin sortir.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Clés</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./L&#39;INSTITUT - Le Roman_files/portrait20of20a20pale20woman20with20messy20hair2c20wearing20a20simple20sweater2c20stan.jpg" class="char-img" alt="Alice Dubois">
+            <div class="char-info">
+                <h3 class="char-name">Alice Dubois</h3>
+                <span class="char-role">La Recluse</span>
+                <p>Pâle, fragile en apparence mais animée d'une volonté de fer. Elle connaît chaque craquement de son parquet par cœur.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;INSTITUT - Le Roman_files/close20up20of20an20old20heavy20wooden20door20with20three20different20metal20locks20and.jpg" class="char-img" alt="La Porte">
+            <div class="char-info">
+                <h3 class="char-name">La Porte</h3>
+                <span class="char-role">Le Gardien</span>
+                <p>Bois froid, laiton, acier. Une barrière physique et mentale. Elle est l'antagoniste principale de ce matin.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;INSTITUT - Le Roman_files/interior20of20a20silent20parisian20apartment2c20vintage20furniture2c20dust20motes20danci.jpg" class="char-img" alt="L&#39;Appartement 502">
+            <div class="char-info">
+                <h3 class="char-name">L'Appartement 502</h3>
+                <span class="char-role">Le Cocon</span>
+                <p>Silencieux, figé dans le temps. La poussière y danse dans les rayons de soleil. Un lieu de sécurité devenu prison.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;INSTITUT - Le Roman_files/blurred20view20of20a20busy20parisian20street20in20winter2c20traffic2c20people2c20grey.jpg" class="char-img" alt="Le Dehors">
+            <div class="char-info">
+                <h3 class="char-name">Le Dehors</h3>
+                <span class="char-role">Le Chaos</span>
+                <p>Paris en hiver. Le bruit, le froid, les odeurs. Une agression sensorielle et une promesse de vie.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">La Sortie</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;INSTITUT - Le Roman_files/macro20photography20of20a20hand20trembling20slightly20while20unlocking20a20brass20door20.jpg" class="scene-img" alt="La Trinité Protectrice">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Trinité Protectrice</h3>
+                <p class="scene-desc">Le rituel des trois serrures. Le son métallique du pêne, la tension de la chaîne, le froid du petit verrou du bas.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;INSTITUT - Le Roman_files/silhouette20of20a20woman20standing20in20front20of20a20large20window20with20sheer20curta.jpg" class="scene-img" alt="La Fenêtre">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Fenêtre</h3>
+                <p class="scene-desc">365 jours d'observation. Alice regarde la rue comme on regarde un écran de cinéma. La vie est là-bas, inaccessible.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;INSTITUT - Le Roman_files/a20wide20open20apartment20door20revealing20a20bright20cold20hallway2c20a20suitcase20sta.jpg" class="scene-img" alt="Le Seuil">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Seuil</h3>
+                <p class="scene-desc">La porte est ouverte. L'air froid s'engouffre. Alice est debout sur la frontière entre son monde et le reste de l'univers.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;INSTITUT - Le Roman_files/close20up20of20a20woman27s20shoe20stepping20onto20a20concrete20sidewalk2c20autumn20lea.jpg" class="scene-img" alt="Le Premier Pas">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Premier Pas</h3>
+                <p class="scene-desc">L'escarpin touche le ciment du trottoir. Le contact est solide. La peur reflue pour laisser place à la réalité.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;INSTITUT - Le Roman_files/a20woman20standing20on20a20busy20parisian20sidewalk2c20wind20blowing20her20hair2c20tak.jpg" class="scene-img" alt="Le Bruit du Monde">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Bruit du Monde</h3>
+                <p class="scene-desc">La rue. Les klaxons, l'odeur des crêpes, le froid. Alice n'est plus spectatrice. Elle est vivante.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par IA pour l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

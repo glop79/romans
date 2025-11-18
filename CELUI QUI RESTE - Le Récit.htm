@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)file:///C:/Work/template/celui_qui_reste_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CELUI QUI RESTE - Le Récit</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #fdfbf7;
+        --text: #2c3e50;
+        --gold: #d4af37;
+        --navy: #34495e;
+        --sand: #eccc68;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.9;
+        font-weight: 300;
+    }
+
+    /* Fond texturé papier */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.2), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Sunlight%2520streaming%2520through%2520a%2520sheer%2520curtain%2520into%2520a%2520quiet%2520room%252C%2520dust%2520motes%252C%2520peaceful%2520stillness%2C%20cinematic%20drama%2C%20natural%20lighting%2C%20soft%20focus%2C%20emotional%20storytelling%2C%208k%2C%20photorealistic%2C%20humanistic%20photography%2C%20kodak%20portra?width=1280&height=600&nologo=true&model=flux&seed=8022');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 5.5rem;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        text-shadow: 0 2px 10px rgba(255,255,255,0.8);
+        mix-blend-mode: multiply;
+    }
+
+    .tagline {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: 1.8rem;
+        color: var(--gold);
+        margin-top: 20px;
+        background: rgba(255,255,255,0.95);
+        padding: 20px 60px;
+        border-top: 1px solid var(--gold);
+        border-bottom: 1px solid var(--gold);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 80px;
+        margin-bottom: 150px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.03);
+        border-radius: 2px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .synopsis-box::before {
+        content: "✦";
+        position: absolute;
+        top: -20px; left: 50%; transform: translateX(-50%);
+        font-size: 2rem;
+        color: var(--gold);
+        background: var(--bg);
+        padding: 0 20px;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cormorant Garamond', serif; 
+        color: var(--navy); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; font-weight: 400; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3.5rem;
+        margin-bottom: 100px;
+        color: var(--text);
+        font-style: italic;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 60px;
+    }
+    .char-card {
+        background: transparent;
+        transition: 0.5s ease;
+        text-align: center;
+    }
+    .char-card:hover { transform: translateY(-10px); }
+    
+    .char-img-wrapper {
+        width: 100%;
+        height: 320px;
+        overflow: hidden;
+        border-radius: 200px 200px 0 0; /* Forme fenêtre/arche */
+        margin-bottom: 25px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        border: 1px solid #eee;
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        filter: sepia(10%) brightness(1.05);
+        transition: 0.5s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%); transform: scale(1.05); }
+    
+    .char-name { color: var(--navy); font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin: 0; }
+    .char-role { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    .char-desc { font-size: 0.95rem; color: #777; }
+
+    /* Timeline Fluide */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, var(--gold), var(--navy));
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 15px;
+        background: white;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    }
+    
+    .scene-img { width: 100%; display: block; opacity: 0.95; }
+    
+    .scene-content { width: 40%; text-align: center; }
+    
+    .scene-title { 
+        font-family: 'Cormorant Garamond', serif; 
+        font-size: 2rem; 
+        margin-top: 0; 
+        color: var(--navy);
+    }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: #f4f4f4;
+        color: #888;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1rem;
+        border-top: 1px solid #e0e0e0;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; transform: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>CELUI QUI RESTE</h1>
+            <div class="tagline">"Survivre n'est pas une fin. C'est un commencement."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Silence</h2>
+                <div class="synopsis-text">
+        <strong>Il y a ceux qui partent, et il y a ceux qui restent pour fermer la porte.</strong><br><br>
+        Marc Tellier est un infirmier d'élite pour Aeternum Care, spécialisé dans les fins de vie complexes. Son métier est le silence, la dignité et l'oubli. Mais son nouveau contrat "en or" va briser toutes ses certitudes.<br><br>
+        Il doit s'occuper de <strong>Remy</strong>, un artiste brillant prisonnier de son propre corps, immobile, muet, mais terrifiant de lucidité. Dans le huis-clos d'une chambre de luxe transformée en forteresse médicalisée, ce n'est pas la mort qui attend, mais une confrontation brutale avec la vie.<br><br>
+        Entre l'infirmier qui a tout vu et le patient qui voit tout, un lien se tisse par-delà les mots. Une histoire sur la force de la présence et la beauté terrible de survivre.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Survivants</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/portrait20of20a20calm20male20nurse20in20his2040s2c20kind20tired20eyes2c20wearing20cas.jpg" class="char-img" alt="Marc Tellier">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Marc Tellier</h3>
+                <span class="char-role">Le Gardien</span>
+                <p class="char-desc">Infirmier spécialisé, calme et professionnel. Il porte le poids des vies qu'il a accompagnées, mais cherche encore son propre salut.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/close20up20of20a20man27s20face20lying20on20a20pillow2c20intense20intelligent20eyes20l.jpg" class="char-img" alt="Remy">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Remy</h3>
+                <span class="char-role">Le Prisonnier</span>
+                <p class="char-desc">Artiste emmuré dans un corps inerte. Son regard est sa seule fenêtre et sa seule arme. Il est la résilience incarnée.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/portrait20of20a20professional20woman20in20a20sharp20business20suit2c20holding20a20table.jpg" class="char-img" alt="Cécile Lambert">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Cécile Lambert</h3>
+                <span class="char-role">L'Agent</span>
+                <p class="char-desc">Efficace, discrète, elle vend la tranquillité d'esprit à prix d'or. Pour elle, la souffrance est un dossier à gérer.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/interior20of20a20luxurious20medicalized20bedroom2c20high-tech20equipment20blending20with2.jpg" class="char-img" alt="La Chambre">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">La Chambre</h3>
+                <span class="char-role">Le Prisme</span>
+                <p class="char-desc">Un lieu de haute technologie et de luxe, conçu pour masquer la réalité de la maladie. Une cage dorée.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Le Chemin</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/a20smartphone20vibrating20on20a20wooden20coffee20table20in20a20sunlit20minimalist20apart.jpg" class="scene-img" alt="L&#39;Appel">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Appel</h3>
+                <p class="scene-desc">Marc dans son appartement silencieux. La vibration du téléphone brise sa solitude. Le contrat d'or est proposé.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/over20the20shoulder20shot20of20a20nurse20looking20at20a20patient20in20bed2c20focus20o.jpg" class="scene-img" alt="La Rencontre">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Rencontre</h3>
+                <p class="scene-desc">Le premier regard entre Marc et Remy. Pas de mots, juste la reconnaissance mutuelle de deux survivants.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/close20up20of20hands20washing20another20hand20with20a20sponge2c20water20droplets2c20wa.jpg" class="scene-img" alt="Le Soin">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Soin</h3>
+                <p class="scene-desc">Les gestes quotidiens. La toilette, la nutrition. Une chorégraphie intime où la dignité est préservée à tout prix.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/extreme20close20up20of20a20single20tear20rolling20down20a20man27s20cheek2c20skin20tex.jpg" class="scene-img" alt="La Larme">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Larme</h3>
+                <p class="scene-desc">Le masque de Remy se fissure. Une larme coule, non de douleur, mais de libération. Marc est là pour la recueillir.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CELUI QUI RESTE - Le Récit_files/two20men20on20a20beach20at20sunset2c20one20standing2c20one20in20a20wheelchair2c20loo.jpg" class="scene-img" alt="L&#39;Horizon">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Horizon</h3>
+                <p class="scene-desc">La fin sur la plage. Le soleil se couche. Marc et Remy regardent la mer. Ils sont ceux qui restent, et ils avancent.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Un hommage visuel généré par IA</p>
+            <p>D'après l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

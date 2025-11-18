@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<!-- saved from url=(0047)file:///C:/Work/template/l_arrangement_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>L'ARRANGEMENT - Le Dossier</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Inter:wght@300;400;700&display=swap');
+    
+    :root {
+        --bg: #121212;
+        --text: #e0e0e0;
+        --red: #d63031;
+        --paper: #dfe6e9;
+        --neon: #0984e3;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Inter', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    /* Fond texture papier noir/bruit */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(18,18,18,0.8), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Raindrops%2520on%2520a%2520window%2520at%2520night%2520with%2520blurred%2520city%2520lights%2520and%2520red%2520neon%2520reflection%252C%2520moody%2520noir%2C%20cinematic%20film%20noir%2C%20modern%20thriller%2C%20dark%20moody%20atmosphere%2C%20rain%2C%20neon%20lights%2C%20high%20contrast%2C%208k%2C%20photorealistic%2C%20sharp%20focus?width=1280&height=600&nologo=true&model=flux&seed=1907');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        border-bottom: 3px solid var(--red);
+    }
+
+    h1 {
+        font-family: 'Courier Prime', monospace;
+        font-size: 4.5rem;
+        color: var(--paper);
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 1rem;
+        background: #000;
+        padding: 10px 30px;
+        border: 2px solid var(--paper);
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    .tagline {
+        font-family: 'Courier Prime', monospace;
+        font-size: 1.2rem;
+        color: var(--red);
+        background: rgba(0,0,0,0.9);
+        padding: 15px 40px;
+        border: 1px solid var(--red);
+        margin-top: 20px;
+        transform: rotate(-2deg);
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis - Style Rapport de Police/Dossier */
+    .synopsis-box {
+        background: #1a1a1a;
+        border: 1px solid #333;
+        padding: 60px;
+        margin-bottom: 120px;
+        position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+    
+    /* Timbre "Confidentiel" */
+    .synopsis-box::after {
+        content: "DOSSIER CLOS";
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        border: 3px solid var(--red);
+        color: var(--red);
+        padding: 5px 15px;
+        font-family: 'Courier Prime', monospace;
+        font-weight: bold;
+        font-size: 1.5rem;
+        transform: rotate(-15deg);
+        opacity: 0.8;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Courier Prime', monospace; 
+        color: var(--paper); 
+        font-size: 2rem; 
+        margin-top: 0; 
+        border-bottom: 1px dashed #555;
+        padding-bottom: 10px;
+    }
+    .synopsis-text { font-size: 1.1rem; color: #bbb; font-family: 'Courier Prime', monospace; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Courier Prime', monospace;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--red);
+        text-transform: uppercase;
+        text-decoration: underline;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: #0f0f0f;
+        border: 1px solid #333;
+        transition: 0.3s;
+    }
+    .char-card:hover { 
+        transform: translateY(-5px); 
+        border-color: var(--red);
+        box-shadow: 0 0 20px rgba(214, 48, 49, 0.2);
+    }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: grayscale(100%) contrast(1.2); transition: 0.5s; }
+    .char-card:hover .char-img { filter: grayscale(0%); }
+    
+    .char-info { padding: 20px; border-top: 1px solid #333; }
+    .char-name { color: var(--paper); font-family: 'Courier Prime', monospace; font-weight: 700; font-size: 1.2rem; margin: 0; }
+    .char-role { color: var(--red); font-size: 0.8rem; text-transform: uppercase; display: block; margin: 10px 0; letter-spacing: 1px; }
+    
+    /* Timeline - Style Preuves */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #333;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-content {
+        width: 45%;
+        padding: 20px;
+        background: #1a1a1a;
+        border-left: 3px solid var(--red);
+    }
+    .scene:nth-child(even) .scene-content { border-left: none; border-right: 3px solid var(--red); text-align: right; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        border: 5px solid white; /* Style photo polaroid */
+        border-bottom: 40px solid white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        transform: rotate(2deg);
+        transition: 0.3s;
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(-2deg); }
+    .scene-img-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 10; }
+    
+    .scene-img { width: 100%; display: block; filter: sepia(20%) contrast(1.1); }
+    
+    /* Trombone sur la photo */
+    .scene-img-wrapper::after {
+        content: "PREUVE #";
+        position: absolute;
+        bottom: -30px;
+        left: 10px;
+        color: black;
+        font-family: 'Courier Prime', monospace;
+        font-size: 0.8rem;
+    }
+
+    .scene-title { font-family: 'Courier Prime'; font-size: 1.5rem; color: var(--paper); margin-top: 0; }
+    .scene-desc { color: #888; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #000;
+        color: #555;
+        font-family: 'Courier Prime';
+        border-top: 1px solid #333;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-content, .scene-img-wrapper { width: 100%; transform: none !important; }
+        .scene:nth-child(even) .scene-content { text-align: left; border-left: 3px solid var(--red); border-right: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>L'ARRANGEMENT</h1>
+            <div class="tagline">"Certaines dettes ne se paient pas avec de l'argent. Elles se paient avec l'âme."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Pièce A : Le Résumé</h2>
+                <div class="synopsis-text">
+        <strong>Une enveloppe rouge. Un compte à rebours. Une proposition indécente.</strong><br><br>
+        Chloé Duverne est au bord du gouffre. Dans son studio parisien de 15m², sous le poids des dettes et d'une mise en demeure d'expulsion, elle attend la fin. C'est alors qu'apparaît <strong>Lucas Vanier</strong>.<br><br>
+        Avocat brillant, riche, manipulateur, il lui offre un "Arrangement". Il efface ses dettes, il lui offre le luxe... en échange d'une servitude totale et discrète. Chloé accepte, pensant sauver sa vie. Elle ne réalise pas qu'elle vient de signer pour devenir le fantôme de la vie d'un autre.<br><br>
+        Mais dans le silence de sa cage dorée, Chloé n'oublie pas qui elle est. Et elle va découvrir que même les contrats les plus parfaits ont une faille. La vengeance est un plat qui se mange froid, archivé dans une boîte blanche.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Impliqués</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./L&#39;ARRANGEMENT - Le Dossier_files/portrait20of20a20tired20young20woman20with20dark20circles20under20eyes2c20sitting20in2.jpg" class="char-img" alt="Chloé Duverne">
+            <div class="char-info">
+                <h3 class="char-name">Chloé Duverne</h3>
+                <span class="char-role">La Proie (devenue Chasseuse)</span>
+                <p>Jeune, usée par la précarité, mais dotée d'une intelligence résiliente. Elle passe de la victime à l'architecte de sa propre liberté.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ARRANGEMENT - Le Dossier_files/portrait20of20a20wealthy20man20in20a20expensive20dark20suit2c20standing20in20a20luxury.jpg" class="char-img" alt="Lucas Vanier">
+            <div class="char-info">
+                <h3 class="char-name">Lucas Vanier</h3>
+                <span class="char-role">Le Prédateur</span>
+                <p>Riche, élégant, froid. Il croit que tout s'achète, y compris les gens. Son arrogance sera sa perte.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ARRANGEMENT - Le Dossier_files/close20up20of20a20red20envelope20with20the20word2027expulsion2720stamped20on20it2c20.jpg" class="char-img" alt="L&#39;Enveloppe Rouge">
+            <div class="char-info">
+                <h3 class="char-name">L'Enveloppe Rouge</h3>
+                <span class="char-role">Le Déclencheur</span>
+                <p>L'objet qui marque la fin de la vie normale de Chloé. Une tache de sang sur le linceul de son quotidien.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ARRANGEMENT - Le Dossier_files/a20pristine20white20archive20box20sitting20on20a20wooden20shelf2c20labeled2027l27arran.jpg" class="char-img" alt="La Boîte Blanche">
+            <div class="char-info">
+                <h3 class="char-name">La Boîte Blanche</h3>
+                <span class="char-role">L'Arme</span>
+                <p>L'archive finale. Le dossier qui contient la chute de Vanier. Le symbole de la victoire de Chloé.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Chronologie des Faits</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Mise en Demeure</h3>
+                <p class="scene-desc">Le studio, la pluie, l'huissier. Chloé touche le fond. L'atmosphère est étouffante, grise et désespérée.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ARRANGEMENT - Le Dossier_files/interior20of20a20tiny20cramped20apartment20in20paris2c20peeling20wallpaper2c20dim20ligh.jpg" class="scene-img" alt="La Mise en Demeure">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Pacte</h3>
+                <p class="scene-desc">La rencontre avec Vanier. Un bureau luxueux, un contrat sur la table. La signature qui ressemble à une condamnation.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ARRANGEMENT - Le Dossier_files/a20contract20document20on20a20glass20table2c20a20fancy20pen2c20a20man27s20hand20offe.jpg" class="scene-img" alt="Le Pacte">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Cage Dorée</h3>
+                <p class="scene-desc">La vie dans le penthouse. Le luxe froid, le silence imposé. Chloé devient un accessoire dans la vie de Vanier.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ARRANGEMENT - Le Dossier_files/a20woman20standing20in20a20huge20modern20empty20living20room20with20floor20to20ceiling.jpg" class="scene-img" alt="La Cage Dorée">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Faille</h3>
+                <p class="scene-desc">Chloé découvre les documents compromettants. Elle ne fuit pas. Elle commence à constituer son dossier. La peur change de camp.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ARRANGEMENT - Le Dossier_files/close20up20of20a20woman27s20hands20organizing20papers20and20usb20drives20late20at20nig.jpg" class="scene-img" alt="La Faille">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">L'Archive</h3>
+                <p class="scene-desc">La fin. Chloé range la boîte blanche sur l'étagère. Elle est libre. Le soleil se couche sur une vie nouvelle.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ARRANGEMENT - Le Dossier_files/a20woman20standing20in20a20bright20living20room20placing20a20white20box20on20a20shelf.jpg" class="scene-img" alt="L&#39;Archive">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Archive générée par IA</p>
+            <p>D'après l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

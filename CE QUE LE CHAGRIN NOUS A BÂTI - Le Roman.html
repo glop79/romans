@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<!-- saved from url=(0063)file:///C:/Work/template/ce_que_le_chagrin_nous_a_bati_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #0e1116;
+        --text: #c5c6c7;
+        --ice: #66fcf1;
+        --fire: #ffae00;
+        --card: #1f2833;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    /* Effet de particules (subtil) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    /* Header Héroïque */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(14,17,22,0.3), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Epic%2520fantasy%2520landscape%252C%2520a%2520giant%2520crystal%2520shield%2520dome%2520over%2520a%2520city%2520at%2520night%252C%2520blue%2520and%2520gold%2520lights%252C%2520atmospheric%2C%20cinematic%2C%20dramatic%20lighting%2C%20highly%20detailed%2C%208k%2C%20unreal%20engine%205%20render%2C%20dark%20fantasy%20style?width=1280&height=720&nologo=true&model=flux&seed=436');
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+        position: relative;
+        z-index: 1;
+    }
+
+    h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 4rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px var(--ice), 0 0 40px var(--ice);
+        animation: pulseIce 3s infinite alternate;
+    }
+
+    .tagline {
+        font-size: 1.5rem;
+        color: var(--fire);
+        font-style: italic;
+        text-shadow: 0 0 10px rgba(255, 174, 0, 0.5);
+        margin-top: 0;
+    }
+
+    /* Conteneur */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: linear-gradient(145deg, #161b22, #1f2833);
+        border: 1px solid #333;
+        border-left: 4px solid var(--ice);
+        border-right: 4px solid var(--fire);
+        padding: 40px;
+        border-radius: 4px;
+        margin-bottom: 100px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .synopsis-box h2 { color: white; font-family: 'Cinzel', serif; border-bottom: 1px solid #444; padding-bottom: 10px; }
+    .synopsis-text { font-size: 1.2rem; line-height: 1.8; }
+
+    /* Section Titles */
+    .section-title {
+        font-family: 'Cinzel', serif;
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 60px;
+        color: white;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 3px;
+        background: linear-gradient(to right, var(--ice), var(--fire));
+        margin: 20px auto;
+    }
+
+    /* Personnages */
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+    .char-card {
+        background-color: var(--card);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #2c3e50;
+    }
+    .char-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+        border-color: var(--ice);
+    }
+    .char-img { width: 100%; height: 400px; object-fit: cover; filter: contrast(1.1); }
+    .char-content { padding: 20px; }
+    .char-name { color: var(--ice); font-family: 'Cinzel', serif; margin: 0; font-size: 1.5rem; }
+    .char-role { color: var(--fire); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: block; }
+    
+    /* Scènes / Timeline */
+    .timeline { position: relative; margin-top: 50px; }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--ice), var(--fire));
+        transform: translateX(-50%);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 100px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-content {
+        width: 45%;
+        background: rgba(31, 40, 51, 0.9);
+        padding: 30px;
+        border-radius: 8px;
+        border: 1px solid #444;
+        position: relative;
+    }
+    
+    .scene-content::after { /* Flèche vers la ligne */
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        background: var(--fire);
+        transform: translateY(-50%) rotate(45deg);
+    }
+    .scene:nth-child(odd) .scene-content::after { right: -10px; background: var(--ice); }
+    .scene:nth-child(even) .scene-content::after { left: -10px; background: var(--fire); }
+
+    .scene-img-wrapper { width: 45%; overflow: hidden; border-radius: 8px; border: 2px solid #333; }
+    .scene-img { width: 100%; display: block; transition: transform 0.5s; }
+    .scene-img-wrapper:hover .scene-img { transform: scale(1.05); }
+    
+    .scene-title { color: white; font-family: 'Cinzel'; font-size: 1.5rem; margin-top: 0; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 50px;
+        background: #050505;
+        border-top: 1px solid #333;
+        font-family: 'Cinzel';
+        color: #666;
+    }
+
+    @keyframes pulseIce {
+        from { text-shadow: 0 0 10px var(--ice); }
+        to { text-shadow: 0 0 30px var(--ice), 0 0 10px white; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-content, .scene-img-wrapper { width: 100%; margin-left: 40px; margin-bottom: 20px; }
+        .scene-content::after { left: -10px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>CE QUE LE CHAGRIN NOUS A BÂTI</h1>
+            <div class="tagline">Leur douleur était une arme. Leur amour sera leur révolution.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>Dans le royaume d'Altrée, les émotions ne sont pas ressenties, elles sont récoltées.</strong><br><br>
+        Kaelen est un "Résonant". Son chagrin est si pur qu'il gèle l'air et forge des lames de cristal indestructibles. Lyra, elle, brûle d'une rage qui incinère tout sur son passage. Arrachés à leurs vies, ils sont transformés en armes vivantes par le Commandant Joric pour servir l'Aegis, le bouclier mystique qui protège la capitale.<br><br>
+        Mais lorsqu'ils découvrent que le bouclier n'est pas une protection divine mais une machine monstrueuse alimentée par la torture éternelle d'une âme innocente, leur loyauté vole en éclats. <br><br>
+        Entre le froid du deuil et le feu de la vengeance, Kaelen et Lyra devront trouver une troisième voie : celle de l'acceptation et de la lumière, pour briser les chaînes d'un royaume bâti sur la souffrance.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Âmes du Royaume</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/portrait20of20a20young20handsome20fantasy20soldier20with20sad20blue20eyes2c20short20dar.jpg" class="char-img" alt="Kaelen">
+            <div class="char-content">
+                <h3 class="char-name">Kaelen</h3>
+                <span class="char-role">Le Résonant de Glace</span>
+                <p>Hanté par la mort de son frère Ewan. Son chagrin crée la Larme-de-verre. Il est le calme au cœur de la tempête, cherchant la rédemption.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/portrait20of20a20fierce20female20warrior2c20scarred20face2c20intensity20in20eyes2c20ho.jpg" class="char-img" alt="Lyra">
+            <div class="char-content">
+                <h3 class="char-name">Lyra</h3>
+                <span class="char-role">La Lame de Feu</span>
+                <p>Forgée par la perte de sa famille. Sa rage est un brasier. Elle est la guerrière indomptable qui apprendra que la haine ne suffit pas.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/portrait20of20an20elegant20older20male20villain2c20silver20hair2c20wearing20expensive20.jpg" class="char-img" alt="Lord Valerius">
+            <div class="char-content">
+                <h3 class="char-name">Lord Valerius</h3>
+                <span class="char-role">L'Architecte</span>
+                <p>Conseiller du Roi. Élégant, froid et manipulateur. Il a industrialisé la souffrance humaine pour maintenir l'ordre.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/a20beautiful20woman20frozen20inside20a20giant20blue20crystal2c20wearing20an20ancient20w.jpg" class="char-img" alt="Liana (Le Cœur)">
+            <div class="char-content">
+                <h3 class="char-name">Liana (Le Cœur)</h3>
+                <span class="char-role">La Prisonnière Éternelle</span>
+                <p>Enfermée dans le cristal depuis des siècles. Son chagrin infini est la batterie qui alimente tout le royaume.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">L'Ascension des Larmes</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color: #888; font-size: 0.9rem;">CHAPITRE CLÉ 1</span>
+                <h3 class="scene-title">La Masure de Rochegrise</h3>
+                <p>Le début de tout. Kaelen, seul dans sa maison glaciale, crée involontairement une fleur de givre sur la fenêtre en pensant à son frère.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/interior20of20a20rustic20wooden20hut2c20a20window20covered20in20a20beautiful20magical2.jpg" class="scene-img" alt="La Masure de Rochegrise">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color: #888; font-size: 0.9rem;">CHAPITRE CLÉ 2</span>
+                <h3 class="scene-title">Le Duel : Feu contre Glace</h3>
+                <p>L'entraînement brutal à la Citadelle. Kaelen et Lyra s'affrontent, leurs pouvoirs opposés créant une vapeur mortelle.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/fantasy20arena20combat2c20a20man20using20ice20magic20shield20against20a20woman20throwin.jpg" class="scene-img" alt="Le Duel : Feu contre Glace">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color: #888; font-size: 0.9rem;">CHAPITRE CLÉ 3</span>
+                <h3 class="scene-title">La Centrale</h3>
+                <p>La découverte de l'horreur. Une cathédrale souterraine de machines et de tuyaux pompant l'énergie bleue des conteneurs de chagrin.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/massive20underground20steampunk20fantasy20factory20hall2c20dark20metal20pipes2c20glowing.jpg" class="scene-img" alt="La Centrale">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color: #888; font-size: 0.9rem;">CHAPITRE CLÉ 4</span>
+                <h3 class="scene-title">L'Ascension de la Lueur-d'Âme</h3>
+                <p>Le climax. Kaelen refuse la haine. Une lumière dorée et chaude émane de lui, transmutant la glace tranchante en poussière d'or.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/a20man20standing20in20a20dark20throne20room2c20radiating20a20warm20golden20healing20li.jpg" class="scene-img" alt="L&#39;Ascension de la Lueur-d&#39;Âme">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color: #888; font-size: 0.9rem;">CHAPITRE CLÉ 5</span>
+                <h3 class="scene-title">Le Premier Arbre</h3>
+                <p>L'épilogue. Sur la tombe d'Ewan, une pousse verte perce le sol gelé. La vie reprend ses droits.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LE CHAGRIN NOUS A BÂTI - Le Roman_files/close20up20of20a20small20green20plant20sprout20growing20out20of20snow20covered20earth2.jpg" class="scene-img" alt="Le Premier Arbre">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une expérience visuelle générée par IA</p>
+            <p>Basé sur l'œuvre de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

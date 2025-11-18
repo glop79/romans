@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Work/template/ce_que_la_memoire_oublie_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>CE QUE LA MÉMOIRE OUBLIE - Le Livre</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #fcfcfc;
+        --text: #333333;
+        --steel: #b0bec5;
+        --sky: #90caf9;
+        --pain: #ef9a9a;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Effet de grain subtil (comme un souvenir) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.7), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520white%2520and%2520grey%2520fractured%2520glass%2520texture%252C%2520soft%2520light%252C%2520psychological%2520concept%2C%20cinematic%20drama%2C%20clean%20aesthetic%2C%20cold%20lighting%2C%20psychological%20thriller%20atmosphere%2C%208k%2C%20highly%20detailed%2C%20sharp%20focus?width=1280&height=600&nologo=true&model=flux&seed=6124');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 4.5rem;
+        color: #222;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+    
+    /* Effet de texte "manquant" */
+    h1 span {
+        color: var(--steel);
+        opacity: 0.5;
+        filter: blur(1px);
+    }
+
+    .tagline {
+        font-family: 'Libre Baskerville', serif;
+        font-style: italic;
+        font-size: 1.5rem;
+        color: var(--text);
+        margin-top: 20px;
+        border-top: 1px solid var(--steel);
+        border-bottom: 1px solid var(--steel);
+        padding: 15px 40px;
+        background: rgba(255,255,255,0.8);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 120px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        border-left: 5px solid var(--steel);
+        position: relative;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Libre Baskerville', serif; 
+        color: var(--text); 
+        font-size: 2.2rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; text-align: justify; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Libre Baskerville', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 40px;
+        height: 4px;
+        background: var(--sky);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        transition: 0.4s ease;
+        border: 1px solid #eee;
+    }
+    .char-card:hover { 
+        transform: translateY(-5px); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        border-color: var(--sky);
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover; 
+        filter: grayscale(100%); 
+        transition: 0.4s;
+    }
+    .char-card:hover .char-img { filter: grayscale(0%); }
+    
+    .char-info { padding: 20px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Libre Baskerville', serif; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--steel); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    
+    /* Timeline "Fragments" */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    /* Ligne pointillée (mémoire discontinue) */
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        border-left: 2px dashed var(--steel);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        padding: 10px;
+        background: white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        transform: rotate(-2deg); /* Effet photo posée */
+        transition: 0.3s;
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(2deg); }
+    .scene-img-wrapper:hover { transform: rotate(0deg) scale(1.02); z-index: 10; }
+    
+    .scene-img { width: 100%; display: block; }
+    
+    .scene-content { width: 45%; }
+    .scene-title { font-family: 'Libre Baskerville', serif; font-size: 1.8rem; margin-top: 0; color: var(--text); }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #f0f0f0;
+        color: #888;
+        font-family: 'Libre Baskerville';
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-img-wrapper { width: 90%; transform: rotate(0deg) !important; }
+        .scene-content { width: 100%; text-align: center; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>CE QUE LA MÉMOIRE <span>OUBLIE</span></h1>
+            <div class="tagline">"L'innocence n'efface pas le silence."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Oubli</h2>
+                <div class="synopsis-text">
+        <strong>Arthur Morin n'est pas en prison, mais il est enfermé.</strong><br><br>
+        Depuis deux ans, il vit dans une maison trop blanche, trop silencieuse, rythmée par le bruit du grille-pain et les rituels pour sa fille Chloé. Il est persuadé d'avoir tué sa femme, Léa, lors d'une nuit dont il a perdu dix minutes cruciales. Un trou noir dans sa mémoire qu'il a rempli de culpabilité.<br><br>
+        Mais la mémoire est une chose étrange. Alors qu'il purge finalement sa peine pour les conséquences de ses actes, et non pour le crime qu'il pensait avoir commis, la vérité remonte à la surface. Ce n'est pas un film d'horreur, c'est une révélation. Arthur doit apprendre à accepter l'homme qu'il est : coupable de sa peur, mais innocent de son sang.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Témoins</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/portrait20of20a20tired20man20in20his2030s20sitting20in20a20pristine20white20modern20ki.jpg" class="char-img" alt="Arthur Morin">
+            <div class="char-info">
+                <h3 class="char-name">Arthur Morin</h3>
+                <span class="char-role">Le Coupable Idéal</span>
+                <p>Un homme rongé par le remords d'un crime qu'il n'a pas commis. Il vit en automate pour protéger sa fille.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/ethereal20portrait20of20a20laughing20woman20in20a20car20at20night2c20motion20blur2c20.jpg" class="char-img" alt="Léa">
+            <div class="char-info">
+                <h3 class="char-name">Léa</h3>
+                <span class="char-role">Le Souvenir</span>
+                <p>L'absente omniprésente. Elle n'existe plus que dans les vides de la maison et les cauchemars d'Arthur.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/close20up20of20a20child27s20breakfast20plate20with20a20toast20shaped20like20a20cat20f.jpg" class="char-img" alt="Chloé">
+            <div class="char-info">
+                <h3 class="char-name">Chloé</h3>
+                <span class="char-role">La Raison de Vivre</span>
+                <p>La fille d'Arthur. C'est pour elle qu'il dessine des chats sur des tartines chaque matin.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/a20truck20driving20on20a20dark20road20at20night2c20headlights20cutting20through20the20.jpg" class="char-img" alt="La Vérité">
+            <div class="char-info">
+                <h3 class="char-name">La Vérité</h3>
+                <span class="char-role">Le Camion</span>
+                <p>L'élément extérieur qui vient briser le huis-clos mental. Le témoignage qui change tout.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Fragments de Vérité</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/interior20of20a20minimalist20white20kitchen2c20stainless20steel20appliances2c20a20man20.jpg" class="scene-img" alt="Le Rituel du Matin">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Rituel du Matin</h3>
+                <p class="scene-desc">7h02. Le bruit du grille-pain. La cuisine blanche. Arthur construit une illusion de normalité pour Chloé.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/abstract20representation20of20memory20loss2c20shattered20glass20fragments20floating20in20.jpg" class="scene-img" alt="Le Trou Noir">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Trou Noir</h3>
+                <p class="scene-desc">L'accident. Une route de nuit, des phares, et puis le néant. Les dix minutes qui manquent.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/night20scene20in20a20forest2c20a20shovel20in20red20earth2c20rain20falling2c20dark20a.jpg" class="scene-img" alt="La Terre Rouge">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Terre Rouge</h3>
+                <p class="scene-desc">Le mensonge d'Arthur. La tentative désespérée de cacher ce qu'il croyait être son crime.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/interior20of20a20small20prison20cell2c20a20man20lying20on20a20bunk20looking20at20a20.jpg" class="scene-img" alt="La Cellule">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Cellule</h3>
+                <p class="scene-desc">Arthur en prison. Un espace réduit, mais pour la première fois, une forme de paix.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./CE QUE LA MÉMOIRE OUBLIE - Le Livre_files/portrait20of20a20man20with20closed20eyes20looking20peaceful2c20half20his20face20in20sh.jpg" class="scene-img" alt="L&#39;Homme Complet">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Homme Complet</h3>
+                <p class="scene-desc">L'acceptation. Arthur ferme les yeux et voit enfin la vérité. Il n'est ni un monstre ni un saint.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Site généré par IA pour le roman de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

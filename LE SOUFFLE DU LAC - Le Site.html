@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)file:///C:/Work/template/le_souffle_du_lac_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE SOUFFLE DU LAC - Le Site</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Oswald:wght@300;500&display=swap');
+    
+    :root {
+        --bg: #0f172a;
+        --text: #f1f5f9;
+        --ice: #38bdf8;
+        --mist: #94a3b8;
+        --card: rgba(30, 41, 59, 0.7);
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        background-image: linear-gradient(to bottom, #0f172a, #1e293b);
+    }
+
+    /* Effet de neige (particules) */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='1' fill='white' opacity='0.3'/%3E%3Ccircle cx='50' cy='80' r='1.5' fill='white' opacity='0.2'/%3E%3Ccircle cx='150' cy='40' r='1' fill='white' opacity='0.4'/%3E%3C/svg%3E");
+        animation: snow 20s linear infinite;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Header Glaciaire */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(15,23,42,0.4), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Frozen%2520lake%2520texture%2520with%2520deep%2520cracks%2520and%2520air%2520bubbles%252C%2520dark%2520blue%2520macro%2520photography%2C%20nordic%20thriller%20style%2C%20cold%20color%20palette%2C%20blue%20and%20white%2C%20cinematic%2C%20atmospheric%2C%208k%2C%20hyperrealistic%2C%20sharp%20focus%2C%20mist?width=1280&height=600&nologo=true&model=flux&seed=432');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        border-bottom: 1px solid var(--ice);
+        position: relative;
+        z-index: 2;
+    }
+
+    h1 {
+        font-family: 'Oswald', sans-serif;
+        font-size: 6rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 15px;
+        margin-bottom: 10px;
+        text-shadow: 0 0 30px rgba(56, 189, 248, 0.5);
+        opacity: 0;
+        animation: fadeIn 3s forwards;
+    }
+
+    .tagline {
+        font-size: 1.5rem;
+        color: var(--ice);
+        background: rgba(15, 23, 42, 0.8);
+        padding: 15px 40px;
+        border: 1px solid var(--ice);
+        backdrop-filter: blur(5px);
+        margin-top: 20px;
+        opacity: 0;
+        animation: fadeIn 3s forwards 1s;
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; position: relative; z-index: 2; }
+
+    /* Synopsis - Effet Verre Givré */
+    .synopsis-box {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 4px solid var(--ice);
+        padding: 50px;
+        margin-bottom: 120px;
+        border-radius: 10px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Oswald', sans-serif; 
+        color: var(--ice); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        letter-spacing: 2px;
+    }
+    .synopsis-text { font-size: 1.2rem; line-height: 1.8; color: #cbd5e1; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Oswald', sans-serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: white;
+        letter-spacing: 5px;
+        text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: var(--card);
+        border-radius: 4px;
+        overflow: hidden;
+        transition: transform 0.4s ease;
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        border-color: var(--ice);
+        box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+    }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: saturate(0.8) contrast(1.1); transition: 0.5s; }
+    .char-card:hover .char-img { filter: saturate(1) contrast(1); }
+    
+    .char-info { padding: 25px; }
+    .char-name { color: var(--ice); font-family: 'Oswald', sans-serif; margin: 0; font-size: 1.5rem; }
+    .char-role { color: var(--mist); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 15px 0; }
+
+    /* Timeline / Scènes */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--ice), transparent);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-content {
+        width: 45%;
+        background: rgba(15, 23, 42, 0.8);
+        padding: 30px;
+        border: 1px solid rgba(56, 189, 248, 0.2);
+        position: relative;
+        backdrop-filter: blur(5px);
+    }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    .scene-img { 
+        width: 100%; 
+        display: block; 
+        filter: brightness(0.9);
+    }
+    
+    .scene-title { 
+        font-family: 'Oswald', sans-serif; 
+        color: white; 
+        font-size: 1.8rem; 
+        margin-top: 0; 
+        border-bottom: 1px solid var(--ice);
+        padding-bottom: 10px;
+        display: inline-block;
+    }
+    .scene-desc { color: #94a3b8; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #020617;
+        border-top: 1px solid #1e293b;
+        color: var(--mist);
+        font-family: 'Oswald', sans-serif;
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes snow {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 500px; }
+    }
+
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-content, .scene-img-wrapper { width: 100%; margin-left: 40px; margin-bottom: 30px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE SOUFFLE DU LAC</h1>
+            <div class="tagline">Ce qui dort sous la glace ne rêve pas. Il attend.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Hiver Vient</h2>
+                <div class="synopsis-text">
+        <strong>L'isolement n'est pas un refuge. C'est un piège.</strong><br><br>
+        Pour sauver leur famille, Sophie, Marc et leur fille Chloé décident de passer l'hiver à <strong>Blackwood</strong>, un chalet isolé au bord d'un lac gelé, cerné par une forêt impénétrable. Ils cherchent le silence et la paix.<br><br>
+        Mais le silence de Blackwood est trompeur. Sous la surface miroitante du lac, quelque chose pulse. Une présence ancienne qui se nourrit des non-dits et des peurs enfouies. Alors que la neige condamne les routes, la famille réalise qu'elle n'est pas seule.<br><br>
+        Entre la rationalité de Sophie et les plaisanteries nerveuses de Marc, c'est Chloé qui sentira la première le souffle froid de la vérité : le monstre n'est pas dehors. Il est déjà en train de remonter à la surface.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Naufragés</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE SOUFFLE DU LAC - Le Site_files/portrait20of20a20worried20mother20driving20a20car20in20a20blizzard2c20hands20gripping2.jpg" class="char-img" alt="Sophie">
+            <div class="char-info">
+                <h3 class="char-name">Sophie</h3>
+                <span class="char-role">L'Ancre</span>
+                <p>Pragmatique et protectrice. Elle tient le volant et la famille, refusant de voir les fissures jusqu'à ce qu'elles deviennent des gouffres.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SOUFFLE DU LAC - Le Site_files/portrait20of20a20man20standing20in20front20of20a20dark20forest2c20nervous20smile2c20w.jpg" class="char-img" alt="Marc">
+            <div class="char-info">
+                <h3 class="char-name">Marc</h3>
+                <span class="char-role">Le Sceptique</span>
+                <p>Il tente de masquer l'angoisse par l'humour. Mais son rire sonne faux dans le silence de la forêt.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SOUFFLE DU LAC - Le Site_files/portrait20of20a20teenage20girl20looking20out20a20frosted20window2c20reflection20of20a2.jpg" class="char-img" alt="Chloé">
+            <div class="char-info">
+                <h3 class="char-name">Chloé</h3>
+                <span class="char-role">La Sensitive</span>
+                <p>Elle voit ce que les adultes ignorent. Elle sait que le lac la regarde.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SOUFFLE DU LAC - Le Site_files/a20dark20frozen20lake20surface20with20deep20cracks20glowing20faintly20blue20from20undern.jpg" class="char-img" alt="Le Lac">
+            <div class="char-info">
+                <h3 class="char-name">Le Lac</h3>
+                <span class="char-role">La Menace</span>
+                <p>Une étendue de glace parfaite qui cache un secret millénaire. Il respire sous la surface.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">La Descente</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color:var(--ice); font-size:0.8rem; letter-spacing:2px;">CHAPITRE 1</span>
+                <h3 class="scene-title">La Route de Blackwood</h3>
+                <p class="scene-desc">La vieille Volvo grise s'enfonce dans la forêt enneigée. Les arbres forment une prison végétale qui se referme derrière eux.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE SOUFFLE DU LAC - Le Site_files/a20grey20volvo20car20driving20on20a20narrow20road20surrounded20by20massive20snow-covered.jpg" class="scene-img" alt="La Route de Blackwood">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color:var(--ice); font-size:0.8rem; letter-spacing:2px;">CHAPITRE 2</span>
+                <h3 class="scene-title">Le Chalet Silencieux</h3>
+                <p class="scene-desc">L'arrivée. Le chalet semble attendre. Le silence est si épais qu'il en devient assourdissant.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE SOUFFLE DU LAC - Le Site_files/exterior20of20a20wooden20cabin20covered20in20heavy20snow20at20twilight2c20warm20light2.jpg" class="scene-img" alt="Le Chalet Silencieux">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color:var(--ice); font-size:0.8rem; letter-spacing:2px;">CHAPITRE 3</span>
+                <h3 class="scene-title">Le Reflet</h3>
+                <p class="scene-desc">Chloé regarde le lac gelé. Elle ne voit pas son reflet, mais une ombre qui nage sous la glace.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE SOUFFLE DU LAC - Le Site_files/close20up20on20ice20texture2c20a20blurry20dark20shadow20shape20visible20deep20under20t.jpg" class="scene-img" alt="Le Reflet">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color:var(--ice); font-size:0.8rem; letter-spacing:2px;">CHAPITRE 4</span>
+                <h3 class="scene-title">La Tempête</h3>
+                <p class="scene-desc">Le vent se lève. La lumière s'éteint. Ils sont coupés du monde, seuls avec ce qui gratte à la porte.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE SOUFFLE DU LAC - Le Site_files/view20from20inside20a20house20looking20out20at20a20raging20snowstorm2c20dark20silhouett.jpg" class="scene-img" alt="La Tempête">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <span style="color:var(--ice); font-size:0.8rem; letter-spacing:2px;">CHAPITRE 5</span>
+                <h3 class="scene-title">L'Héritage</h3>
+                <p class="scene-desc">La fin. Sophie et Chloé regardent le lac apaisé. Elles ont survécu, mais elles savent que le mal n'est qu'endormi.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE SOUFFLE DU LAC - Le Site_files/two20women20standing20by20a20calm20lake20at20sunset2c20mountains20in20background2c20lo.jpg" class="scene-img" alt="L&#39;Héritage">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une expérience visuelle générée par IA</p>
+            <p>D'après l'œuvre de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<!-- saved from url=(0051)file:///C:/Work/template/le_cercle_parfait_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE CERCLE PARFAIT - Bienvenue</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;700&family=Quicksand:wght@300;500;700&display=swap');
+    
+    :root {
+        --bg: #f9f7f2;
+        --text: #4a4a4a;
+        --gold: #d4af37;
+        --green: #789c4a;
+        --chaos: #2c3e50;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Quicksand', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Cercles en fond */
+    body::before {
+        content: "";
+        position: fixed;
+        top: -10%; left: -10%; width: 50vw; height: 50vw;
+        background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(255,255,255,0) 70%);
+        border-radius: 50%;
+        z-index: -1;
+    }
+    body::after {
+        content: "";
+        position: fixed;
+        bottom: -10%; right: -10%; width: 40vw; height: 40vw;
+        background: radial-gradient(circle, rgba(120, 156, 74, 0.1) 0%, rgba(255,255,255,0) 70%);
+        border-radius: 50%;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(249, 247, 242, 0.4), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520golden%2520circle%2520gate%2520in%2520a%2520futuristic%2520utopian%2520garden%252C%2520heavenly%2520light%252C%2520cinematic%2C%20solarpunk%20aesthetic%2C%20bright%20golden%20lighting%2C%20cinematic%2C%20highly%20detailed%2C%208k%2C%20slightly%20surreal%20perfection?width=1280&height=600&nologo=true&model=flux&seed=7770');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    
+    /* Cadre circulaire autour du titre */
+    .title-wrapper {
+        border: 2px solid var(--gold);
+        border-radius: 50%;
+        padding: 60px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+        animation: float 6s ease-in-out infinite;
+    }
+
+    h1 {
+        font-family: 'Comfortaa', cursive;
+        font-size: 4rem;
+        color: var(--gold);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin: 0;
+    }
+
+    .tagline {
+        font-family: 'Quicksand', sans-serif;
+        font-size: 1.2rem;
+        color: var(--text);
+        margin-top: 10px;
+        font-weight: 500;
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        border-radius: 30px;
+        padding: 60px;
+        margin-bottom: 120px;
+        box-shadow: 0 20px 60px rgba(212, 175, 55, 0.15);
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .synopsis-box::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 10px;
+        background: linear-gradient(to right, var(--gold), var(--green));
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Comfortaa', cursive; 
+        color: var(--green); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.2rem; color: #666; }
+
+    /* Personnages (Images rondes) */
+    .section-title {
+        text-align: center;
+        font-family: 'Comfortaa', cursive;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 50px;
+    }
+    .char-card {
+        text-align: center;
+        transition: 0.3s;
+    }
+    .char-card:hover { transform: translateY(-10px); }
+    
+    .char-img-wrapper {
+        width: 200px;
+        height: 200px;
+        margin: 0 auto 20px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: 0.3s;
+    }
+    .char-card:hover .char-img-wrapper { border-color: var(--gold); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+    
+    .char-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .char-name { color: var(--gold); font-family: 'Comfortaa'; font-size: 1.5rem; margin: 0; }
+    .char-role { color: var(--green); font-size: 0.9rem; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; display: block; }
+    .char-desc { font-size: 0.95rem; color: #777; }
+
+    /* Timeline "Le Cercle" */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: linear-gradient(to bottom, var(--gold), var(--chaos));
+        transform: translateX(-50%);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-content {
+        width: 45%;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        position: relative;
+    }
+    
+    /* Indicateur rond sur la timeline */
+    .scene-content::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 4px solid var(--gold);
+        border-radius: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+    }
+    .scene:nth-child(odd) .scene-content::after { right: -62px; }
+    .scene:nth-child(even) .scene-content::after { left: -62px; border-color: var(--chaos); }
+
+    .scene-img-wrapper { width: 45%; border-radius: 20px; overflow: hidden; }
+    .scene-img { 
+        width: 100%; 
+        display: block; 
+        transition: transform 0.5s;
+    }
+    .scene:hover .scene-img { transform: scale(1.05); }
+    
+    .scene-title { font-family: 'Comfortaa'; color: var(--text); font-size: 1.3rem; margin-top: 0; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: var(--chaos);
+        color: white;
+        font-family: 'Quicksand';
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-15px); }
+        100% { transform: translateY(0px); }
+    }
+
+    @media (max-width: 768px) {
+        .title-wrapper { padding: 30px; }
+        h1 { font-size: 2.5rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-content, .scene-img-wrapper { width: 100%; margin-left: 40px; margin-bottom: 30px; }
+        .scene-content::after { left: -52px; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <div class="title-wrapper">
+                <h1>LE CERCLE PARFAIT</h1>
+                <div class="tagline">L'Harmonie n'est pas un choix. C'est une obligation.</div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Harmonie</h2>
+                <div class="synopsis-text">
+        <strong>Ils cherchaient le paradis. Ils ont trouvé une prison sans barreaux.</strong><br><br>
+        Fuyant le chaos urbain et l'épuisement, Thomas et Elodie rejoignent "Le Cercle", une communauté isolée dans une vallée baignée de lumière dorée. Ici, tout est harmonie : architecture en bois et verre, nature luxuriante, bienveillance perpétuelle.<br><br>
+        Mais derrière les sourires radieux et les brochures glacées, Thomas sent que quelque chose cloche. La perfection a un coût psychologique terrifiant. Entre la foi inébranlable d'Elodie et ses propres doutes, le couple devra jouer un jeu dangereux : feindre le bonheur absolu pour espérer retrouver la liberté du désordre.<br><br>
+        <em>Une fable glaçante sur la dictature du bien-être.</em>
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Résidents</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/portrait20of20a20tense20man20in20his2030s20driving20a20car2c20rain20on20windshield2c.jpg" class="char-img" alt="Thomas">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Thomas</h3>
+                <span class="char-role">Le Dissident</span>
+                <p>Pragmatique et usé. Il voit les fissures dans la façade dorée. Il conduit la voiture, mais il n'a plus le contrôle.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/portrait20of20a20beautiful20woman20smiling20blissfully2c20holding20a20brochure2c20bathed.jpg" class="char-img" alt="Elodie">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Elodie</h3>
+                <span class="char-role">La Croyante</span>
+                <p>Radieuse, convertie à l'idée de l'Harmonie. Elle tient la brochure du Cercle comme un texte sacré.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/wide20shot20of20a20utopian20village20in20a20green20valley2c20futuristic20wooden20organi.jpg" class="char-img" alt="Le Cercle">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Le Cercle</h3>
+                <span class="char-role">Le Lieu</span>
+                <p>Une vallée idyllique. Maisons bioclimatiques, lumière permanente, silence artificiel. Une utopie qui ne tolère pas l'ombre.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/busy20city20street20at20night2c20neon20lights2c20traffic2c20people20walking2c20rain20.jpg" class="char-img" alt="La Ville">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">La Ville</h3>
+                <span class="char-role">Le Chaos</span>
+                <p>Bruyante, sale, vivante. L'endroit où l'on peut enfin respirer et être imparfait.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Le Cycle</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">PHASE 1 : L'Approche</h3>
+                <p>La voiture sous la pluie sur l'autoroute A6. Le contraste entre la grisaille du réel et la promesse dorée de la brochure.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/view20from20inside20a20car20on20a20rainy20highway2c20grey20sky2c20holding20a20colorfu.jpg" class="scene-img" alt="L&#39;Approche">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">PHASE 2 : La Vallée Dorée</h3>
+                <p>L'arrivée. La lumière change. Tout devient trop beau, trop vert. Le slogan 'L'Harmonie à portée de main' semble flotter dans l'air.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/a20perfect20eco-village20with20glass20and20wood20houses20nestled20in20a20lush20forest2c.jpg" class="scene-img" alt="La Vallée Dorée">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">PHASE 3 : Le Formulaire</h3>
+                <p>Le couple doit remplir son 'feedback'. Ils mentent pour survivre. Un exorcisme sur papier.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/close20up20of20hands20filling20a20form20with20a20pen20on20a20wooden20table2c20warm20.jpg" class="scene-img" alt="Le Formulaire">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">PHASE 4 : Le Retour au Réel</h3>
+                <p>La fenêtre ouverte sur la rue bruyante. Le bruit, les odeurs, la vie. Thomas et Elodie s'enlacent, libres.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/a20couple20hugging20in20a20dark20apartment20living20room2c20window20open20to20a20busy.jpg" class="scene-img" alt="Le Retour au Réel">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">PHASE 5 : L'Imparfait</h3>
+                <p>Un vieux monsieur, un chien, une poubelle qui déborde. La beauté du désordre humain retrouvée.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE CERCLE PARFAIT - Bienvenue_files/street20photography20of20an20old20man20walking20a20dog20near20a20trash20can20in20a20b.jpg" class="scene-img" alt="L&#39;Imparfait">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Site généré pour l'utopie de Nora FANZZIKERC</p>
+            <p>Ne croyez pas tout ce que vous voyez.</p>
+        </footer>
+    
+    
+    </body></html>

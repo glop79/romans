@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Work/template/le_protocole_de_loubli_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE PROTOCOLE DE L'OUBLI - Expérience</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+    
+    :root {
+        --bg: #f4f6f8;
+        --text: #2d3436;
+        --primary: #00cec9;
+        --accent: #fdcb6e;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Header - Effet "Flashback" */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(244,246,248,0.8), rgba(244,246,248,1)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520double%2520exposure%2520of%2520a%2520human%2520brain%2520and%2520autumn%2520trees%252C%2520white%2520background%252C%2520medical%2520art%2C%20cinematic%2C%20psychological%20drama%20style%2C%20highly%20detailed%2C%208k%2C%20emotional%20lighting%2C%20photorealistic%2C%20depth%20of%20field?width=1280&height=600&nologo=true&model=flux&seed=9558');
+        background-size: cover;
+        background-position: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 4.5rem;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 10px;
+        position: relative;
+    }
+    
+    /* Effet de texte flouté/net (Mémoire) */
+    h1::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 2px;
+        top: 0;
+        color: var(--primary);
+        opacity: 0.3;
+        filter: blur(2px);
+        z-index: -1;
+    }
+
+    .tagline {
+        font-family: 'Lato', sans-serif;
+        font-size: 1.5rem;
+        color: var(--text);
+        font-weight: 300;
+        border-top: 1px solid var(--primary);
+        border-bottom: 1px solid var(--primary);
+        padding: 15px 40px;
+        margin-top: 20px;
+        background: rgba(255,255,255,0.5);
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis - Style Dossier Médical */
+    .synopsis-box {
+        background: white;
+        border-left: 5px solid var(--primary);
+        padding: 50px;
+        margin-bottom: 120px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        position: relative;
+    }
+    .synopsis-box::before {
+        content: "DOSSIER PATIENT : 730";
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background: var(--primary);
+        color: white;
+        padding: 2px 10px;
+        font-size: 0.8rem;
+        letter-spacing: 2px;
+    }
+    .synopsis-box h2 { 
+        font-family: 'Playfair Display', serif; 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        color: var(--text);
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        font-style: italic;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        border-radius: 4px;
+        overflow: hidden;
+        transition: transform 0.4s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    }
+    .char-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+    
+    .char-img { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover; 
+        filter: grayscale(20%) contrast(0.95); /* Look un peu délavé/souvenir */
+        transition: 0.4s;
+    }
+    .char-card:hover .char-img { filter: grayscale(0%) contrast(1); }
+    
+    .char-info { padding: 30px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Playfair Display', serif; margin: 0; font-size: 1.5rem; }
+    .char-role { color: var(--primary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 20px 0; }
+
+    /* Timeline / Scènes */
+    .timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; left: 50%;
+        width: 1px;
+        background: #ddd;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 150px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-content {
+        width: 42%;
+        padding: 20px;
+        text-align: right;
+    }
+    .scene:nth-child(even) .scene-content { text-align: left; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+    }
+    /* Cadre style photo instantanée */
+    .scene-img-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 10px; left: 10px; right: -10px; bottom: -10px;
+        border: 1px solid var(--primary);
+        z-index: -1;
+    }
+    
+    .scene-img { 
+        width: 100%; 
+        display: block; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        filter: sepia(10%);
+    }
+    
+    .scene-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-top: 0; color: var(--text); }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: white;
+        border-top: 1px solid #eee;
+        color: #aaa;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { left: 20px; }
+        .scene { flex-direction: column; align-items: flex-start; }
+        .scene:nth-child(even) { flex-direction: column; }
+        .scene-content, .scene-img-wrapper { width: 100%; margin-left: 40px; margin-bottom: 30px; text-align: left; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1 data-text="LE PROTOCOLE DE L&#39;OUBLI">LE PROTOCOLE DE L'OUBLI</h1>
+            <div class="tagline">Certains souvenirs sont des cicatrices. Voulez-vous les effacer ?</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Enquête Intérieure</h2>
+                <div class="synopsis-text">
+        <strong>Sept cent trente jours de silence.</strong><br><br>
+        Elias Thorne se réveille chaque matin dans un appartement qui ne sent rien, entouré de cartons qu'il n'ouvre jamais. Il a tout oublié de sa vie d'avant, sauf une chose : le visage d'un enfant blond sur un cadre numérique.<br><br>
+        Ancien neuroscientifique de génie, Elias découvre qu'il est l'architecte de sa propre amnésie. Il a inventé le "Protocole", une méthode radicale pour effacer les traumatismes. Mais alors que des fragments de passé remontent à la surface, guidés par l'énigmatique Lena, Elias se heurte à une question terrifiante : a-t-il utilisé sa machine pour se sauver, ou pour fuir l'impardonnable ?<br><br>
+        Une plongée vertigineuse dans les abysses de la mémoire humaine.
+    </div>
+            </div>
+
+            <h2 class="section-title">Figures du Passé</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/portrait20of20a20tired20man20in20his2040s2c20looking20at20his20reflection20in20a20mir.jpg" class="char-img" alt="Elias Thorne">
+            <div class="char-info">
+                <h3 class="char-name">Elias Thorne</h3>
+                <span class="char-role">Le Patient Zéro</span>
+                <p>Neuroscientifique brillant mais brisé. Il a choisi l'oubli pour survivre à la douleur.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/portrait20of20a20woman20with20a20trench20coat20walking20in20a20city20park20during20aut.jpg" class="char-img" alt="Lena">
+            <div class="char-info">
+                <h3 class="char-name">Lena</h3>
+                <span class="char-role">Le Fil d'Ariane</span>
+                <p>Elle porte le poids du passé pour deux. Elle guide Elias vers une vérité qu'il a tout fait pour fuir.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/close20up20of20a20happy20620year20old20boy20laughing20on20a20swing20set2c20sunny20da.jpg" class="char-img" alt="Leo">
+            <div class="char-info">
+                <h3 class="char-name">Leo</h3>
+                <span class="char-role">Le Souvenir</span>
+                <p>Un petit garçon de six ans aux cheveux blonds. Un rire cristallin qui hante les rêves d'Elias.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/portrait20of20a20stern20doctor20in20a20white20lab20coat2c20standing20in20a20high-tech.jpg" class="char-img" alt="Dr. Vance">
+            <div class="char-info">
+                <h3 class="char-name">Dr. Vance</h3>
+                <span class="char-role">Le Gardien du Protocole</span>
+                <p>Froid et pragmatique. Il représente la science sans conscience, celle qui veut 'guérir' la tristesse à tout prix.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Fragments de Mémoire</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">L'Appartement Vide</h3>
+                <p class="scene-desc">Le réveil d'Elias. Un monde blanc, sans odeur, sans passé. Juste des cartons scellés.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/interior20of20a20minimalist20sterile20white20apartment2c20unopened20cardboard20boxes20on.jpg" class="scene-img" alt="L&#39;Appartement Vide">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Laboratoire Souterrain</h3>
+                <p class="scene-desc">Elias redécouvre son œuvre. La machine à oublier, un monstre de technologie capable d'éditer l'âme humaine.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/underground20high-tech20laboratory2c20a20futuristic20medical20chair20with20helmet20and20c.jpg" class="scene-img" alt="Le Laboratoire Souterrain">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Balançoire</h3>
+                <p class="scene-desc">Le flash-back traumatique. Un parc en automne, une balançoire vide qui grince sous le vent.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/an20empty20swing20set20in20a20park20during20autumn2c20orange20leaves20on20the20ground.jpg" class="scene-img" alt="La Balançoire">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Confrontation</h3>
+                <p class="scene-desc">Face à la vérité. Elias doit choisir : reprendre sa douleur ou rester dans le néant.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/close20up20on20a20man20crying20in20the20rain2c20emotional20breakdown2c20dramatic20ligh.jpg" class="scene-img" alt="La Confrontation">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">L'Acceptation</h3>
+                <p class="scene-desc">La fin du Protocole. Elias pousse son fils sur la balançoire. La douleur est là, mais l'amour aussi.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LE PROTOCOLE DE L&#39;OUBLI - Expérience_files/a20father20pushing20his20son20on20a20swing2c20golden20hour20sunlight2c20laughing2c20w.jpg" class="scene-img" alt="L&#39;Acceptation">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par Script Python &amp; IA</p>
+            <p>Inspiré de l'œuvre de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

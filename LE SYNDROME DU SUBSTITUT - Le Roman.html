@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<!-- saved from url=(0058)file:///C:/Work/template/le_syndrome_du_substitut_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE SYNDROME DU SUBSTITUT - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap');
+    
+    :root {
+        --bg: #f9fafb;
+        --text: #374151;
+        --marble: #64748b;
+        --light: #e2e8f0;
+        --gold: #f59e0b;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Lato', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+    
+    /* Effet Marbre subtil en fond */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.4), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520soft%2520white%2520curtains%2520blowing%2520in%2520wind%252C%2520sun%2520rays%252C%2520peaceful%2520morning%2520atmosphere%2C%20cinematic%20drama%2C%20soft%20natural%20lighting%2C%20emotional%2C%20highly%20detailed%2C%208k%2C%20photorealistic%2C%20depth%20of%20field%2C%20kodak%20portra?width=1280&height=600&nologo=true&model=flux&seed=1172');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 4.5rem;
+        color: var(--text);
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        text-shadow: 2px 2px 10px rgba(255,255,255,0.8);
+    }
+
+    .tagline {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-size: 1.6rem;
+        color: var(--marble);
+        margin-top: 20px;
+        background: rgba(255,255,255,0.9);
+        padding: 15px 50px;
+        border-radius: 2px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 120px;
+        border-top: 1px solid var(--marble);
+        border-bottom: 1px solid var(--marble);
+        text-align: center;
+        position: relative;
+    }
+    .synopsis-box::before {
+        content: "I";
+        position: absolute;
+        top: -30px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 3rem;
+        color: var(--light);
+        font-family: 'Cormorant Garamond', serif;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cormorant Garamond', serif; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; font-weight: 300; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        font-style: italic;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        transition: 0.5s ease;
+        border: 1px solid #f0f0f0;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px); 
+        box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        border-color: var(--gold);
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 350px; 
+        object-fit: cover; 
+        filter: sepia(10%);
+        transition: 0.5s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%); }
+    
+    .char-info { padding: 25px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin: 0; }
+    .char-role { color: var(--marble); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0; }
+    
+    /* Timeline fluide */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, var(--marble), var(--gold));
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 10px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .scene-img { width: 100%; display: block; filter: contrast(1.05); }
+    
+    .scene-content { width: 45%; text-align: center; }
+    
+    .scene-title { 
+        font-family: 'Cormorant Garamond', serif; 
+        font-size: 1.8rem; 
+        margin-top: 0; 
+        color: var(--text);
+    }
+    .scene-desc { color: #666; font-style: italic; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: white;
+        color: #aaa;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 40px; }
+        .scene-img-wrapper, .scene-content { width: 100%; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE SYNDROME DU SUBSTITUT</h1>
+            <div class="tagline">"Il ne suffit pas de donner la vie pour être père. Il faut choisir de l'aimer."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>Trois minutes. C'est le temps qu'il faut pour qu'une vie bascule.</strong><br><br>
+        Dans la froideur aseptisée d'une salle de bain parisienne, Claire et David attendent le verdict d'un sablier numérique. Pour David, marqué par des années d'espoirs déçus et de nuits sans sommeil, ce test est l'ultime épreuve. <br><br>
+        Mais lorsque le résultat s'affiche, il ne s'agit pas seulement d'une naissance, mais d'une renaissance. L'enfant qui arrive ne porte pas son sang. Il porte l'héritage d'un passé compliqué et le nom d'un fantôme. David devra surmonter sa peur et son sentiment d'imposture pour accepter ce "substitut" et devenir ce qu'il a toujours voulu être : un père.<br><br>
+        Une histoire bouleversante sur les liens du cœur qui transcendent les liens du sang.
+    </div>
+            </div>
+
+            <h2 class="section-title">Portraits</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/portrait20of20a20beautiful20woman20in20her2030s2c20soft20features2c20messy20bun20hair.jpg" class="char-img" alt="Claire">
+            <div class="char-info">
+                <h3 class="char-name">Claire</h3>
+                <span class="char-role">La Mère</span>
+                <p>Déterminée et protectrice. Elle porte l'avenir dans ses bras et force le destin à s'accomplir.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/portrait20of20a20tired20man2c203620years20old20but20looks20older2c20dark20circles20un.jpg" class="char-img" alt="David">
+            <div class="char-info">
+                <h3 class="char-name">David</h3>
+                <span class="char-role">Le Père par Choix</span>
+                <p>Un homme usé par l'attente, le visage marqué par la fatigue. Il doit apprendre à aimer ce qui n'est pas de lui.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/macro20shot20of20a20digital20pregnancy20test20on20a20cold20marble20surface2c20focus20o.jpg" class="char-img" alt="Le Sablier">
+            <div class="char-info">
+                <h3 class="char-name">Le Sablier</h3>
+                <span class="char-role">Le Juge Silencieux</span>
+                <p>Un petit bâtonnet de plastique blanc sur du marbre froid. Il contient un univers entier.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/close20up20of20a20newborn20baby20sleeping20wrapped20in20a20white20blanket2c20soft20ski.jpg" class="char-img" alt="Thomas">
+            <div class="char-info">
+                <h3 class="char-name">Thomas</h3>
+                <span class="char-role">L'Enfant</span>
+                <p>Le nouveau départ. Une page blanche qui ne demande qu'à être écrite.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Chronologie Émotionnelle</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/interior20of20a20luxury20bathroom2c20cold20marble20walls2c20a20couple20standing20apart.jpg" class="scene-img" alt="L&#39;Attente Glaciale">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Attente Glaciale</h3>
+                <p class="scene-desc">La salle de bain. L'odeur d'antiseptique. Claire et David fixent le test comme on fixe une bombe.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/close20up20on20a20man27s20face20showing20shock20and20fear2c20tears20in20eyes2c20hand.jpg" class="scene-img" alt="Le Verdict">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Verdict</h3>
+                <p class="scene-desc">Le temps reprend son cours. Le résultat tombe. David recule, terrifié par la réalité.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/abstract20double20exposure20of20a20man20silhouette20fading20away20and20a20new20sunrise2.jpg" class="scene-img" alt="Le Fantôme de Rousseau">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Fantôme de Rousseau</h3>
+                <p class="scene-desc">L'ombre du père biologique plane. Un souvenir, une absence qui doit être comblée.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/a20woman20holding20a20baby20bundle2c20looking20at20a20man2c20soft20focus20background2.jpg" class="scene-img" alt="Le Nom">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Nom</h3>
+                <p class="scene-desc">"Je l'ai appelé Thomas". Un nom pour effacer le passé. Un nom pour l'avenir.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DU SUBSTITUT - Le Roman_files/close20up20of20large20man27s20hands20holding20tiny20baby20hands2c20contrast20in20size.jpg" class="scene-img" alt="Le Premier Contact">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Premier Contact</h3>
+                <p class="scene-desc">La fin. David prend l'enfant. Ses mains tremblent, mais il ne le lâche pas. Il devient père.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par IA pour l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

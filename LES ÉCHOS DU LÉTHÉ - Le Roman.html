@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Work/template/les_echos_du_lethe_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LES ÉCHOS DU LÉTHÉ - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Manrope:wght@300;400;600&display=swap');
+    
+    :root {
+        --bg: #1a1a1a;
+        --text: #f5f5f5;
+        --primary: #e09f3e;
+        --secondary: #546e7a;
+        --glass: rgba(255, 255, 255, 0.1);
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Manrope', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Fond géométrique subtil */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(26,26,26,0.7), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520architectural%2520details%2520of%2520concrete%2520and%2520glass%2520with%2520dramatic%2520shadows%2520and%2520light%252C%2520minimalism%2C%20architectural%20photography%2C%20cinematic%20lighting%2C%20sharp%20focus%2C%208k%2C%20hyperrealistic%2C%20emotional%20drama%20style?width=1280&height=600&nologo=true&model=flux&seed=1689');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 5.5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        margin-bottom: 1rem;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        border: 1px solid rgba(255,255,255,0.3);
+        padding: 30px 60px;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(10px);
+    }
+
+    .tagline {
+        font-family: 'Manrope', sans-serif;
+        font-size: 1.4rem;
+        color: var(--primary);
+        margin-top: 30px;
+        font-weight: 300;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: linear-gradient(135deg, #2a2a2a, #1f1f1f);
+        padding: 60px;
+        border-left: 2px solid var(--primary);
+        margin-bottom: 150px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        position: relative;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cinzel', serif; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #ccc; text-align: justify; font-weight: 300; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        font-size: 3rem;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+        display: block;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 80px;
+        height: 1px;
+        background: var(--primary);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: #222;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #333;
+    }
+    .char-card:hover { transform: translateY(-10px); border-color: var(--primary); }
+    
+    .char-img { width: 100%; height: 380px; object-fit: cover; filter: grayscale(40%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: grayscale(0%); }
+    
+    .char-info { padding: 25px; }
+    .char-name { color: var(--primary); font-family: 'Cinzel', serif; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--secondary); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 15px 0; }
+    .char-desc { font-size: 0.95rem; color: #aaa; }
+
+    /* Timeline / Scènes */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    
+    /* Ligne centrale */
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0; bottom: 0; left: 50%;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+    }
+    
+    .scene {
+        display: flex;
+        align-items: center;
+        margin-bottom: 150px;
+        justify-content: center;
+        gap: 60px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        z-index: 1;
+    }
+    /* Cadre décalé */
+    .scene-img-wrapper::before {
+        content: "";
+        position: absolute;
+        top: 20px; left: 20px; width: 100%; height: 100%;
+        border: 1px solid var(--primary);
+        z-index: -1;
+        transition: 0.3s;
+    }
+    .scene:hover .scene-img-wrapper::before { top: 10px; left: 10px; }
+    
+    .scene-img { 
+        width: 100%; 
+        display: block; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        filter: contrast(1.1);
+    }
+    
+    .scene-content { width: 40%; text-align: left; }
+    .scene:nth-child(odd) .scene-content { text-align: right; }
+
+    .scene-title { font-family: 'Cinzel', serif; font-size: 1.8rem; margin-top: 0; color: white; }
+    .scene-desc { color: #bbb; font-size: 1.1rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #111;
+        border-top: 1px solid #333;
+        color: #666;
+        font-family: 'Manrope', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; padding: 15px; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-content, .scene-img-wrapper { width: 100%; text-align: left !important; }
+        .scene-img-wrapper::before { display: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LES ÉCHOS DU LÉTHÉ</h1>
+            <div class="tagline">La mémoire est une architecture que l'on peut redessiner.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire</h2>
+                <div class="synopsis-text">
+        <strong>La perfection était son armure. La vérité sera sa délivrance.</strong><br><br>
+        Éléonore "Nora" Mercier est l'architecte la plus en vue de Lyon. Elle a construit sa vie comme sa villa de la Croix-Rousse : des lignes pures, du béton, du verre, et aucun secret apparent. Mais derrière la façade de la femme à succès se cache une mémoire fissurée.<br><br>
+        Hantée par des "trous" dans son passé et une sensation de surmenage constant, Nora voit son vernis craquer. Un meurtre oublié, une manipulation mentale, et une sœur protectrice... Les murs qu'elle a érigés pour se protéger commencent à s'effondrer.<br><br>
+        Pour se retrouver, Nora devra plonger dans les eaux du Léthé, le fleuve de l'oubli, et décider quelles pierres garder pour reconstruire ses fondations.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Fondations</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/portrait20of20a20sophisticated204220year20old20female20architect20with20sharp20features2.jpg" class="char-img" alt="Nora (Éléonore)">
+            <div class="char-info">
+                <h3 class="char-name">Nora (Éléonore)</h3>
+                <span class="char-role">L'Architecte</span>
+                <p>Brillante, rigide, perfectionniste. Elle cherche la structure pour fuir le chaos de sa mémoire.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/portrait20of20a20happy20820year20old20boy20playing20with20colorful20lego20bricks20on20.jpg" class="char-img" alt="Léo">
+            <div class="char-info">
+                <h3 class="char-name">Léo</h3>
+                <span class="char-role">Le Fils</span>
+                <p>8 ans, innocent et joyeux. Il est la lumière qui guide Nora hors de ses ténèbres.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/portrait20of20a20kind20woman20with20soft20features2c20looking20supportive20and20worried.jpg" class="char-img" alt="Chloé">
+            <div class="char-info">
+                <h3 class="char-name">Chloé</h3>
+                <span class="char-role">La Sœur / Le Pilier</span>
+                <p>La présence rassurante. Elle détient les clés du passé que Nora a oublié.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/abstract20psychological20thriller20concept2c20a20shattered20mirror20reflecting20a20dark20.jpg" class="char-img" alt="L&#39;Ombre (Le passé)">
+            <div class="char-info">
+                <h3 class="char-name">L'Ombre (Le passé)</h3>
+                <span class="char-role">La Menace</span>
+                <p>Le souvenir du meurtre et de la manipulation qui remonte à la surface.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">La Reconstruction</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Villa de Verre</h3>
+                <p class="scene-desc">Lyon, Croix-Rousse. La maison parfaite qui surplombe la ville, symbole de la réussite et de la solitude de Nora.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/exterior20wide20shot20of20a20luxurious20modern20concrete20and20glass20villa20on20a20hil.jpg" class="scene-img" alt="La Villa de Verre">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Fissure</h3>
+                <p class="scene-desc">Nora travaille sur ses plans, mais son esprit dérive. Le sentiment de surmenage devient une terreur pure.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/close20up20of20architectural20blueprints20on20a20table2c20a20woman27s20hand20holding20.jpg" class="scene-img" alt="La Fissure">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Les Eaux du Léthé</h3>
+                <p class="scene-desc">La plongée dans la mémoire. Les souvenirs reviennent par vagues : la scène du crime, la peur, la vérité.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/surreal20artistic20shot20of20a20woman20submerged20in20dark20water2c20looking20up20at20.jpg" class="scene-img" alt="Les Eaux du Léthé">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Reconstruction</h3>
+                <p class="scene-desc">Nora accepte son histoire. Elle ne fuit plus. Elle est debout face à son passé.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/a20strong20woman20standing20confidently20in20a20modern20living20room2c20looking20at20ca.jpg" class="scene-img" alt="La Reconstruction">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">L'Envol</h3>
+                <p class="scene-desc">Le parc au coucher du soleil. Léo sur le toboggan, Nora libre. Le ciel est rose et orange.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./LES ÉCHOS DU LÉTHÉ - Le Roman_files/cinematic20wide20shot20of20a20city20park20at20sunset20with20pink20and20orange20sky2c2.jpg" class="scene-img" alt="L&#39;Envol">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Expérience web générée par IA</p>
+            <p>Basé sur l'œuvre de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)file:///C:/Work/template/le_sceau_chromatique_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE SCEAU CHROMATIQUE - La Légende</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Spectral:ital,wght@0,300;0,600;1,300&display=swap');
+    
+    :root {
+        --bg: #0a0e17;
+        --text: #e0e6ed;
+        --primary: #0f52ba;
+        --secondary: #708090;
+        --accent: #00ffff;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Spectral', serif;
+        margin: 0;
+        overflow-x: hidden;
+        background-image: radial-gradient(circle at 50% 0%, #1a2639 0%, var(--bg) 80%);
+    }
+
+    /* Particules magiques en fond */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='1' fill='%2300ffff' opacity='0.2'/%3E%3C/svg%3E");
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: -1;
+        animation: twinkle 5s infinite linear;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(10,14,23,0.3), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Majestic%2520fantasy%2520citadel%2520made%2520of%2520blue%2520sapphire%2520crystal%252C%2520night%2520time%252C%2520stars%252C%2520magical%2520atmosphere%2C%20dark%20fantasy%20art%2C%20cinematic%2C%20crystal%20clear%2C%20magical%20atmosphere%2C%20highly%20detailed%2C%208k%2C%20unreal%20engine%205%20render%2C%20ethereal%20lighting?width=1280&height=600&nologo=true&model=flux&seed=2301');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        border-bottom: 1px solid var(--primary);
+    }
+
+    h1 {
+        font-family: 'Cinzel', serif;
+        font-size: 5.5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 15px;
+        margin-bottom: 1rem;
+        text-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+        animation: pulseGlow 4s infinite;
+    }
+
+    .tagline {
+        font-family: 'Cinzel', serif;
+        font-size: 1.5rem;
+        color: var(--secondary);
+        margin-top: 20px;
+        background: rgba(0,0,0,0.7);
+        padding: 15px 40px;
+        border: 1px solid var(--secondary);
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: linear-gradient(180deg, rgba(15, 82, 186, 0.1) 0%, rgba(0,0,0,0) 100%);
+        border-top: 3px solid var(--primary);
+        border-bottom: 3px solid var(--primary);
+        padding: 60px;
+        margin-bottom: 150px;
+        text-align: center;
+        position: relative;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Cinzel', serif; 
+        color: var(--primary); 
+        font-size: 3rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.3rem; line-height: 1.8; color: #b0c4de; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Cinzel', serif;
+        font-size: 3.5rem;
+        margin-bottom: 100px;
+        color: var(--text);
+        text-shadow: 0 0 10px var(--primary);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 50px;
+    }
+    .char-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid #333;
+        transition: 0.5s;
+        position: relative;
+    }
+    .char-card:hover { 
+        transform: translateY(-15px); 
+        border-color: var(--accent);
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.1);
+    }
+    
+    .char-img { width: 100%; height: 400px; object-fit: cover; filter: sepia(20%) hue-rotate(180deg) saturate(0.8); transition: 0.5s; }
+    .char-card:hover .char-img { filter: none; }
+    
+    .char-info { padding: 30px; text-align: center; }
+    .char-name { color: var(--primary); font-family: 'Cinzel', serif; font-size: 1.6rem; margin: 0; }
+    .char-role { color: var(--secondary); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; display: block; margin: 10px 0 20px 0; }
+
+    /* Timeline */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 150px;
+        gap: 80px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        border: 1px solid var(--secondary);
+        padding: 5px;
+    }
+    .scene-img { width: 100%; display: block; filter: contrast(1.1); }
+    
+    .scene-content {
+        width: 45%;
+        text-align: left;
+    }
+    .scene:nth-child(even) .scene-content { text-align: right; }
+
+    .scene-title { 
+        font-family: 'Cinzel', serif; 
+        color: var(--accent); 
+        font-size: 2rem; 
+        margin-top: 0; 
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    .scene-desc { color: #a0a0a0; font-size: 1.1rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #05070a;
+        border-top: 1px solid #333;
+        color: var(--secondary);
+        font-family: 'Cinzel', serif;
+    }
+
+    @keyframes pulseGlow {
+        0% { text-shadow: 0 0 20px var(--primary); }
+        50% { text-shadow: 0 0 50px var(--primary), 0 0 20px var(--accent); }
+        100% { text-shadow: 0 0 20px var(--primary); }
+    }
+    
+    @keyframes twinkle {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-50px); }
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; letter-spacing: 5px; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-content, .scene-img-wrapper { width: 100%; text-align: left !important; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>LE SCEAU CHROMATIQUE</h1>
+            <div class="tagline">Dans un monde de couleurs, son absence était sa seule force.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>L'Histoire du Sceau</h2>
+                <div class="synopsis-text">
+        <strong>L'éclat terne est parfois le plus solide.</strong><br><br>
+        À la Citadelle Saphir, le pouvoir se mesure à l'intensité de sa couleur. Kaelen est une anomalie : un "Gris", un sans-éclat, méprisé par son père et par la noblesse aux tuniques d'azur. Condamné à une vie de servitude et de honte, il assiste, impuissant, à la Cérémonie des Teintes.<br><br>
+        Mais lorsque le royaume a besoin d'un gardien pour contenir une horreur cosmique, ce n'est pas la magie vibrante qui est requise, mais le vide. Le sacrifice ultime de Kaelen ne sera pas sa mort, mais sa transformation en <strong>Sceau</strong> : une statue vivante, une serrure éternelle de pierre froide et silencieuse.<br><br>
+        Ceci est l'histoire de celui qui a trouvé sa gloire en devenant l'absence de tout.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Figures du Destin</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE SCEAU CHROMATIQUE - La Légende_files/portrait20of20a20young20fantasy20nobleman20with20sad20eyes2c20wearing20a20dull20grey20.jpg" class="char-img" alt="Kaelen">
+            <div class="char-info">
+                <h3 class="char-name">Kaelen</h3>
+                <span class="char-role">Le Sceau / Le Gris</span>
+                <p>Jeune noble sans pouvoir chromatique. Mélancolique et résigné, il trouvera son destin dans l'immobilité éternelle.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SCEAU CHROMATIQUE - La Légende_files/portrait20of20a20female20fantasy20mage20with20blue20robes2c20looking20with20sadness20at.jpg" class="char-img" alt="Lyra">
+            <div class="char-info">
+                <h3 class="char-name">Lyra</h3>
+                <span class="char-role">La Sœur / La Témoin</span>
+                <p>Celle qui reste. Elle comprend trop tard que le silence de son frère n'était pas une faiblesse, mais une protection.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SCEAU CHROMATIQUE - La Légende_files/portrait20of20a20stern20older20fantasy20lord2c20wearing20elaborate20deep20blue20velvet2.jpg" class="char-img" alt="Le Père">
+            <div class="char-info">
+                <h3 class="char-name">Le Père</h3>
+                <span class="char-role">Le Juge</span>
+                <p>Membre du Conseil. Son regard méprisant a poussé son fils vers le sacrifice. Il incarne l'orgueil du Saphir.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SCEAU CHROMATIQUE - La Légende_files/a20smooth20black20stone20monolith20statue20in20the20shape20of20a20human2c20standing20a.jpg" class="char-img" alt="Le Gardien de Pierre">
+            <div class="char-info">
+                <h3 class="char-name">Le Gardien de Pierre</h3>
+                <span class="char-role">La Forme Finale</span>
+                <p>Ce que Kaelen est devenu. Une statue de pierre noire, lisse, absorbant la lumière, scellant la prison cosmique.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 200px;">Le Cycle du Silence</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SCEAU CHROMATIQUE - La Légende_files/interior20of20a20massive20fantasy20cathedral20made20of20blue20crystal20and20lapis20lazul.jpg" class="scene-img" alt="La Cérémonie des Teintes">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Cérémonie des Teintes</h3>
+                <p class="scene-desc">La Grande Salle de la Citadelle. Mosaïques de lapis-lazuli, nobles en soieries bleues, et Kaelen, seul en gris, sous les regards pesants.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SCEAU CHROMATIQUE - La Légende_files/close20up20on20a20young20man27s20face20looking20down20in20shame2c20background20is20a.jpg" class="scene-img" alt="L&#39;Ombre du Père">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Ombre du Père</h3>
+                <p class="scene-desc">Le jugement silencieux. Kaelen sent le poids du regard de son père, plus froid que le marbre sous ses pieds.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SCEAU CHROMATIQUE - La Légende_files/a20human20figure20turning20into20black20stone2c20magical20particles20freezing20in20the2.jpg" class="scene-img" alt="Le Sacrifice">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Sacrifice</h3>
+                <p class="scene-desc">Le moment de la transformation. Kaelen accepte son sort. Il ne meurt pas, il se fige pour l'éternité.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SCEAU CHROMATIQUE - La Légende_files/a20dark20smooth20rock20standing20in20a20windblown20fantasy20landscape2c20silence2c20no.jpg" class="scene-img" alt="La Pierre du Silence">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Pierre du Silence</h3>
+                <p class="scene-desc">Le paysage après. Une plaine accidentée où trône le Sceau. Une pierre qui absorbe la lumière et le son.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SCEAU CHROMATIQUE - La Légende_files/a20woman27s20hand20touching20a20cold20black20stone20surface2c20magical20energy20ripples.jpg" class="scene-img" alt="La Visite de Lyra">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Visite de Lyra</h3>
+                <p class="scene-desc">Lyra pose sa main sur la pierre froide. Elle ne sent plus son frère, mais une paix absolue. L'équilibre est rétabli.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une création visuelle générée par IA</p>
+            <p>Inspiré de l'univers de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

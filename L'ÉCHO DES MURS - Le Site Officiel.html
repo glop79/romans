@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<!-- saved from url=(0048)file:///C:/Work/template/lecho_des_murs_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>L'ÉCHO DES MURS - Le Site Officiel</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,700;1,300&family=Roboto:wght@300;500&display=swap');
+    
+    :root {
+        --bg: #1c1c1c;
+        --text: #f0f0f0;
+        --accent: #a63737;
+        --stone: #8c8c8c;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Texture murale */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.07'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(28,28,28,0.5), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Texture%2520of%2520an%2520old%2520cracked%2520stone%2520wall%2520with%2520ivy%252C%2520dark%2520moody%2520lighting%252C%2520macro%2520photography%2520background%2C%20cinematic%2C%20thriller%20atmosphere%2C%20sharp%20focus%2C%20highly%20detailed%2C%208k%2C%20moody%20lighting%2C%20architectural%20photography%20style?width=1280&height=600&nologo=true&model=flux&seed=192');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        border-bottom: 10px solid var(--accent);
+    }
+
+    h1 {
+        font-family: 'Merriweather', serif;
+        font-size: 5rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.9);
+        border: 2px solid white;
+        padding: 20px 40px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(5px);
+    }
+
+    .tagline {
+        font-family: 'Merriweather', serif;
+        font-style: italic;
+        font-size: 1.5rem;
+        color: var(--accent);
+        text-shadow: 0 2px 5px black;
+    }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: #2a2a2a;
+        padding: 50px;
+        border-left: 5px solid var(--accent);
+        margin-bottom: 120px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        position: relative;
+    }
+    .synopsis-box::after {
+        content: '"';
+        position: absolute;
+        top: -20px;
+        right: 30px;
+        font-size: 10rem;
+        color: rgba(255,255,255,0.05);
+        font-family: 'Merriweather', serif;
+    }
+    
+    .synopsis-box h2 { color: var(--text); font-family: 'Merriweather', serif; margin-top: 0; font-size: 2.5rem; }
+    .synopsis-text { font-size: 1.2rem; color: #ccc; }
+
+    /* Personnages */
+    .section-title {
+        font-family: 'Merriweather', serif;
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 80px;
+        color: var(--text);
+        position: relative;
+    }
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 50px;
+        height: 4px;
+        background: var(--accent);
+        margin: 20px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: #252525;
+        transition: all 0.3s ease;
+        border-bottom: 4px solid var(--stone);
+    }
+    .char-card:hover { transform: translateY(-10px); border-bottom-color: var(--accent); }
+    
+    .char-img { width: 100%; height: 400px; object-fit: cover; filter: grayscale(20%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: grayscale(0%); }
+    
+    .char-info { padding: 25px; }
+    .char-name { color: white; font-family: 'Merriweather', serif; font-size: 1.5rem; margin: 0; }
+    .char-role { color: var(--accent); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; margin-bottom: 10px; display: block; }
+
+    /* Timeline */
+    .scene {
+        display: flex;
+        align-items: center;
+        margin-bottom: 150px;
+        gap: 60px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-container {
+        flex: 1;
+        position: relative;
+    }
+    .scene-img-container::before {
+        content: '';
+        position: absolute;
+        top: 20px; left: -20px;
+        width: 100%; height: 100%;
+        border: 2px solid var(--stone);
+        z-index: -1;
+        transition: 0.3s;
+    }
+    .scene:nth-child(even) .scene-img-container::before { left: 20px; }
+    
+    .scene-img { width: 100%; display: block; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    
+    .scene-content { flex: 1; }
+    .scene-title { font-family: 'Merriweather', serif; font-size: 2rem; color: var(--text); margin-top: 0; }
+    .scene-num { font-size: 4rem; font-weight: bold; color: rgba(255,255,255,0.05); line-height: 0.5; display: block; }
+    .scene-desc { font-size: 1.1rem; color: #aaa; border-left: 2px solid var(--accent); padding-left: 20px; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #111;
+        color: #666;
+        font-family: 'Merriweather', serif;
+        border-top: 1px solid #333;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-img-container::before { display: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>L'ÉCHO DES MURS</h1>
+            <div class="tagline">"Si les murs pouvaient parler, ils crieraient."</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Mystère</h2>
+                <div class="synopsis-text">
+        <strong>Une maison de rêve. Un passé de cauchemar.</strong><br><br>
+        Pour Élise, jeune architecte, et son mari Thomas, la vieille demeure en pierre au bout de l'allée était une promesse d'avenir. Une toile vierge à rénover pour y bâtir une vie parfaite.<br><br>
+        Mais dès que les travaux commencent, la maison semble résister. Des courants d'air glacés, des bruits dans les cloisons, et cette étrange sensation d'être observé... Lorsque Élise engage <strong>Moreau</strong>, un entrepreneur charismatique mais insaisissable, elle ne se doute pas qu'elle vient de faire entrer le loup dans la bergerie.<br><br>
+        Derrière le plâtre et le papier peint se cache une chambre oubliée, et avec elle, le secret d'une disparition qui hante les lieux depuis des décennies. Élise devra écouter ce que les murs ont à dire avant qu'ils ne se referment sur elle.
+    </div>
+            </div>
+
+            <h2 class="section-title">Les Clés du Passé</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/portrait20of20a20young20female20architect20holding20blueprints2c20standing20in20a20dusty.jpg" class="char-img" alt="Élise">
+            <div class="char-info">
+                <span class="char-role">L'Architecte</span>
+                <h3 class="char-name">Élise</h3>
+                <p>Sensible et déterminée. Elle voit les lignes de force d'une maison, mais aussi ses cicatrices invisibles.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/portrait20of20a20handsome20man20in20a20suit20loosening20his20tie2c20standing20in20a20.jpg" class="char-img" alt="Thomas">
+            <div class="char-info">
+                <span class="char-role">L'Avocat / Le Pilier</span>
+                <h3 class="char-name">Thomas</h3>
+                <p>Rationnel et protecteur. Il croit aux contrats et aux faits, jusqu'à ce que la réalité commence à se fissurer.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/portrait20of20a20rugged20construction20contractor20in20his2050s2c20wearing20work20clothe.jpg" class="char-img" alt="Moreau">
+            <div class="char-info">
+                <span class="char-role">L'Entrepreneur</span>
+                <h3 class="char-name">Moreau</h3>
+                <p>Efficace, trop serviable. Il connaît la maison mieux que personne. Peut-être parce qu'il y a déjà laissé des traces.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/ethereal20double20exposure20photography20of20a20sad20little20girl20silhouette20merging20w.jpg" class="char-img" alt="Cécile">
+            <div class="char-info">
+                <span class="char-role">Le Fantôme</span>
+                <h3 class="char-name">Cécile</h3>
+                <p>L'écho du passé. Une présence suggérée, une enfant disparue dont le souvenir imprègne la pierre.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Chronologie</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-container">
+                <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/wide20shot20of20an20old20french20stone20manor20house20covered20in20ivy2c20cloudy20sky.jpg" class="scene-img" alt="La Promesse de Pierre">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">01</span>
+                <h3 class="scene-title">La Promesse de Pierre</h3>
+                <p class="scene-desc">L'arrivée. La vieille maison se dresse au bout de l'allée, majestueuse et inquiétante sous le lierre.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-container">
+                <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/close20up20of20a20hole20in20a20brick20wall20being20broken20by20a20sledgehammer2c20rev.jpg" class="scene-img" alt="La Fissure">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">02</span>
+                <h3 class="scene-title">La Fissure</h3>
+                <p class="scene-desc">Les travaux commencent. Élise abat une cloison et découvre un espace qui ne figure sur aucun plan.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-container">
+                <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/interior20of20a20secret20hidden20room2c20old20dusty20toys20on20the20floor2c20creepy20.jpg" class="scene-img" alt="La Chambre Oubliée">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">03</span>
+                <h3 class="scene-title">La Chambre Oubliée</h3>
+                <p class="scene-desc">Derrière le mur, une chambre d'enfant intacte, figée dans le temps, couverte de poussière.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-container">
+                <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/low20angle20shot20of20a20man20standing20in20a20dark20basement20holding20a20construction.jpg" class="scene-img" alt="Le Visage du Maître d&#39;Œuvre">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">04</span>
+                <h3 class="scene-title">Le Visage du Maître d'Œuvre</h3>
+                <p class="scene-desc">La confrontation. Moreau n'est plus l'ouvrier serviable, mais le gardien du secret, prêt à tout pour le préserver.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-container">
+                <img src="./L&#39;ÉCHO DES MURS - Le Site Officiel_files/a20couple20sitting20by20a20peaceful20lake20at20sunset2c20holding20hands2c20looking20at.jpg" class="scene-img" alt="Lumière sur le Lac">
+            </div>
+            <div class="scene-content">
+                <span class="scene-num">05</span>
+                <h3 class="scene-title">Lumière sur le Lac</h3>
+                <p class="scene-desc">La fin du cauchemar. Élise et Thomas regardent le lac, une carte postale à la main. La justice est passée.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Expérience visuelle générée par IA</p>
+            <p>Basé sur le roman de Peter SLOGAN</p>
+        </footer>
+    
+    
+    </body></html>

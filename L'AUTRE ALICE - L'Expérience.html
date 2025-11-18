@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<!-- saved from url=(0046)file:///C:/Work/template/lautre_alice_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>L'AUTRE ALICE - L'Expérience</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Roboto:wght@300;400;700&display=swap');
+    
+    :root {
+        --bg: #fdfdfd;
+        --text: #2c3e50;
+        --chaos-red: #e74c3c;
+        --chaos-blue: #3498db;
+        --chaos-yellow: #f1c40f;
+        --order: #95a5a6;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Effet "Papier à dessin" */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(255,255,255,0.9), rgba(255,255,255,0.6)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520artistic%2520painting%2520splash%2520blue%2520and%2520yellow%2520on%2520white%2520canvas%252C%2520emotional%2520chaos%2520vs%2520white%2520void%2C%20cinematic%20drama%2C%20photorealistic%2C%20highly%20detailed%2C%208k%2C%20contrast%20between%20sterile%20white%20and%20vibrant%20paint%20colors%2C%20emotional%20storytelling?width=1280&height=600&nologo=true&model=flux&seed=5091');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-bottom: 5px solid var(--chaos-blue);
+    }
+
+    h1 {
+        font-family: 'Architects Daughter', cursive; /* Police manuscrite pour Emma */
+        font-size: 5rem;
+        color: var(--text);
+        margin-bottom: 1rem;
+        text-shadow: 3px 3px 0px var(--chaos-blue);
+        transform: rotate(-2deg);
+    }
+
+    .tagline {
+        font-family: 'Roboto', sans-serif;
+        font-size: 1.5rem;
+        color: var(--order);
+        background: white;
+        padding: 10px 30px;
+        border: 1px solid #eee;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    /* Container */
+    .container { max-width: 1000px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 120px;
+        box-shadow: 10px 10px 0px var(--chaos-blue); /* Ombre dure colorée */
+        border: 2px solid var(--text);
+        position: relative;
+    }
+    .synopsis-box::after {
+        content: "";
+        position: absolute;
+        top: -10px; left: -10px;
+        width: 20px; height: 20px;
+        background: var(--chaos-red);
+        border-radius: 50%;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Architects Daughter', cursive; 
+        color: var(--text); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+    }
+    .synopsis-text { font-size: 1.2rem; color: #555; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Architects Daughter', cursive;
+        font-size: 3.5rem;
+        margin-bottom: 80px;
+        color: var(--text);
+    }
+    .section-title span {
+        border-bottom: 5px solid var(--chaos-yellow);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+    .char-card {
+        background: white;
+        border: 1px solid #eee;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+    .char-card:hover { 
+        transform: translateY(-10px) rotate(1deg); 
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+    
+    /* Tache de peinture au survol */
+    .char-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 5px;
+        background: var(--order);
+        transition: 0.3s;
+        z-index: 2;
+    }
+    .char-card:nth-child(1):hover::before { background: var(--chaos-blue); height: 10px; }
+    .char-card:nth-child(2):hover::before { background: var(--text); }
+    .char-card:nth-child(3):hover::before { background: var(--chaos-yellow); height: 10px; }
+    .char-card:nth-child(4):hover::before { background: var(--chaos-red); }
+
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: grayscale(10%); transition: 0.5s; }
+    .char-card:hover .char-img { filter: grayscale(0%); }
+    
+    .char-info { padding: 25px; text-align: center; }
+    .char-name { color: var(--text); font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 1.4rem; margin: 0; }
+    .char-role { color: var(--order); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; display: block; margin: 10px 0; }
+
+    /* Timeline */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: #eee;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    /* Points colorés sur la timeline */
+    .scene::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: white;
+        border: 4px solid var(--order);
+        transform: translate(-50%, -50%);
+        z-index: 2;
+    }
+    .scene:nth-child(odd)::after { border-color: var(--chaos-blue); }
+    .scene:nth-child(even)::after { border-color: var(--chaos-red); }
+
+    .scene-content {
+        width: 45%;
+        padding: 20px;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        padding: 10px;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transform: rotate(-2deg);
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(2deg); }
+    
+    .scene-img { width: 100%; display: block; }
+    
+    .scene-title { font-family: 'Architects Daughter', cursive; font-size: 1.8rem; color: var(--text); margin-top: 0; }
+    .scene-desc { color: #666; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #f0f0f0;
+        color: #888;
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene::after { display: none; }
+        .scene-content, .scene-img-wrapper { width: 100%; transform: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>L'AUTRE ALICE</h1>
+            <div class="tagline">On ne peut pas polir une âme sans l'effacer.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Combat d'une Mère</h2>
+                <div class="synopsis-text">
+        <strong>Votre enfant est trop sensible ? Nous avons la solution.</strong><br><br>
+        Emma est une artiste qui vit dans le désordre joyeux des émotions. Son mari, Marc, est un ingénieur obsédé par le contrôle. Lorsque leur fils de sept ans, Lucas, est victime de harcèlement, Marc impose une solution radicale : <strong>L'Institut</strong>.<br><br>
+        Une école sans site web, sans bruit et sans cris, qui promet d'apprendre aux enfants à "lisser leur surface". Mais le remède est pire que le mal. Lucas ne revient pas apaisé, il revient éteint. Il analyse sa douleur au lieu de la pleurer. Il range ses jouets par taille au lieu de jouer.<br><br>
+        Seule contre son mari et une administration terrifiante, Emma devra plonger dans les secrets de sa propre famille et infiltrer la forteresse de l'Institut pour sauver son fils avant qu'il ne devienne un étranger parfait.
+    </div>
+            </div>
+
+            <h2 class="section-title"><span>Protagonistes</span></h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/portrait20of20a20worried20woman20artist20with20messy20hair2c20paint20smudges20on20her2.jpg" class="char-img" alt="Emma">
+            <div class="char-info">
+                <h3 class="char-name">Emma</h3>
+                <span class="char-role">La Mère / L'Artiste</span>
+                <p>Peintre, impulsive et aimante. Elle se bat avec des couleurs contre un monde en noir et blanc.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/portrait20of20a20stern20man20in20a20grey20suit2c20glasses2c20clean20shaven2c20standin.jpg" class="char-img" alt="Marc">
+            <div class="char-info">
+                <h3 class="char-name">Marc</h3>
+                <span class="char-role">Le Père / Le Converti</span>
+                <p>Ingénieur hanté par son propre père. Il croit sauver son fils en tuant sa sensibilité.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/portrait20of20a20720year20old20boy20sitting20at20a20desk2c20wearing20a20grey20uniform.jpg" class="char-img" alt="Lucas">
+            <div class="char-info">
+                <h3 class="char-name">Lucas</h3>
+                <span class="char-role">L'Enfant Lissé</span>
+                <p>7 ans. Autrefois joyeux, aujourd'hui un petit automate qui parle comme un manuel de psychologie.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/portrait20of20an20elegant20older20woman20with20silver20bob20hair2c20wearing20a20high-co.jpg" class="char-img" alt="Madame Beaumont">
+            <div class="char-info">
+                <h3 class="char-name">Madame Beaumont</h3>
+                <span class="char-role">La Directrice</span>
+                <p>L'architecte du silence. Elle vend la suppression des émotions comme le summum de l'éducation.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;"><span>La Déconstruction</span></h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Diagnostic</h3>
+                <p class="scene-desc">Lucas tombe de vélo. Le genou en sang, il ne pleure pas. Il analyse froidement l'intégrité de son épiderme. Emma est terrifiée.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/close20up20of20a20child27s20scraped20knee20with20blood2c20the20child20looking20at20it.jpg" class="scene-img" alt="Le Diagnostic">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Tour de Cubes</h3>
+                <p class="scene-desc">L'entretien à l'Institut. Lucas construit une tour parfaite en silence. Le début de l'effacement.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/a20wooden20block20tower20perfectly20stacked20on20a20table2c20minimalist20room2c20soft2.jpg" class="scene-img" alt="La Tour de Cubes">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">La Salle Calme</h3>
+                <p class="scene-desc">L'infiltration. Emma découvre le sous-sol de l'école. Des écrans bleus, des fauteuils de contention. L'usine à robots.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/underground20laboratory20with20rows20of20white20medical20chairs20and20blue20computer20scr.jpg" class="scene-img" alt="La Salle Calme">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Carnet Secret</h3>
+                <p class="scene-desc">La découverte du passé de Marc. Un vieux carnet en cuir caché dans un tiroir qui explique l'origine de sa peur du chaos.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/close20up20of20an20old20worn20leather20notebook20open20on20a20desk2c20handwritten20not.jpg" class="scene-img" alt="Le Carnet Secret">
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-content">
+                <h3 class="scene-title">Le Premier Arbre</h3>
+                <p class="scene-desc">Le dégel. Sur la plage, un chien lèche la main de Lucas. Un rire éclate. Le chaos de la vie reprend ses droits.</p>
+            </div>
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;AUTRE ALICE - L&#39;Expérience_files/a20golden20retriever20dog20licking20a20child27s20hand20on20a20beach20at20sunset2c20th.jpg" class="scene-img" alt="Le Premier Arbre">
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par Script Python &amp; IA</p>
+            <p>Inspiré de l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>
