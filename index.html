@@ -1,0 +1,690 @@
+
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Collection des Romans - Index</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@700&display=swap');
+
+    :root {
+        --bg-color: #1a1a1a;
+        --card-bg: #252525;
+        --text-color: #f0f0f0;
+        --accent-color: #e74c3c;
+        --hover-color: #3498db;
+    }
+
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(to bottom, #000, var(--bg-color));
+        border-bottom: 2px solid var(--accent-color);
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5rem;
+        margin: 0;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .subtitle {
+        margin-top: 10px;
+        font-size: 1.2rem;
+        color: #aaa;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 40px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid #333;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+        border-color: var(--accent-color);
+    }
+
+    .image-container {
+        width: 100%;
+        height: 350px; /* Hauteur fixe pour les images */
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    .card-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* L'image couvre la zone sans déformation */
+        transition: transform 0.5s ease;
+        opacity: 0.9;
+    }
+
+    .card:hover .card-img {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    .card-content {
+        padding: 20px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .book-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: white;
+        text-decoration: none;
+        display: block;
+    }
+
+    .book-title:hover {
+        color: var(--accent-color);
+    }
+
+    .book-author {
+        font-size: 0.9rem;
+        color: #aaa;
+        font-style: italic;
+    }
+
+    .btn-link {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 8px 15px;
+        background-color: #333;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        transition: background 0.3s;
+    }
+    .btn-link:hover {
+        background-color: var(--accent-color);
+    }
+
+    footer {
+        text-align: center;
+        padding: 50px;
+        color: #666;
+        font-size: 0.9rem;
+        border-top: 1px solid #333;
+        margin-top: 50px;
+    }
+    </style>
+    </head>
+    <body>
+
+    <header>
+        <h1>Bibliothèque des Mondes</h1>
+        <div class="subtitle">40 Récits • 40 Expériences Digitales</div>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            
+        <div class="card">
+            <div class="image-container">
+                <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html">
+                    <img src="bellingcat_l_enquete.png" alt="Couverture de BELLINGCAT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html" class="book-title">BELLINGCAT</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="BELLINGCAT%20-%20L%27ENQU%C3%8ATE%20-%20Le%20Dossier.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm">
+                    <img src="celui_qui_n_existait_pas.png" alt="Couverture de CELUI QUI N'EXISTAIT PAS" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm" class="book-title">CELUI QUI N'EXISTAIT PAS</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="CELUI%20QUI%20N%27EXISTAIT%20PAS%20-%20Le%20Dossier.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="GHOST%20PROTOCOL%20-%20Interface.html">
+                    <img src="ghost_protocol.png" alt="Couverture de GHOST PROTOCOL" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="GHOST%20PROTOCOL%20-%20Interface.html" class="book-title">GHOST PROTOCOL</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="GHOST%20PROTOCOL%20-%20Interface.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm">
+                    <img src="le_gene_de_qin.png" alt="Couverture de LE GÈNE DE QIN" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm" class="book-title">LE GÈNE DE QIN</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20G%C3%88NE%20DE%20QIN%20-%20Site%20Officiel.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html">
+                    <img src="le_paradoxe_de_cassandre.png" alt="Couverture de LE PARADOXE DE CASSANDRE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html" class="book-title">LE PARADOXE DE CASSANDRE</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20PARADOXE%20DE%20CASSANDRE%20-%20Exp%C3%A9rience%20Interactive.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm">
+                    <img src="le_plus_grand_des_secrets.png" alt="Couverture de LE PLUS GRAND DES SECRETS" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm" class="book-title">LE PLUS GRAND DES SECRETS</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20PLUS%20GRAND%20DES%20SECRETS%20-%20Site%20Officiel.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html">
+                    <img src="le_syndrome_de_l_imposteur.png" alt="Couverture de LE SYNDROME DE L'IMPOSTEUR" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html" class="book-title">LE SYNDROME DE L'IMPOSTEUR</a>
+                <div class="book-author">(Franck PLATON)</div>
+                <a href="LE%20SYNDROME%20DE%20L%27IMPOSTEUR%20-%20Site%20Officiel.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html">
+                    <img src="ce_que_la_memoire_oublie.png" alt="Couverture de CE QUE LA MÉMOIRE OUBLIE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html" class="book-title">CE QUE LA MÉMOIRE OUBLIE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="CE%20QUE%20LA%20M%C3%89MOIRE%20OUBLIE%20-%20Le%20Livre.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm">
+                    <img src="celui_qui_reste.jpg" alt="Couverture de CELUI QUI RESTE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm" class="book-title">CELUI QUI RESTE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="CELUI%20QUI%20RESTE%20-%20Le%20R%C3%A9cit.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html">
+                    <img src="la_fracture.png" alt="Couverture de LA FRACTURE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html" class="book-title">LA FRACTURE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20FRACTURE%20-%20Dossier%20Catastrophe.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html">
+                    <img src="la_maison_des_autres.png" alt="Couverture de LA MAISON DES AUTRES" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html" class="book-title">LA MAISON DES AUTRES</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20MAISON%20DES%20AUTRES%20-%20Le%20Chantier.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm">
+                    <img src="la_note_de_fond.jpg" alt="Couverture de LA NOTE DE FOND" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm" class="book-title">LA NOTE DE FOND</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20NOTE%20DE%20FOND%20-%20L%27Essence.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm">
+                    <img src="la_surface_parfaite.jpg" alt="Couverture de LA SURFACE PARFAITE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm" class="book-title">LA SURFACE PARFAITE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LA%20SURFACE%20PARFAITE%20-%20La%20V%C3%A9rit%C3%A9.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html">
+                    <img src="l_arrangement.png" alt="Couverture de L'ARRANGEMENT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html" class="book-title">L'ARRANGEMENT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27ARRANGEMENT%20-%20Le%20Dossier.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html">
+                    <img src="l_autre_alice.png" alt="Couverture de L'AUTRE ALICE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html" class="book-title">L'AUTRE ALICE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27AUTRE%20ALICE%20-%20L%27Exp%C3%A9rience.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html">
+                    <img src="le_calme_artificiel.png" alt="Couverture de LE CALME ARTIFICIEL" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html" class="book-title">LE CALME ARTIFICIEL</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CALME%20ARTIFICIEL%20-%20Experience.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html">
+                    <img src="le_cercle_de_consolation.png" alt="Couverture de LE CERCLE DE CONSOLATION" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html" class="book-title">LE CERCLE DE CONSOLATION</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CERCLE%20DE%20CONSOLATION%20-%20Exp%C3%A9rience.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html">
+                    <img src="le_cercle_parfait.png" alt="Couverture de LE CERCLE PARFAIT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html" class="book-title">LE CERCLE PARFAIT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20CERCLE%20PARFAIT%20-%20Bienvenue.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html">
+                    <img src="le_substitut.png" alt="Couverture de LE SUBSTITUT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html" class="book-title">LE SUBSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SUBSTITUT%20-%20Le%20Livre.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html">
+                    <img src="le_syndrome_de_promethee.png" alt="Couverture de LE SYNDROME DE PROMÉTHÉE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html" class="book-title">LE SYNDROME DE PROMÉTHÉE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SYNDROME%20DE%20PROM%C3%89TH%C3%89E%20-%20System%20Monitor.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html">
+                    <img src="le_syndrome_du_substitut.png" alt="Couverture de LE SYNDROME DU SUBSTITUT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html" class="book-title">LE SYNDROME DU SUBSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="LE%20SYNDROME%20DU%20SUBSTITUT%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html">
+                    <img src="l_emprise_murale.png" alt="Couverture de L'EMPRISE MURALE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html" class="book-title">L'EMPRISE MURALE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27EMPRISE%20MURALE%20-%20Syst%C3%A8me%20C%C3%A9cile.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html">
+                    <img src="l_enfant_architecte.png" alt="Couverture de L'ENFANT ARCHITECTE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html" class="book-title">L'ENFANT ARCHITECTE</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27ENFANT%20ARCHITECTE%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27INSTITUT%20-%20Le%20Roman.html">
+                    <img src="l_institut.png" alt="Couverture de L'INSTITUT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27INSTITUT%20-%20Le%20Roman.html" class="book-title">L'INSTITUT</a>
+                <div class="book-author">(Nora FANZZIKERC)</div>
+                <a href="L%27INSTITUT%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm">
+                    <img src="ce_que_la_terre_reclame.jpg" alt="Couverture de CE QUE LA TERRE RÉCLAME" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm" class="book-title">CE QUE LA TERRE RÉCLAME</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CE%20QUE%20LA%20TERRE%20R%C3%89CLAME%20-%20Le%20Site.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html">
+                    <img src="ce_que_le_chagrin_nous_a_bati.jpg" alt="Couverture de CE QUE LE CHAGRIN NOUS A BÂTI" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html" class="book-title">CE QUE LE CHAGRIN NOUS A BÂTI</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CE%20QUE%20LE%20CHAGRIN%20NOUS%20A%20B%C3%82TI%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm">
+                    <img src="ceux_qui_restent_sur_la_glace.png" alt="Couverture de CEUX QUI RESTENT SUR LA GLACE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm" class="book-title">CEUX QUI RESTENT SUR LA GLACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="CEUX%20QUI%20RESTENT%20SUR%20LA%20GLACE%20-%20L%27Exp%C3%A9rience.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html">
+                    <img src="la_maison_d_en_face.png" alt="Couverture de LA MAISON D'EN FACE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html" class="book-title">LA MAISON D'EN FACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LA%20MAISON%20D%27EN%20FACE%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html">
+                    <img src="la_maison_temoin.jpg" alt="Couverture de LA MAISON TÉMOIN" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html" class="book-title">LA MAISON TÉMOIN</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LA%20MAISON%20T%C3%89MOIN%20-%20Dossier%20Architecture.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm">
+                    <img src="le_codex_d_eden.png" alt="Couverture de LE CODEX D'ÉDEN" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm" class="book-title">LE CODEX D'ÉDEN</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20CODEX%20D%27%C3%89DEN%20-%20Archives.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm">
+                    <img src="le_compagnon_parfait.png" alt="Couverture de LE COMPAGNON PARFAIT" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm" class="book-title">LE COMPAGNON PARFAIT</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20COMPAGNON%20PARFAIT%20-%20Interface%20L.E.O..htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm">
+                    <img src="le_dernier_souvenir_d_adam.png" alt="Couverture de LE DERNIER SOUVENIR D'ADAM" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm" class="book-title">LE DERNIER SOUVENIR D'ADAM</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20DERNIER%20SOUVENIR%20D%27ADAM%20-%20Le%20Site.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html">
+                    <img src="le_jardin_de_cendre.png" alt="Couverture de LE JARDIN DE CENDRE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html" class="book-title">LE JARDIN DE CENDRE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20JARDIN%20DE%20CENDRE%20-%20Terminal.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html">
+                    <img src="le_protocole_de_l_oubli.png" alt="Couverture de LE PROTOCOLE DE L'OUBLI" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html" class="book-title">LE PROTOCOLE DE L'OUBLI</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20PROTOCOLE%20DE%20L%27OUBLI%20-%20Exp%C3%A9rience.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html">
+                    <img src="le_sceau_chromatique.png" alt="Couverture de LE SCEAU CHROMATIQUE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html" class="book-title">LE SCEAU CHROMATIQUE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20SCEAU%20CHROMATIQUE%20-%20La%20L%C3%A9gende.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html">
+                    <img src="le_souffle_du_lac.png" alt="Couverture de LE SOUFFLE DU LAC" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html" class="book-title">LE SOUFFLE DU LAC</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20SOUFFLE%20DU%20LAC%20-%20Le%20Site.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm">
+                    <img src="le_voisin_d_en_face.png" alt="Couverture de LE VOISIN D'EN FACE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm" class="book-title">LE VOISIN D'EN FACE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LE%20VOISIN%20D%27EN%20FACE%20-%20Le%20Roman.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html">
+                    <img src="l_echo_des_murs.jpg" alt="Couverture de L'ÉCHO DES MURS" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html" class="book-title">L'ÉCHO DES MURS</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="L%27%C3%89CHO%20DES%20MURS%20-%20Le%20Site%20Officiel.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html">
+                    <img src="les_echos_du_lethe.jpg" alt="Couverture de LES ÉCHOS DU LÉTHÉ" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html" class="book-title">LES ÉCHOS DU LÉTHÉ</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="LES%20%C3%89CHOS%20DU%20L%C3%89TH%C3%89%20-%20Le%20Roman.html" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="image-container">
+                <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm">
+                    <img src="l_heritage_adamique.jpg" alt="Couverture de L'HÉRITAGE ADAMIQUE" class="card-img" loading="lazy">
+                </a>
+            </div>
+            <div class="card-content">
+                <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm" class="book-title">L'HÉRITAGE ADAMIQUE</a>
+                <div class="book-author">(Peter SLOGAN)</div>
+                <a href="L%27H%C3%89RITAGE%20ADAMIQUE%20-%20Dossier%20Confidentiel.htm" class="btn-link">Voir le dossier</a>
+            </div>
+        </div>
+        
+        </div>
+    </div>
+
+    <footer>
+        <p>Index généré automatiquement. Images locales.</p>
+    </footer>
+
+    </body>
+    </html>
+    
