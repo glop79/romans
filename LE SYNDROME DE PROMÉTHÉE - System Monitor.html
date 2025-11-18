@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Work/template/syndrome_promethee_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LE SYNDROME DE PROMÉTHÉE - System Monitor</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;700&family=Rajdhani:wght@400;600;700&display=swap');
+    
+    :root {
+        --bg: #111827;
+        --text: #e5e7eb;
+        --orange: #f59e0b;
+        --blue: #3b82f6;
+        --steel: #4b5563;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Rajdhani', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.6;
+    }
+
+    /* Fond Grille Technique */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: 
+            linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+        background-size: 40px 40px;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(17,24,39,0.8), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Abstract%2520data%2520streams%2520flowing%2520through%2520a%2520shipping%2520container%2520port%2520at%2520night%252C%2520long%2520exposure%2520lights%252C%2520cybernetic%2C%20cinematic%20industrial%20thriller%2C%20teal%20and%20orange%20color%20grading%2C%20sharp%20focus%2C%20highly%20detailed%2C%208k%2C%20unreal%20engine%205%2C%20atmospheric?width=1280&height=600&nologo=true&model=flux&seed=247');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        border-bottom: 2px solid var(--orange);
+    }
+
+    h1 {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 4rem;
+        color: white;
+        text-transform: uppercase;
+        letter-spacing: -2px;
+        margin-bottom: 1rem;
+        text-shadow: 4px 4px 0px var(--blue);
+        background: rgba(0,0,0,0.7);
+        padding: 20px;
+        border: 1px solid var(--blue);
+    }
+
+    .tagline {
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 1.5rem;
+        color: var(--bg);
+        background: var(--orange);
+        padding: 10px 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+    
+    /* Indicateur de statut */
+    .status-bar {
+        position: absolute;
+        top: 20px; left: 20px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        color: var(--blue);
+        display: flex;
+        gap: 20px;
+    }
+    .blink { animation: blink 1s infinite; color: var(--orange); }
+    @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } 100% { opacity: 1; } }
+
+    /* Container */
+    .container { max-width: 1100px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: rgba(31, 41, 55, 0.8);
+        border: 1px solid var(--steel);
+        border-left: 5px solid var(--orange);
+        padding: 50px;
+        margin-bottom: 150px;
+        position: relative;
+        backdrop-filter: blur(5px);
+    }
+    
+    .synopsis-box::before {
+        content: "LOG.SYNOPSIS_DATA";
+        position: absolute;
+        top: -12px; left: 20px;
+        background: var(--bg);
+        padding: 0 10px;
+        color: var(--steel);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'JetBrains Mono', monospace; 
+        color: var(--orange); 
+        font-size: 2rem; 
+        margin-top: 0; 
+        text-transform: uppercase;
+    }
+    .synopsis-text { font-size: 1.2rem; color: var(--text); }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Rajdhani', sans-serif;
+        font-size: 3.5rem;
+        margin-bottom: 80px;
+        color: white;
+        text-transform: uppercase;
+        font-weight: 700;
+        position: relative;
+    }
+    .section-title::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 4px;
+        background: var(--blue);
+        margin: 10px auto;
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+    }
+    .char-card {
+        background: #1f2937;
+        border: 1px solid #374151;
+        transition: 0.3s;
+        position: relative;
+    }
+    .char-card:hover { 
+        transform: translateY(-5px); 
+        border-color: var(--orange);
+        box-shadow: 0 0 30px rgba(245, 158, 11, 0.1);
+    }
+    
+    /* Coin technique */
+    .char-card::after {
+        content: "";
+        position: absolute;
+        top: 0; right: 0;
+        border-top: 20px solid var(--blue);
+        border-left: 20px solid transparent;
+    }
+    
+    .char-img { width: 100%; height: 350px; object-fit: cover; filter: contrast(1.1) saturate(0.9); transition: 0.5s; }
+    .char-card:hover .char-img { filter: none; }
+    
+    .char-info { padding: 20px; }
+    .char-name { color: white; font-family: 'JetBrains Mono'; font-size: 1.2rem; margin: 0; font-weight: 700; }
+    .char-role { color: var(--blue); font-size: 0.8rem; text-transform: uppercase; display: block; margin: 10px 0; letter-spacing: 1px; }
+    
+    /* Timeline - Flux */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--steel);
+        z-index: 0;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        z-index: 1;
+        border: 1px solid var(--blue);
+        padding: 5px;
+        background: rgba(59, 130, 246, 0.1);
+    }
+    .scene-img { width: 100%; display: block; filter: brightness(0.9); }
+    
+    .scene-content { width: 45%; position: relative; z-index: 1; }
+    
+    /* Connecteur */
+    .scene-content::before {
+        content: "";
+        position: absolute;
+        top: 25px;
+        width: 50px;
+        height: 2px;
+        background: var(--orange);
+    }
+    .scene:nth-child(odd) .scene-content::before { left: -50px; }
+    .scene:nth-child(even) .scene-content::before { right: -50px; }
+
+    .scene-title { 
+        font-family: 'Rajdhani', sans-serif; 
+        font-size: 2rem; 
+        margin-top: 0; 
+        color: var(--orange);
+        font-weight: 700;
+    }
+    .scene-desc { color: #9ca3af; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 80px;
+        background: #000;
+        color: var(--steel);
+        font-family: 'JetBrains Mono';
+        border-top: 1px solid var(--steel);
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 2.5rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-img-wrapper, .scene-content { width: 100%; }
+        .scene-content::before { display: none; }
+    }
+    </style>
+    </head>
+    <body>
+        <div class="status-bar">
+            <span>SYSTEM: ONLINE</span>
+            <span>TRAFFIC: OPTIMAL</span>
+            <span class="blink">WARNING: ANOMALY DETECTED</span>
+        </div>
+        <header>
+            <h1>LE SYNDROME DE PROMÉTHÉE</h1>
+            <div class="tagline">L'algorithme du monde ne peut pas tout prédire.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>Le Flux</h2>
+                <div class="synopsis-text">
+        <strong>Simon Valery est le grand prêtre du flux tendu.</strong><br><br>
+        Depuis sa tour de contrôle surplombant les quais du Havre, il surveille la chorégraphie millimétrée des porte-conteneurs. Son monde est une équation parfaite où l'imprévu est un ennemi à abattre. Il n'a pas d'amis, seulement des variables.<br><br>
+        Mais lorsque l'héritage chaotique d'un père qu'il connaissait à peine refait surface sous la forme d'un trafic de peptides à Tallinn, l'algorithme de Simon se grippe. Forcé de collaborer avec <strong>Lena</strong>, il va devoir quitter son sanctuaire de données pour affronter la réalité organique. Entre les lignes droites de la logistique et les courbes imprévisibles de la biologie, Simon découvrira que porter le feu de Prométhée ne signifie pas tout contrôler, mais savoir éclairer la nuit.
+    </div>
+            </div>
+
+            <h2 class="section-title">Variables Humaines</h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/portrait20of20a20focused20man20in20his2030s20standing20in20a20high-tech20control20tower.jpg" class="char-img" alt="Simon Valery">
+            <div class="char-info">
+                <h3 class="char-name">Simon Valery</h3>
+                <span class="char-role">// Le Contrôleur</span>
+                <p class="char-desc">Froid, méthodique, solitaire. Il vit à travers ses écrans, cherchant à optimiser le monde pour ne pas avoir à le ressentir.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/portrait20of20a20determined20woman20in20a20warehouse20setting2c20holding20a20red20marke.jpg" class="char-img" alt="Lena">
+            <div class="char-info">
+                <h3 class="char-name">Lena</h3>
+                <span class="char-role">// L'Élément Organique</span>
+                <p class="char-desc">Elle apporte le chaos et la vie dans l'équation de Simon. Elle dessine des courbes là où il trace des lignes.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/silhouette20of20a20mysterious20man20in20a20heavy20coat20standing20on20a20foggy20dock20.jpg" class="char-img" alt="Richter">
+            <div class="char-info">
+                <h3 class="char-name">Richter</h3>
+                <span class="char-role">// Le Contact</span>
+                <p class="char-desc">L'homme de l'ombre à Tallinn. Il est le lien avec le passé dangereux du père de Simon.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/wide20aerial20shot20of20a20massive20container20port20at20night2c20rain2c20neon20lights.jpg" class="char-img" alt="Le Port">
+            <div class="char-info">
+                <h3 class="char-name">Le Port</h3>
+                <span class="char-role">// La Machine</span>
+                <p class="char-desc">Un univers de métal et d'eau, beau et terrifiant, qui ne dort jamais. Le véritable royaume de Simon.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;">Chaîne des Événements</h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/interior20of20a20dark20control20room20with20multiple20monitors20displaying20maps20and20d.jpg" class="scene-img" alt="La Tour de Contrôle">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">SEQ_01 : La Tour de Contrôle</h3>
+                <p class="scene-desc">Le début. Simon seul face à ses écrans. La perfection du flux logistique avant la rupture.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/close20up20of20a20shipping20manifest20on20a20digital20tablet20with20a20red2027error27.jpg" class="scene-img" alt="L&#39;Anomalie de Tallinn">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">SEQ_02 : L'Anomalie de Tallinn</h3>
+                <p class="scene-desc">Le grain de sable. Une cargaison qui ne correspond pas. L'irruption du chaos dans l'équation.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/a20whiteboard20split20in20two3a20left20side20has20rigid20geometric20flowcharts20in20blu.jpg" class="scene-img" alt="Le Tableau Blanc">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">SEQ_03 : Le Tableau Blanc</h3>
+                <p class="scene-desc">La rencontre des esprits. Simon trace des flèches logistiques, Lena dessine des hélices d'ADN. L'ordre et le chaos se complètent.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/action20scene20in20a20maze20of20stacked20shipping20containers20at20night2c20fog2c20dra.jpg" class="scene-img" alt="La Nuit sur les Docks">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">SEQ_04 : La Nuit sur les Docks</h3>
+                <p class="scene-desc">L'action. Au milieu des conteneurs, la théorie devient pratique. Simon doit agir, pas seulement observer.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./LE SYNDROME DE PROMÉTHÉE - System Monitor_files/portrait20of20a20man20looking20at20the20sunrise20over20an20industrial20harbor2c20peacef.jpg" class="scene-img" alt="La Main Stable">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">SEQ_05 : La Main Stable</h3>
+                <p class="scene-desc">La fin. Simon ne tremble plus. Il a accepté l'héritage. Il tient la torche.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Généré par Algorithme | D'après l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>

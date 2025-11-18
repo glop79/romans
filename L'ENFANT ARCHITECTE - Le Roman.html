@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)file:///C:/Work/template/lenfant_architecte_web.html -->
+<html lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>L'ENFANT ARCHITECTE - Le Roman</title>
+        <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Patrick+Hand&display=swap');
+    
+    :root {
+        --bg: #fdfbf7;
+        --text: #5d4037;
+        --wood: #d4a373;
+        --sun: #ffb703;
+        --sand: #e6ccb2;
+    }
+    
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Nunito', sans-serif;
+        margin: 0;
+        overflow-x: hidden;
+        line-height: 1.8;
+    }
+
+    /* Texture papier à grain */
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    /* Header */
+    header {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(to bottom, rgba(253,251,247,0.6), var(--bg)), 
+                    url('https://image.pollinations.ai/prompt/Close%2520up%2520of%2520wooden%2520toy%2520blocks%2520and%2520a%2520child%2527s%2520drawing%2520on%2520a%2520warm%2520wooden%2520table%252C%2520sunlight%252C%2520cozy%2C%20soft%20cinematic%20lighting%2C%20warm%20tones%2C%20wood%20texture%2C%20paper%20texture%2C%20emotional%2C%20photorealistic%2C%208k%2C%20depth%20of%20field%2C%20cozy%20atmosphere?width=1280&height=600&nologo=true&model=flux&seed=8276');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    h1 {
+        font-family: 'Patrick Hand', cursive;
+        font-size: 5.5rem;
+        color: var(--text);
+        text-transform: uppercase;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 0px white;
+        background: rgba(255,255,255,0.7);
+        padding: 20px 50px;
+        border-radius: 255px 15px 225px 15px/15px 225px 15px 255px;
+        border: 3px dashed var(--wood);
+    }
+
+    .tagline {
+        font-family: 'Nunito', sans-serif;
+        font-size: 1.5rem;
+        color: var(--wood);
+        margin-top: 20px;
+        font-weight: 700;
+        background: white;
+        padding: 10px 30px;
+        border-radius: 50px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* Container */
+    .container { max-width: 900px; margin: 0 auto; padding: 100px 20px; }
+
+    /* Synopsis */
+    .synopsis-box {
+        background: white;
+        padding: 60px;
+        margin-bottom: 120px;
+        box-shadow: 5px 5px 0px var(--sand);
+        border: 1px solid var(--sand);
+        border-radius: 5px;
+        position: relative;
+    }
+    
+    .synopsis-box::before {
+        content: "";
+        position: absolute;
+        top: -15px; left: 50%; transform: translateX(-50%);
+        width: 100px; height: 30px;
+        background: rgba(255,255,255,0.5);
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transform: translateX(-50%) rotate(-2deg);
+    }
+    
+    .synopsis-box h2 { 
+        font-family: 'Patrick Hand', cursive; 
+        color: var(--wood); 
+        font-size: 2.5rem; 
+        margin-top: 0; 
+        margin-bottom: 30px;
+    }
+    .synopsis-text { font-size: 1.2rem; color: #666; font-weight: 400; }
+
+    /* Personnages */
+    .section-title {
+        text-align: center;
+        font-family: 'Patrick Hand', cursive;
+        font-size: 3.5rem;
+        margin-bottom: 80px;
+        color: var(--text);
+    }
+    .section-title span {
+        background: linear-gradient(to top, var(--sun) 30%, transparent 30%);
+    }
+
+    .char-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 50px;
+    }
+    .char-card {
+        background: transparent;
+        transition: 0.4s ease;
+        text-align: center;
+    }
+    .char-card:hover { transform: translateY(-10px) rotate(2deg); }
+    
+    .char-img-wrapper {
+        width: 100%;
+        height: 300px;
+        overflow: hidden;
+        border-radius: 20px;
+        margin-bottom: 20px;
+        box-shadow: 10px 10px 0px var(--sand);
+        border: 2px solid var(--wood);
+        background: white;
+        padding: 10px;
+    }
+    
+    .char-img { 
+        width: 100%; 
+        height: 100%; 
+        object-fit: cover; 
+        border-radius: 10px;
+        filter: sepia(20%);
+        transition: 0.5s;
+    }
+    .char-card:hover .char-img { filter: sepia(0%); transform: scale(1.05); }
+    
+    .char-name { color: var(--wood); font-family: 'Patrick Hand', cursive; font-size: 1.8rem; margin: 0; }
+    .char-role { color: #999; font-size: 0.9rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; display: block; margin: 5px 0; }
+    .char-desc { font-size: 0.95rem; color: #555; }
+
+    /* Timeline */
+    .timeline {
+        position: relative;
+        padding: 40px 0;
+    }
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background-image: linear-gradient(to bottom, var(--wood) 50%, transparent 50%);
+        background-size: 1px 20px;
+    }
+    
+    .scene {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 120px;
+    }
+    .scene:nth-child(even) { flex-direction: row-reverse; }
+    
+    .scene-img-wrapper {
+        width: 45%;
+        position: relative;
+        background: white;
+        padding: 10px;
+        border-radius: 2px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        transform: rotate(-1deg);
+    }
+    .scene:nth-child(even) .scene-img-wrapper { transform: rotate(1deg); }
+    
+    .scene-img-wrapper::before {
+        content: "";
+        position: absolute;
+        top: -5px; left: 50%; transform: translateX(-50%);
+        width: 15px; height: 15px;
+        border-radius: 50%;
+        background: var(--sun);
+        box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        z-index: 2;
+    }
+    
+    .scene-img { width: 100%; display: block; }
+    
+    .scene-content { width: 45%; text-align: left; }
+    .scene:nth-child(even) .scene-content { text-align: right; }
+
+    .scene-title { 
+        font-family: 'Patrick Hand', cursive; 
+        font-size: 2rem; 
+        margin-top: 0; 
+        color: var(--wood);
+    }
+    .scene-desc { color: #666; font-size: 1.1rem; }
+
+    /* Footer */
+    footer {
+        text-align: center;
+        padding: 100px 0;
+        background: var(--sand);
+        color: var(--text);
+        font-family: 'Nunito', sans-serif;
+        border-top: 5px solid var(--wood);
+    }
+
+    @media (max-width: 768px) {
+        h1 { font-size: 3rem; }
+        .timeline::before { display: none; }
+        .scene { flex-direction: column !important; gap: 30px; }
+        .scene-img-wrapper, .scene-content { width: 100%; text-align: center; }
+        .scene-img-wrapper { transform: none !important; }
+    }
+    </style>
+    </head>
+    <body>
+        <header>
+            <h1>L'ENFANT ARCHITECTE</h1>
+            <div class="tagline">Parfois, il faut construire des murs pour apprendre à ouvrir des portes.</div>
+        </header>
+
+        <div class="container">
+            <div class="synopsis-box">
+                <h2>La Reconstruction</h2>
+                <div class="synopsis-text">
+        <strong>Le silence est une maison qu'il faut apprendre à meubler.</strong><br><br>
+        Dans son cabinet aux murs couleur sable, le Dr Aris Thorne ne soigne pas avec des médicaments, mais avec des histoires. Pour Amélie, 6 ans, murée dans un mutisme traumatique, les mots sont des ennemis. Son seul langage est une grande maison de poupées en bois.<br><br>
+        Chaque mercredi, Aris observe la fillette déplacer les figurines, rejouant un drame muet qu'elle ne peut pas nommer. Entre le thérapeute hanté par son propre passé et l'enfant architecte, un dialogue invisible se tisse. C'est l'histoire d'une reconstruction, pierre par pierre, dessin par dessin, pour trouver enfin la porte de sortie vers la lumière.
+    </div>
+            </div>
+
+            <h2 class="section-title"><span>Les Bâtisseurs</span></h2>
+            <div class="char-grid">
+                
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/portrait20of20a20gentle20male20child20therapist2c2040s2c20kind20eyes2c20wearing20a20s.jpg" class="char-img" alt="Dr. Aris Thorne">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Dr. Aris Thorne</h3>
+                <span class="char-role">L'Architecte des Âmes</span>
+                <p class="char-desc">Thérapeute patient et doux. Il a transformé sa propre culpabilité en un don pour écouter le silence des autres.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/portrait20of20a20620year20old20girl20with20a20blonde20bowl20cut2c20big20blue20sad20e.jpg" class="char-img" alt="Amélie">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Amélie</h3>
+                <span class="char-role">La Bâtisseuse Silencieuse</span>
+                <p class="char-desc">6 ans, des yeux immenses. Elle construit des mondes pour échapper au sien. Sa fragilité cache une résilience de fer.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/close20up20of20a20beautiful20vintage20wooden20dollhouse2c20open20front2c20tiny20furnitu.jpg" class="char-img" alt="La Maison de Poupées">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">La Maison de Poupées</h3>
+                <span class="char-role">Le Théâtre</span>
+                <p class="char-desc">Un objet en bois, ouvert, où se joue la vérité. Ce n'est pas un jouet, c'est une scène de crime et de guérison.</p>
+            </div>
+        </div>
+        
+        <div class="char-card">
+            <div class="char-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/silhouette20of20a20young20boy20standing20in20a20doorway20looking20at20a20sunset2c20war.jpg" class="char-img" alt="Léo">
+            </div>
+            <div class="char-info">
+                <h3 class="char-name">Léo</h3>
+                <span class="char-role">Le Guide (Le Passé)</span>
+                <p class="char-desc">L'ancien patient qui a tout appris à Aris. Son souvenir est la fondation sur laquelle Aris bâtit sa méthode.</p>
+            </div>
+        </div>
+        
+            </div>
+
+            <h2 class="section-title" style="margin-top: 150px;"><span>Pierre par Pierre</span></h2>
+            <div class="timeline">
+                
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/interior20of20a20cozy20therapy20office2c20sand20colored20walls2c20oak20bookshelves2c20.jpg" class="scene-img" alt="Le Cabinet du Silence">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Cabinet du Silence</h3>
+                <p class="scene-desc">L'atmosphère feutrée du bureau. Les livres, le velours, la lumière laiteuse. Un refuge contre le monde.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/macro20shot20of20small20wooden20dolls20in20a20dollhouse2c20a20child27s20hand20placing.jpg" class="scene-img" alt="La Mise en Scène">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Mise en Scène</h3>
+                <p class="scene-desc">Amélie déplace les figurines. Le père au grenier, l'enfant sous le lit. Le drame se joue sans un mot.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/close20up20of20a20child27s20drawing20on20paper2c20crayon20texture2c20drawing20of20a2.jpg" class="scene-img" alt="Le Dessin">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">Le Dessin</h3>
+                <p class="scene-desc">La rupture. Amélie prend les crayons. Un soleil jaune, trois silhouettes. Le plan d'une nouvelle vie.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/a20man20and20a20young20boy20standing20in20a20doorway20shaking20hands2c20warm20afternoo.jpg" class="scene-img" alt="L&#39;Au-Revoir">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">L'Au-Revoir</h3>
+                <p class="scene-desc">Léo quitte le cabinet. Une poignée de main, un regard. La fin d'un cycle, le début d'un autre.</p>
+            </div>
+        </div>
+        
+        <div class="scene">
+            <div class="scene-img-wrapper">
+                <img src="./L&#39;ENFANT ARCHITECTE - Le Roman_files/a20man27s20hands20placing20a20notebook20into20a20cardboard20box20labeled2027personnel2.jpg" class="scene-img" alt="La Boîte &#39;Personnel&#39;">
+            </div>
+            <div class="scene-content">
+                <h3 class="scene-title">La Boîte 'Personnel'</h3>
+                <p class="scene-desc">Aris range le carnet. Il est seul. Le silence n'est plus lourd, il est apaisé. Il est prêt pour le suivant.</p>
+            </div>
+        </div>
+        
+            </div>
+        </div>
+
+        <footer>
+            <p>Une histoire de résilience générée par IA</p>
+            <p>D'après l'œuvre de Nora FANZZIKERC</p>
+        </footer>
+    
+    
+    </body></html>
