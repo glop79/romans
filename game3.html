@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'Odyssée des 100 Royaumes</title>
+    <style>
+        /* --- STYLE DARK FANTASY MODERNE --- */
+        :root { --bg: #050505; --text: #e0e0e0; --accent: #7d3cff; --card: #111; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; display: flex; justify-content: center; }
+        #app { width: 100%; max-width: 800px; min-height: 100vh; background: var(--card); display: flex; flex-direction: column; border-left: 1px solid #333; border-right: 1px solid #333; }
+        
+        #visual { width: 100%; height: 400px; background: #000; object-fit: cover; transition: opacity 0.5s; opacity: 0; }
+        #content { padding: 30px; flex: 1; }
+        h1 { color: var(--accent); margin-top: 0; }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #222; color: white; border: 1px solid #444; cursor: pointer; text-align: left; transition: 0.2s; }
+        .btn:hover { border-color: var(--accent); background: #1a1a1a; padding-left: 25px; }
+        #tts-btn { background: transparent; border: none; color: var(--accent); cursor: pointer; font-size: 1.2rem; float: right; }
+        .loader { text-align: center; padding: 20px; color: #666; display: none; }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <img id="visual" src="" alt="Scene">
+        <div class="loader" id="loader">Génération de l'image...</div>
+        <div id="content">
+            <button id="tts-btn" onclick="toggleTTS()">🔊</button>
+            <h2 id="chapter-title"></h2>
+            <p id="story-text"></p>
+            <div id="choices"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. LE MOTEUR ---
+        const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
+        const STYLE = "Epic fantasy, 8k, cinematic lighting, highly detailed, ";
+        let currentAudio = null;
+
+        // --- 2. LES DONNÉES (C'est ici que nous allons coller les 99 chapitres) ---
+        // L'objet doit s'appeler 'storyData'
+        const storyData = {
+"1": {
+        "text": "Vous vous tenez devant la Porte des Cendres, l'entrée légendaire du Royaume Interdit. Le ciel est violet, déchiré par des éclairs silencieux. Une inscription ancienne est gravée sur le métal froid : 'Seuls ceux qui sacrifient leur humanité peuvent entrer'. Une dague rouillée est posée sur un autel devant vous.",
+        "img": "Huge dark gothic gate, violet sky, lightning, ancient altar with a rusty dagger, dark fantasy atmosphere, 8k",
+        "choices": [
+            { "text": "Verser votre sang sur l'autel (Voie du Sacrifice)", "next": "2" },
+            { "text": "Forcer la porte avec votre masse (Voie de la Force)", "next": "3" }
+        ]
+    },
+    "2": {
+        "text": "La dague entaille votre paume. Le sang grésille au contact de l'autel. La porte s'ouvre dans un grincement lugubre, révélant un couloir tapissé de miroirs brisés. Vous sentez une présence magique vous observer. Votre blessure ne guérit pas, mais elle brille d'une lueur bleue.",
+        "img": "Corridor of broken mirrors, blue magical aura, blood ritual, mysterious atmosphere, dark interior",
+        "choices": [
+            { "text": "Regarder dans les miroirs (Perception)", "next": "4" },
+            { "text": "Avancer les yeux fermés (Volonté)", "next": "5" }
+        ]
+    },
+    "3": {
+        "text": "Votre masse s'écrase contre le métal. Le choc résonne comme un tonnerre. La porte ne bouge pas, mais une fissure apparaît. Soudain, le Gardien de Rouille, un automate géant, s'éveille de la muraille. Il lève une hache immense.",
+        "img": "Giant rusty steampunk golem waking up from a wall, glowing red eyes, holding a massive axe, combat scene",
+        "choices": [
+            { "text": "Esquiver et frapper les jambes", "next": "6" },
+            { "text": "Parer le coup (Risqué)", "next": "7" }
+        ]
+    },
+    "4": {
+        "text": "Les miroirs ne reflètent pas votre visage, mais celui d'un démon souriant. Il vous murmure un secret : 'Le Roi est mort, vive le Néant'. Vous gagnez une connaissance interdite, mais votre esprit vacille. Le couloir débouche sur une ville en ruines.",
+        "img": "Reflection of a demon in a broken mirror, dark whispers, sanity loss, horror concept art",
+        "choices": [
+            { "text": "Explorer les ruines basses", "next": "8" },
+            { "text": "Monter vers la Haute Ville", "next": "9" }
+        ]
+    },
+    "5": {
+        "text": "Guidé par votre instinct, vous traversez le couloir sans céder à la folie. Vous arrivez intact de l'autre côté. Devant vous s'étend la Cité des Pleurs, une métropole gothique flottant au-dessus d'un abîme sans fond.",
+        "img": "Gothic city floating over a dark abyss, epic scale, fog, flying debris, melancholic atmosphere",
+        "choices": [
+            { "text": "Chercher un pont pour traverser", "next": "10" },
+            { "text": "Utiliser le grappin", "next": "11" }
+        ]
+    },
+    "6": {
+        "text": "Vous roulez sous la hache du Gardien. Votre contre-attaque brise son genou hydraulique. Il s'effondre, ouvrant le passage par sa chute. Vous entrez dans la cour intérieure, mais le bruit a alerté les Écorcheurs.",
+        "img": "Defeated giant robot kneeling, sparks, warrior standing victorious, ominous shadows approaching",
+        "choices": [
+            { "text": "Se cacher dans les ombres", "next": "12" },
+            { "text": "Préparer l'épée pour l'affrontement", "next": "13" }
+        ]
+    },
+    "7": {
+        "text": "Le choc est terrible. Votre arme se brise, et vous êtes projeté en arrière. Le Gardien lève sa hache pour le coup de grâce, mais une flèche d'énergie traverse sa tête. Une silhouette encapuchonnée apparaît sur les remparts.",
+        "img": "Mysterious hooded archer standing on a castle wall, glowing bow, energy arrow, savior",
+        "choices": [
+            { "text": "Remercier l'inconnu", "next": "14" },
+            { "text": "Fuir pendant la confusion", "next": "12" }
+        ]
+    },
+    "8": {
+        "text": "Les ruines basses sont inondées d'une eau noire. Des cadavres flottent, portant des armures d'un âge d'or oublié. Vous apercevez quelque chose qui brille au fond de l'eau : une clé dorée.",
+        "img": "Flooded ruins, dark water, floating bodies in golden armor, a shining object underwater",
+        "choices": [
+            { "text": "Plonger pour récupérer la clé", "next": "15" },
+            { "text": "Ignorer et continuer sur les toits", "next": "16" }
+        ]
+    },
+    "9": {
+        "text": "La Haute Ville est préservée, mais le temps y est figé. Les habitants sont des statues de cendre. Au centre, une cathédrale immense pulse d'une lumière rouge. C'est là que réside le Cœur.",
+        "img": "City of ash statues, frozen in time, giant red glowing cathedral in background, eerie silence",
+        "choices": [
+            { "text": "Entrer dans la cathédrale", "next": "17" },
+            { "text": "Fouiller les maisons nobles", "next": "18" }
+        ]
+    },
+    "10": {
+        "text": "Le pont est gardé par un Sphinx Squelettique. Il ne pose pas d'énigme, il exige un tribut émotionnel. 'Donne-moi ton souvenir le plus heureux, et je te laisse passer'.",
+        "img": "Skeletal sphinx with blue flames in eyes, guarding a stone bridge, fog, surreal atmosphere",
+        "choices": [
+            { "text": "Sacrifier le souvenir (Oubli)", "next": "19" },
+            { "text": "Attaquer le Sphinx", "next": "20" }
+        ]
+    },
+    "11": {
+        "text": "Votre grappin s'accroche à une gargouille. Vous vous balancez au-dessus du vide. Le vent hurle. La gargouille cède ! Vous tombez, mais vous parvenez à vous rattraper in extremis à un balcon inférieur.",
+        "img": "First person view swinging over a dark abyss, crumbling gargoyle, vertigo, intense action",
+        "choices": [
+            { "text": "Briser la fenêtre pour entrer", "next": "18" },
+            { "text": "Escalader la façade", "next": "16" }
+        ]
+    },
+    "12": {
+        "text": "Vous vous fondez dans l'obscurité. Les Écorcheurs, des créatures sans peau aux longues griffes, passent à quelques centimètres de vous. Ils reniflent l'air, cherchant du sang frais.",
+        "img": "Skinless monsters with long claws hunting in a dark alley, warrior hiding behind a crate, tension",
+        "choices": [
+            { "text": "Retenir son souffle", "next": "16" },
+            { "text": "Lancer une pierre pour faire diversion", "next": "15" }
+        ]
+    },
+    "13": {
+        "text": "Le combat est brutal. Vous tranchez, parez, esquivez. Vous tuez trois Écorcheurs, mais vous êtes blessé. Le sang attire d'autres créatures. Vous devez bouger, vite.",
+        "img": "Bloody combat scene, warrior fighting multiple monsters, dynamic motion blur, grit",
+        "choices": [
+            { "text": "Courir vers la lumière au loin", "next": "17" },
+            { "text": "Se barricader dans une tour", "next": "18" }
+        ]
+    },
+    "14": {
+        "text": "L'inconnu saute avec agilité. C'est une Elfe de Nuit nommée Lyra. 'Tu fais beaucoup de bruit pour un mortel', dit-elle. 'Si tu veux survivre, suis-moi'.",
+        "img": "Night elf female rogue with glowing tattoos, holding a bow, cynical expression, dark fantasy portrait",
+        "choices": [
+            { "text": "La suivre", "next": "19" },
+            { "text": "Refuser et partir seul", "next": "12" }
+        ]
+    },
+    "15": {
+        "text": "L'eau est glaciale. Vous saisissez la clé, mais une main squelettique vous agrippe la cheville ! Vous vous débattez et remontez à la surface, la clé en main, mais le souffle court.",
+        "img": "Underwater struggle with a skeleton, bubbles, reaching for surface, holding a golden key",
+        "choices": [
+            { "text": "Examiner la clé", "next": "21" },
+            { "text": "Courir avant que d'autres ne viennent", "next": "22" }
+        ]
+    },
+    "16": {
+        "text": "Les toits offrent une vue imprenable sur la désolation. Vous voyez au loin la Tour de l'Horloge, qui tourne à l'envers. C'est le seul endroit qui semble intact.",
+        "img": "Rooftop view of a ruined city, giant clock tower in distance with reverse hands, cinematic lighting",
+        "choices": [
+            { "text": "Se diriger vers l'Horloge", "next": "23" },
+            { "text": "Descendre dans les ruelles", "next": "24" }
+        ]
+    },
+    "17": {
+        "text": "La porte de la cathédrale est immense. Des chants distordus en émanent. Vous poussez les vantaux. À l'intérieur, des moines en robes rouges prient autour d'un cristal corrompu.",
+        "img": "Cathedral interior, red monks chanting around a purple corrupt crystal, ominous religious atmosphere",
+        "choices": [
+            { "text": "Se faire passer pour un initié", "next": "25" },
+            { "text": "Les attaquer pendant le rituel", "next": "26" }
+        ]
+    },
+    "18": {
+        "text": "La maison noble est pillée, mais vous trouvez un journal intime sur un bureau. Il raconte les derniers jours avant la Chute. 'L'Alchimiste a menti', est-il écrit en sang.",
+        "img": "Abandoned Victorian study room, dusty journal on desk, blood stains, mystery clue",
+        "choices": [
+            { "text": "Lire le journal en entier", "next": "27" },
+            { "text": "Chercher des objets de valeur", "next": "28" }
+        ]
+    },
+    "19": {
+        "text": "Vous sentez une partie de votre mémoire s'effacer. Le visage de votre mère... disparu. Le Sphinx s'écarte. 'Le prix est payé'. Vous traversez le pont, le cœur vide mais vivant.",
+        "img": "Crossing a bridge, warrior looking sad, fading memories effect, melancholic art",
+        "choices": [
+            { "text": "Avancer vers la Tour", "next": "29" },
+            { "text": "Regarder en arrière", "next": "30" }
+        ]
+    },
+    "20": {
+        "text": "Votre lame rencontre l'os. Le Sphinx hurle un cri sonique qui fait saigner vos oreilles. Il est rapide, trop rapide. Il vous plaque au sol, ses griffes sur votre gorge.",
+        "img": "Sphinx pinning warrior to the ground, claws ready to strike, intense danger, dynamic angle",
+        "choices": [
+            { "text": "Utiliser la magie à bout portant", "next": "31" },
+            { "text": "Planter votre dague dans sa patte", "next": "32" }
+        ]
+    },
+"21": {
+        "text": "La clé est en or pur, gravée du sceau de l'Astronome Royal. Elle vibre légèrement lorsqu'elle pointe vers le nord. C'est un artefact capable d'ouvrir les portes scellées par la magie des étoiles.",
+        "img": "Close up of a magical golden key with star runes, glowing in a dark hand, underwater background blurred, detailed artifact",
+        "choices": [
+            { "text": "Suivre la vibration de la clé", "next": "33" },
+            { "text": "La garder cachée et quitter l'eau", "next": "16" }
+        ]
+    },
+    "22": {
+        "text": "Vous fuyez à travers les ruines inondées, éclaboussant l'eau noire. Les bruits de pas squelettiques s'éloignent. Vous vous retrouvez grelottant au pied d'une gigantesque tour d'horloge dont le tic-tac résonne comme un glas.",
+        "img": "Looking up at a gigantic gothic clock tower from below, fog, rain, ominous perspective, dark fantasy architecture",
+        "choices": [
+            { "text": "Escalader la tour", "next": "23" },
+            { "text": "Chercher un abri au sol", "next": "24" }
+        ]
+    },
+    "23": {
+        "text": "L'intérieur de l'Horloge est un dédale d'engrenages titanesques. Un vieil homme avec un bras mécanique huile un piston. C'est le Gardien du Temps. Il ne vous regarde pas : 'Tu es en retard, voyageur. L'alignement a déjà commencé.'",
+        "img": "Inside a giant clock tower, massive gears, steam, an old man with a mechanical steampunk arm, copper and brass tones",
+        "choices": [
+            { "text": "Lui demander de quoi il parle", "next": "34" },
+            { "text": "L'assommer pour voler son équipement", "next": "35" }
+        ]
+    },
+    "24": {
+        "text": "Les ruelles sont un labyrinthe de misère. Des mendiants aux yeux cousus vous tendent des mains décharnées. L'un d'eux vous agrippe : 'La Guilde des Voleurs paie cher pour les étrangers'. C'est un piège.",
+        "img": "Dark narrow alleyway, beggars with sewn eyes reaching out, fog, claustrophobic atmosphere, poverty and horror",
+        "choices": [
+            { "text": "Dégainer votre arme", "next": "36" },
+            { "text": "Proposer un marché", "next": "37" }
+        ]
+    },
+    "25": {
+        "text": "Vous rabattez votre capuche et marmonnez des prières impies. Le Grand Prêtre vous observe. 'Si tu es des nôtres, bois au Calice de la Corruption'. Le liquide est noir et visqueux.",
+        "img": "Red robed cultist holding a chalice with black liquid, first person view, menacing atmosphere, candlelight",
+        "choices": [
+            { "text": "Boire (Gain de pouvoir, perte d'âme)", "next": "38" },
+            { "text": "Jeter le calice à son visage", "next": "26" }
+        ]
+    },
+    "26": {
+        "text": "Le chaos éclate. Vos coups pleuvent sur les moines fanatiques. Le cristal central se fissure sous l'impact d'un sort perdu. Une énergie instable commence à s'accumuler. La cathédrale va exploser.",
+        "img": "Cathedral exploding from inside with pink magical energy, monks flying, debris, chaos, action shot",
+        "choices": [
+            { "text": "Sauter par le vitrail", "next": "39" },
+            { "text": "Tenter de contenir l'explosion", "next": "40" }
+        ]
+    },
+    "27": {
+        "text": "Le journal révèle que l'Alchimiste Royal a créé la Brume pour cacher la ville aux yeux des Dieux, mais le remède est devenu pire que le mal. Il mentionne un laboratoire secret sous les égouts.",
+        "img": "Open journal with hand drawings of alchemical circles and monsters, blood drops, candlelight, mystery",
+        "choices": [
+            { "text": "Partir chercher ce laboratoire", "next": "41" },
+            { "text": "Brûler le journal (Savoir dangereux)", "next": "16" }
+        ]
+    },
+    "28": {
+        "text": "Vous trouvez une bourse de pièces d'or antique et une statuette en obsidienne. Dès que vous la touchez, une voix glaciale résonne dans votre tête : 'Je te vois'. Vous êtes maudit.",
+        "img": "Hand holding a cursed obsidian statue, black smoke emanating from it, gold coins on table, eerie glow",
+        "choices": [
+            { "text": "Garder la statuette (Pouvoir maudit)", "next": "42" },
+            { "text": "La jeter immédiatement", "next": "43" }
+        ]
+    },
+    "29": {
+        "text": "La Tour de l'Astronome perce les nuages. Au sommet, un immense télescope pointe non pas vers le ciel, mais vers le sol, vers l'abîme. L'Astronome est mort, son corps cristallisé sur sa chaise.",
+        "img": "Observatory room high in the sky, giant brass telescope pointing down, crystallized corpse on chair, cold blue light",
+        "choices": [
+            { "text": "Regarder dans le télescope", "next": "44" },
+            { "text": "Fouiller ses notes", "next": "45" }
+        ]
+    },
+    "30": {
+        "text": "En regardant en arrière, vous voyez vos souvenirs prendre forme physique et tomber dans le vide. Votre passé est effacé. Vous êtes une coquille vide avec une mission. Vous gagnez une immunité à la peur.",
+        "img": "Silhouette of a man watching memories turning into smoke and falling into abyss, surreal art, melancholic",
+        "choices": [
+            { "text": "Accepter votre sort et avancer", "next": "29" },
+            { "text": "Hurler de rage", "next": "46" }
+        ]
+    },
+    "31": {
+        "text": "Vous canalisez toute votre énergie dans une explosion arcanique. Le Sphinx est pulvérisé, mais le retour de flamme vous brûle le bras. La voie est libre, mais vous êtes affaibli.",
+        "img": "Aftermath of a magical explosion, dust, sphinx debris, warrior holding a burnt arm in pain",
+        "choices": [
+            { "text": "Se bander le bras et continuer", "next": "29" },
+            { "text": "Chercher une potion dans les débris", "next": "47" }
+        ]
+    },
+    "32": {
+        "text": "La dague se plante entre les plaques d'os. Le Sphinx recule, surpris par votre audace. Il rit, un son qui ressemble à des os qui s'entrechoquent. 'Intéressant. Tu as du cran. Passe, avant que je ne change d'avis.'",
+        "img": "Sphinx laughing, giant skeletal face close up, sharp teeth, warrior holding a bloody dagger, tension",
+        "choices": [
+            { "text": "Courir vers la Tour", "next": "29" },
+            { "text": "Lui demander une faveur avant de partir", "next": "48" }
+        ]
+    },
+    "33": {
+        "text": "La clé vous guide vers une porte dérobée sous la surface de l'eau. Vous retenez votre respiration et nagez. Vous émergez dans une salle sèche, éclairée par des globes stellaires. C'est l'antichambre de l'Astronome.",
+        "img": "Secret underwater entrance leading to a dry room filled with floating star globes, magical atmosphere",
+        "choices": [
+            { "text": "Monter l'escalier en colimaçon", "next": "29" },
+            { "text": "Examiner les globes", "next": "49" }
+        ]
+    },
+    "34": {
+        "text": "Le Gardien du Temps soupire. 'L'alignement des sphères va ouvrir la Porte du Néant. Si l'horloge s'arrête, le temps se fige et les démons gagnent. J'ai besoin d'huile de Léviathan pour les engrenages principaux.'",
+        "img": "Old mechanic showing a complex blueprint of the clock tower, pointing at a missing part, steampunk details",
+        "choices": [
+            { "text": "Accepter la quête (Chasse au monstre)", "next": "50" },
+            { "text": "Refuser et monter au sommet", "next": "51" }
+        ]
+    },
+    "35": {
+        "text": "Le vieil homme tombe. Vous volez son bras mécanique. C'est une merveille de technologie. Vous pouvez l'adapter sur votre armure pour gagner en force, mais l'Horloge commence à ralentir dangereusement.",
+        "img": "Steampunk mechanical arm attached to warrior armor, gears grinding sparks, clock tower shaking",
+        "choices": [
+            { "text": "Fuir avant que tout s'effondre", "next": "51" },
+            { "text": "Tenter de réparer l'horloge vous-même", "next": "52" }
+        ]
+    },
+    "36": {
+        "text": "Votre lame chante. Les mendiants sont en réalité des goules illusionnistes. Le combat est sale, dans la boue et le sang. Vous triomphez, mais la Guilde a mis une prime sur votre tête.",
+        "img": "Fighting ghouls in a muddy alley, rain, dirty gritty fantasy style, dynamic action",
+        "choices": [
+            { "text": "Se cacher dans les égouts", "next": "53" },
+            { "text": "Intimider les survivants", "next": "54" }
+        ]
+    },
+    "37": {
+        "text": "Vous montrez une pièce d'or. Les yeux des mendiants brillent. 'Le Maître des Voleurs peut vous aider... pour un prix'. Ils vous conduisent à une trappe secrète sous un étal de poissonnerie.",
+        "img": "Opening a secret trapdoor under a wooden market stall, thieves guiding the way, lantern light",
+        "choices": [
+            { "text": "Descendre dans le repaire", "next": "55" },
+            { "text": "Changer d'avis et partir", "next": "23" }
+        ]
+    },
+    "38": {
+        "text": "Le liquide brûle comme de l'acide, puis une puissance glacée vous envahit. Vous voyez le monde tel qu'il est vraiment : une carcasse pourrie. Les moines vous acceptent comme l'un des leurs.",
+        "img": "Vision of the world in nightmare mode, decaying walls, monsters visible in shadows, purple vision filter",
+        "choices": [
+            { "text": "Demander l'accès à la Bibliothèque Interdite", "next": "56" },
+            { "text": "Trahir les moines maintenant que vous êtes fort", "next": "26" }
+        ]
+    },
+    "39": {
+        "text": "Le verre explose. Vous chutez dans le vide. Vous activez votre cape de lévitation (ou utilisez la magie) in extremis. Vous atterrissez brutalement sur le toit d'un dirigeable qui passait par là.",
+        "img": "Falling from a cathedral window, glass shattering, landing on a steampunk airship balloon, high altitude",
+        "choices": [
+            { "text": "Infiltrer le dirigeable", "next": "57" },
+            { "text": "Sauter sur le toit voisin", "next": "58" }
+        ]
+    },
+    "40": {
+        "text": "Vous tenez l'énergie entre vos mains. C'est trop pour un seul homme. Votre peau se fissure, laissant échapper de la lumière pure. Vous contenez l'explosion, mais vous devenez une bombe à retardement vivante.",
+        "img": "Character glowing with unstable bright light, cracks on skin, powerful aura, cathedral safe but character suffering",
+        "choices": [
+            { "text": "Relâcher l'énergie vers le ciel", "next": "59" },
+            { "text": "Gardez l'énergie pour un coup ultime", "next": "60" }
+        ]
+    },
+"41": {
+        "text": "Le laboratoire souterrain est un enfer de verre et de vapeur. Des chimères flottent dans des cuves vertes. L'Alchimiste, devenu une abomination de chair et de métal, vous barre la route. Il protège la Formule de l'Éther.",
+        "img": "Mad scientist laboratory underground, green tanks with floating monsters, steampunk cyborg alchemist, creepy lighting",
+        "choices": [
+            { "text": "Détruire les cuves pour créer une diversion", "next": "61" },
+            { "text": "Affronter l'Alchimiste en duel", "next": "62" }
+        ]
+    },
+    "42": {
+        "text": "La statuette fusionne avec votre peau. Une armure d'ombre noire vous recouvre. Vous vous sentez invincible, mais une soif de sang vous envahit. Des esprits mineurs commencent à vous obéir.",
+        "img": "Warrior covered in living shadow armor, glowing purple eyes, dark spirits bowing around, power fantasy",
+        "choices": [
+            { "text": "Commander aux esprits d'attaquer vos ennemis", "next": "63" },
+            { "text": "Tenter de contrôler la soif de sang", "next": "64" }
+        ]
+    },
+    "43": {
+        "text": "Vous jetez l'objet maudit dans le puits sans fond. Un cri lointain d'agonie remonte. Libéré du poids, vous remarquez un passage secret derrière une tapisserie que la magie noire vous cachait.",
+        "img": "Hidden stone door opening behind a red tapestry, dust falling, secret passage revealed, torch light",
+        "choices": [
+            { "text": "Emprunter le passage secret", "next": "65" },
+            { "text": "Fouiller le reste de la pièce avant de partir", "next": "66" }
+        ]
+    },
+    "44": {
+        "text": "À travers la lentille, vous ne voyez pas le sol, mais une immense créature qui dort *sous* la ville. La cité n'est pas construite sur de la roche, mais sur le dos d'un Titan cosmique. Il commence à bouger.",
+        "img": "View through a telescope lens showing a giant sleeping titan eye underground, cosmic horror scale, revelation",
+        "choices": [
+            { "text": "Noter les points faibles du Titan", "next": "67" },
+            { "text": "Détruire le télescope pour que personne ne sache", "next": "68" }
+        ]
+    },
+    "45": {
+        "text": "Les notes sont illisibles pour le commun des mortels, sauf une page : 'La musique peut l'endormir'. Il y a une partition musicale complexe dessinée à côté d'une harpe en cristal.",
+        "img": "Close up on cryptic handwritten notes, musical sheet, crystal harp in background, mysterious atmosphere",
+        "choices": [
+            { "text": "Essayer de jouer la mélodie", "next": "69" },
+            { "text": "Prendre la partition et partir", "next": "70" }
+        ]
+    },
+    "46": {
+        "text": "Votre hurlement brise le silence surnaturel. La rage pure agit comme un bouclier psychique. Les spectres qui hantaient le pont reculent, terrifiés par votre aura de violence pure.",
+        "img": "Warrior screaming in rage, red aura pushing back ghosts, shockwave effect, intense emotion",
+        "choices": [
+            { "text": "Charger à travers les spectres", "next": "62" },
+            { "text": "Canaliser cette rage dans votre arme", "next": "71" }
+        ]
+    },
+    "47": {
+        "text": "Vous trouvez une fiole marquée d'un crâne. N'ayant rien à perdre, vous la buvez. Votre peau devient transparente, révélant vos os et vos veines bleues. Vous êtes devenu invisible, mais le froid vous ronge.",
+        "img": "First person view of invisible hands holding a weapon, ghostly transparency, cold blue filter",
+        "choices": [
+            { "text": "Profiter de l'invisibilité pour s'infiltrer", "next": "72" },
+            { "text": "Chercher un antidote (Urgent)", "next": "41" }
+        ]
+    },
+    "48": {
+        "text": "Le Sphinx, amusé, vous donne une énigme : 'Je dévore toutes choses : oiseaux, bêtes, arbres, fleurs. Je ronge le fer, je mords l'acier. Qui suis-je ?'.",
+        "img": "Sphinx staring intensely, waiting for an answer, mysterious magical symbols floating in air",
+        "choices": [
+            { "text": "Répondre : Le Temps", "next": "73" },
+            { "text": "Répondre : La Mort", "next": "74" }
+        ]
+    },
+    "49": {
+        "text": "Les globes montrent d'autres mondes. Certains sont en feu, d'autres sont des paradis. Vous réalisez que cette tour est un nexus dimensionnel. Un globe particulier attire votre attention : il ressemble à votre monde d'origine.",
+        "img": "Room filled with floating holographic planets, magical observatory, glowing lights, wonder",
+        "choices": [
+            { "text": "Toucher le globe familier", "next": "75" },
+            { "text": "Chercher une arme dimensionnelle", "next": "76" }
+        ]
+    },
+    "50": {
+        "text": "Les égouts sous l'Horloge abritent le Léviathan, un serpent d'huile et de ferraille. Il garde la réserve de lubrifiant. Le combat s'engage dans la boue toxique.",
+        "img": "Giant mechanical serpent rising from toxic sludge, rusty metal scales, glowing green eyes, sewers combat",
+        "choices": [
+            { "text": "Utiliser le feu (Risque d'explosion)", "next": "77" },
+            { "text": "Viser les joints hydrauliques", "next": "78" }
+        ]
+    },
+    "51": {
+        "text": "Vous grimpez alors que la tour s'effondre. Les engrenages tombent comme une pluie de métal. Vous devez sauter de plateforme en plateforme pour atteindre le sommet avant que tout ne s'écroule.",
+        "img": "Collapsing clock tower interior, falling gears, character jumping over a gap, vertigo, action scene",
+        "choices": [
+            { "text": "Sauter vers le balancier central", "next": "79" },
+            { "text": "Viser la fenêtre pour sortir", "next": "58" }
+        ]
+    },
+    "52": {
+        "text": "Avec le bras mécanique, vous avez la force de dix hommes. Vous remettez l'engrenage principal en place à mains nues. L'Horloge repart dans un grondement qui fait trembler la cité. Le temps reprend son cours.",
+        "img": "Character with a giant steampunk arm pushing a massive gear, steam jets, sparks, heroic effort",
+        "choices": [
+            { "text": "Se reposer un instant", "next": "80" },
+            { "text": "Profiter que le temps soit stable pour avancer", "next": "29" }
+        ]
+    },
+    "53": {
+        "text": "Le Roi des Rats, un homme bossu contrôlant une nuée de rongeurs, vous trouve. Il déteste la Guilde. 'L'ennemi de mon ennemi est mon ami', siffle-t-il. Il vous offre un passage vers le Palais.",
+        "img": "Hunchback man surrounded by hundreds of rats with glowing red eyes, dark sewer throne, gritty atmosphere",
+        "choices": [
+            { "text": "Accepter l'alliance des Rats", "next": "81" },
+            { "text": "Refuser et continuer seul", "next": "24" }
+        ]
+    },
+    "54": {
+        "text": "Vous plantez la tête du chef des goules sur une pique. Les autres créatures reculent, terrifiées. Vous êtes désormais le chef de cette ruelle. Vous avez une petite armée de monstres à vos ordres.",
+        "img": "Warrior standing over defeated enemies, holding a pike, scary ghouls bowing down, dark alley leader",
+        "choices": [
+            { "text": "Les envoyer faire diversion", "next": "82" },
+            { "text": "Les forcer à vous porter jusqu'à la Haute Ville", "next": "9" }
+        ]
+    },
+    "55": {
+        "text": "Le repaire est luxueux, rempli de trésors volés. Le Maître Voleur est une ombre mouvante. Il propose un contrat : 'Vole le Cœur de l'Architecte pour moi, et je te donnerai ta liberté'.",
+        "img": "Luxurious underground hideout, gold piles, shadowy figure sitting in a velvet chair, intrigue",
+        "choices": [
+            { "text": "Accepter le contrat", "next": "83" },
+            { "text": "Tenter de l'assassiner", "next": "84" }
+        ]
+    },
+    "56": {
+        "text": "La Bibliothèque Interdite contient des livres reliés en peau humaine. Les murmures sont constants ici. Vous trouvez un Grimoire de Sang qui enseigne comment tuer un Dieu.",
+        "img": "Evil library, books flying, dark magic swirls, grimoire with an eye on the cover, knowledge",
+        "choices": [
+            { "text": "Apprendre le sortilège 'Déicide'", "next": "85" },
+            { "text": "Chercher une carte des lieux", "next": "86" }
+        ]
+    },
+    "57": {
+        "text": "Le dirigeable appartient à des contrebandiers du ciel. Ils sont armés de mousquets électriques. Vous êtes découvert sur le pont. Le Capitaine pointe son arme sur vous.",
+        "img": "Deck of a steampunk airship high in the clouds, pirates aiming electric guns, captain with an eyepatch, wind",
+        "choices": [
+            { "text": "Lever les mains et négocier", "next": "87" },
+            { "text": "Utiliser le vent pour les pousser par-dessus bord", "next": "88" }
+        ]
+    },
+    "58": {
+        "text": "Le saut est périlleux. Vous atterrissez sur le toit en pente d'une serre géante. Le verre craque sous vos pieds. En dessous, une jungle artificielle carnivore semble affamée.",
+        "img": "Warrior sliding down a glass roof, cracking glass, giant venus flytraps visible underneath, danger",
+        "choices": [
+            { "text": "Courir pour atteindre la gouttière", "next": "89" },
+            { "text": "Se laisser tomber dans la jungle (Fou ?)", "next": "90" }
+        ]
+    },
+    "59": {
+        "text": "Le faisceau d'énergie perce les nuages, créant une balise visible à des lieues. Cela attire l'attention de l'Architecte, mais aussi celle de quelque chose de bien pire qui rôdait dans le ciel.",
+        "img": "Giant beam of pure light shooting into the sky, dark clouds parting, a giant shadow descending from above",
+        "choices": [
+            { "text": "Se préparer au combat aérien", "next": "91" },
+            { "text": "Fuir pendant que l'ennemi est distrait", "next": "92" }
+        ]
+    },
+    "60": {
+        "text": "Votre corps brille comme une étoile. La douleur est atroce, mais vous êtes une bombe nucléaire humaine. Vous marchez vers le centre de la ville, prêt à tout raser si nécessaire.",
+        "img": "Character glowing intensely white, ground cracking under feet, power overwhelming, walking towards a castle",
+        "choices": [
+            { "text": "Défier l'Architecte en duel", "next": "93" },
+            { "text": "Chercher un endroit pour exploser sans tuer d'innocents", "next": "94" }
+        ]
+    },
+"61": {
+        "text": "Vous brisez les cuves. Le liquide corrosif se répand, brûlant les circuits de l'Alchimiste. Les chimères libérées, folles de douleur, se jettent sur lui. C'est un carnage, mais la voie vers la sortie est libre.",
+        "img": "Monsters escaping glass tanks, attacking a cyborg alchemist, green acid on floor, chaotic scene",
+        "choices": [
+            { "text": "Voler la Formule pendant le chaos", "next": "81" },
+            { "text": "Fuir avant que le laboratoire ne s'effondre", "next": "82" }
+        ]
+    },
+    "62": {
+        "text": "L'Alchimiste est rapide, ses bras mécaniques munis de scies circulaires. Mais vous trouvez une faille dans son armure dorsale. Un coup précis, et il s'effondre dans une gerbe d'étincelles. Il murmure : 'Je voulais juste... les sauver...'",
+        "img": "Defeated cyborg alchemist lying on floor, sparks, sad atmosphere, warrior holding weapon, steampunk lab",
+        "choices": [
+            { "text": "Lui accorder une mort rapide", "next": "83" },
+            { "text": "Récupérer son cœur énergétique", "next": "84" }
+        ]
+    },
+    "63": {
+        "text": "Les esprits déchirent vos ennemis. Vous marchez vers le Palais Royal, une légion de fantômes hurlants tourbillonnant autour de vous. Les gardes fuient de terreur. Vous êtes la Mort incarnée.",
+        "img": "Warrior walking towards a palace surrounded by swirling ghosts, terrified guards running away, purple dark energy",
+        "choices": [
+            { "text": "Abattre la porte du Palais", "next": "85" },
+            { "text": "Envoyer les esprits en éclaireurs", "next": "86" }
+        ]
+    },
+    "64": {
+        "text": "Vous méditez au milieu du carnage, luttant contre l'armure qui tente de posséder votre esprit. Vous gagnez. L'armure se calme et devient une seconde peau protectrice, docile. Vous avez dompté la malédiction.",
+        "img": "Warrior meditating in lotus position, shadow aura calming down, serene but dark atmosphere",
+        "choices": [
+            { "text": "Utiliser ce nouveau pouvoir pour le bien", "next": "87" },
+            { "text": "Rechercher le Cœur pour le purifier", "next": "88" }
+        ]
+    },
+    "65": {
+        "text": "Le passage secret mène aux appartements de la Reine disparue. Tout est intact. Un miroir magique trône au centre. Il ne reflète pas la pièce, mais montre l'Architecte en train de pleurer.",
+        "img": "Elegant queen bedroom, dust, large magical mirror showing a crying god, mysterious",
+        "choices": [
+            { "text": "Parler à travers le miroir", "next": "89" },
+            { "text": "Briser le miroir pour rompre le lien", "next": "90" }
+        ]
+    },
+    "66": {
+        "text": "En fouillant, vous déclenchez un piège à gaz. Vous toux et votre vision se trouble. Vous rampez vers la sortie, mais vous avez perdu un temps précieux. Votre santé est diminuée.",
+        "img": "Green gas filling a room, blurred vision effect, hand reaching for a door handle, danger",
+        "choices": [
+            { "text": "Manger des herbes médicinales", "next": "91" },
+            { "text": "Continuer malgré la douleur", "next": "92" }
+        ]
+    },
+    "67": {
+        "text": "Vous cartographiez les nerfs du Titan. Si vous frappez au bon endroit, vous pouvez le paralyser pour toujours, ou le réveiller pour qu'il détruise la Brume. C'est une arme à double tranchant.",
+        "img": "Blueprint of a titan body overlaying a map of the city, red marks on weak points, strategic view",
+        "choices": [
+            { "text": "Préparer un rituel de réveil", "next": "93" },
+            { "text": "Préparer un poison pour l'endormir", "next": "94" }
+        ]
+    },
+    "68": {
+        "text": "Vous brisez la lentille. Personne ne doit savoir que le monde est vivant. L'ignorance est une bénédiction. Vous descendez de la tour, le poids de ce secret écrasant vos épaules.",
+        "img": "Shattered glass of a giant telescope, warrior looking down, heavy atmosphere, shadows",
+        "choices": [
+            { "text": "Mentir aux survivants", "next": "95" },
+            { "text": "Chercher un moyen de fuir la ville", "next": "96" }
+        ]
+    },
+    "69": {
+        "text": "Vos doigts glissent sur la harpe de cristal. Une mélodie pure s'élève, chassant la Brume autour de la tour. L'Architecte, loin dans son Temple, tourne la tête. Il a entendu.",
+        "img": "Playing a crystal harp, sound waves visualized as light clearing the fog, magical moment",
+        "choices": [
+            { "text": "Continuer à jouer pour l'affaiblir", "next": "97" },
+            { "text": "Arrêter avant qu'il ne vous localise", "next": "98" }
+        ]
+    },
+    "70": {
+        "text": "Vous emportez la partition. C'est une magie ancienne, le Chant de la Création. Avec le bon instrument, vous pourriez remodeler la réalité, ou du moins ouvrir la porte du Temple.",
+        "img": "Rolling up a glowing musical scroll, putting it in a bag, determination",
+        "choices": [
+            { "text": "Chercher l'Orgue de la Cathédrale", "next": "85" },
+            { "text": "Chanter les notes vous-même", "next": "86" }
+        ]
+    },
+    "71": {
+        "text": "Votre arme devient rouge vif, imprégnée de votre haine. Vous tranchez les spectres comme du papier. Rien ne peut vous arrêter. Vous arrivez devant la porte du Temple, laissant une traînée de feu derrière vous.",
+        "img": "Warrior leaving a trail of fire footsteps, glowing red weapon, burning determination, epic shot",
+        "choices": [
+            { "text": "Entrer en fracassant la porte", "next": "85" },
+            { "text": "Appeler l'Architecte en duel", "next": "89" }
+        ]
+    },
+    "72": {
+        "text": "Invisible, vous passez devant les gardes d'élite du Temple. Vous les entendez parler : 'Le Cœur est instable. Si l'intrus ne vient pas vite, tout explosera'. Ils vous attendent.",
+        "img": "Invisible point of view walking past heavy armored guards, distortion effect, tension",
+        "choices": [
+            { "text": "Les assassiner silencieusement", "next": "83" },
+            { "text": "Se glisser dans la salle du trône", "next": "99" }
+        ]
+    },
+    "73": {
+        "text": "Le Sphinx sourit : 'Correct. Le Temps dévore tout, même les Dieux'. Il se transforme en statue de pierre, libérant le passage. Sur son socle, une Sablier Infini est posé.",
+        "img": "Sphinx turning into stone statue, hourglass glowing on the pedestal, magical atmosphere",
+        "choices": [
+            { "text": "Prendre le Sablier (Contrôle du temps limité)", "next": "84" },
+            { "text": "Ignorer et avancer", "next": "88" }
+        ]
+    },
+    "74": {
+        "text": "'Non', gronde le Sphinx. 'La Mort est une fin, je suis le processus'. Il lève sa patte pour vous écraser. Vous n'avez qu'une fraction de seconde.",
+        "img": "Giant paw descending fast, shadow covering the warrior, extreme close up action",
+        "choices": [
+            { "text": "Rouler sur le côté", "next": "91" },
+            { "text": "Utiliser le grappin sur sa tête", "next": "92" }
+        ]
+    },
+    "75": {
+        "text": "Votre main traverse l'image. Vous sentez l'odeur de l'herbe coupée, le vent de votre pays natal. Vous pourriez rentrer chez vous, maintenant, et abandonner cette quête maudite.",
+        "img": "Hand touching a portal showing a peaceful green valley, temptation, emotional contrast",
+        "choices": [
+            { "text": "Traverser (Abandonner la quête)", "next": "end_home" },
+            { "text": "Retirer sa main. Aethon a besoin de vous.", "next": "96" }
+        ]
+    },
+    "76": {
+        "text": "Vous trouvez une Dague de Faille. Elle peut couper le tissu de l'espace. Avec ceci, aucune armure, aucun mur ne peut vous résister. Vous vous sentez comme un dieu voleur.",
+        "img": "Holding a dagger that looks like a shard of broken reality, glitch effect around the blade",
+        "choices": [
+            { "text": "Se téléporter directement au Temple", "next": "99" },
+            { "text": "Couper un passage vers la salle du trésor", "next": "81" }
+        ]
+    },
+    "77": {
+        "text": "Vous jetez une torche dans l'huile. Le Léviathan s'embrase, hurlant. L'explosion secoue les fondations de la ville. Le monstre est mort, mais le feu se propage vers les archives.",
+        "img": "Giant mechanical snake burning, explosions, fire spreading in sewers, chaotic action",
+        "choices": [
+            { "text": "Sauver les archives", "next": "91" },
+            { "text": "Laisser brûler et partir", "next": "92" }
+        ]
+    },
+    "78": {
+        "text": "Vous grimpez sur le dos glissant du monstre. Vous plantez votre épée dans son cou hydraulique. Un jet d'huile noire vous aveugle, mais la machine s'arrête, inerte.",
+        "img": "Warrior riding a mechanical snake, stabbing it, oil spurting, dynamic rode style action",
+        "choices": [
+            { "text": "Récupérer une écaille de métal comme bouclier", "next": "84" },
+            { "text": "S'essuyer les yeux et partir", "next": "95" }
+        ]
+    },
+    "79": {
+        "text": "Le saut est parfait. Vous atterrissez sur le balancier géant. De là, vous atteignez la fenêtre du sommet. La ville s'étend sous vos pieds, magnifique et terrifiante.",
+        "img": "Standing on a giant clock pendulum high above the city, panoramic view of ruins and fog, epic",
+        "choices": [
+            { "text": "Planifier votre itinéraire vers le Temple", "next": "96" },
+            { "text": "Chercher des survivants à la longue-vue", "next": "95" }
+        ]
+    },
+    "80": {
+        "text": "Le tic-tac régulier de l'Horloge vous berce. Vous dormez quelques heures, récupérant vos forces. À votre réveil, vous trouvez une note du Gardien : 'Prends ceci, tu en auras besoin'. C'est une Montre d'Arrêt.",
+        "img": "Warrior sleeping near gears, waking up finding a golden pocket watch, peaceful moment",
+        "choices": [
+            { "text": "Prendre la Montre", "next": "84" },
+            { "text": "Remercier silencieusement et partir", "next": "88" }
+        ]
+    },
+"81": {
+        "text": "Vous avez volé la Formule de l'Éther ou ouvert un passage avec la Dague. Vous entrez dans la Salle du Trésor du Temple. Des montagnes d'or et d'artefacts. Au centre, un piédestal vide attend quelque chose.",
+        "img": "Treasury room filled with gold and artifacts, magical pedestal in center, greedy atmosphere",
+        "choices": [
+            { "text": "Poser la Formule/Artefact sur le socle", "next": "97" },
+            { "text": "Piller tout ce que vous pouvez", "next": "98" }
+        ]
+    },
+    "82": {
+        "text": "La diversion fonctionne. Les gardes sont occupés. Vous courez vers la sortie, mais le sol tremble. Le Titan se réveille pour de bon. La ville commence à s'incliner.",
+        "img": "City tilting, buildings collapsing, panic in streets, massive earthquake effect",
+        "choices": [
+            { "text": "Chercher un endroit élevé", "next": "99" },
+            { "text": "Descendre pour essayer de calmer le Titan", "next": "93" }
+        ]
+    },
+    "83": {
+        "text": "Vous avez accepté le contrat du Voleur ou tué l'Alchimiste. Vous êtes riche et puissant, mais vide. Vous arrivez devant la porte finale. L'Architecte vous attend de l'autre côté.",
+        "img": "Warrior standing before a massive final boss door, heavy atmosphere, anticipation",
+        "choices": [
+            { "text": "Entrer pour le combat final", "next": "99" }
+        ]
+    },
+    "84": {
+        "text": "Avec l'objet volé (Cœur, Montre, Sablier), vous avez un avantage. Vous manipulez la réalité autour de vous. Les murs s'écartent. Vous marchez droit vers le Sanctuaire, ignorant les lois de la physique.",
+        "img": "Reality bending around the character, walls melting, floating stones, surreal path to the final room",
+        "choices": [
+            { "text": "Confronter l'Architecte avec arrogance", "next": "99" }
+        ]
+    },
+    "85": {
+        "text": "La porte du Palais explose. Vous entrez dans la Salle du Trône. L'Architecte n'est pas un homme, mais une entité de lumière pure. 'Tu as fait beaucoup de chemin pour mourir', dit-il.",
+        "img": "Throne room with a being made of pure starlight, blinding aura, epic confrontation setup",
+        "choices": [
+            { "text": "Utiliser le sortilège 'Déicide'", "next": "end_godslayer" },
+            { "text": "Lui parler d'égal à égal", "next": "97" }
+        ]
+    },
+    "86": {
+        "text": "Vous utilisez la carte ou les éclaireurs esprits. Vous trouvez un passage de service qui mène derrière le trône. L'Architecte vous tourne le dos, regardant sa ville brûler.",
+        "img": "Sneaking behind a god-like figure sitting on a throne, backstab opportunity, tension",
+        "choices": [
+            { "text": "Le poignarder dans le dos", "next": "end_traitor" },
+            { "text": "Lui demander 'Pourquoi ?'", "next": "97" }
+        ]
+    },
+    "87": {
+        "text": "Les pirates rient, mais vous levez la main. Le vent obéit à votre volonté. Vous les projetez hors du navire. Vous prenez la barre. Vous avez un vaisseau volant.",
+        "img": "Steering a steampunk airship alone, storm clouds, epic sense of freedom",
+        "choices": [
+            { "text": "Bombarder le Temple depuis les airs", "next": "end_destruction" },
+            { "text": "S'enfuir vers l'horizon (Abandon)", "next": "end_explorer" }
+        ]
+    },
+    "88": {
+        "text": "Vous quittez la ville maudite. Vous avez survécu, mais à quel prix ? Aethon brûle derrière vous. Vous marchez vers l'inconnu, une relique puissante en poche.",
+        "img": "Walking away from a burning city on the horizon, holding a glowing artifact, silhouette against sunset",
+        "choices": [
+            { "text": "Ne jamais regarder en arrière", "next": "end_survivor" }
+        ]
+    },
+    "89": {
+        "text": "Le miroir ondule. L'Architecte vous voit. 'Tu as trouvé la chambre de ma bien-aimée', dit-il tristement. 'Elle aimait les roses bleues'. Il semble vulnérable.",
+        "img": "Face of a god appearing in a mirror, sad expression, blue roses in foreground, emotional moment",
+        "choices": [
+            { "text": "Utiliser sa tristesse contre lui", "next": "97" },
+            { "text": "Lui offrir votre compassion", "next": "end_peace" }
+        ]
+    },
+    "90": {
+        "text": "Vous brisez le miroir. Le cri de l'Architecte fait trembler le palais. Vous avez coupé sa source de nostalgie. Il est désormais furieux et affaibli.",
+        "img": "Shattered mirror shards flying, angry god screaming in reflection, chaos",
+        "choices": [
+            { "text": "Profiter de sa rage aveugle", "next": "99" }
+        ]
+    },
+    "91": {
+        "text": "L'ennemi aérien est une Vouivre Céleste. Le combat est aérien et désespéré. Vous sautez sur son dos en plein vol.",
+        "img": "Mid-air fight with a giant sky wyvern, clouds, speed lines, epic action",
+        "choices": [
+            { "text": "Lui planter votre épée dans le crâne", "next": "end_legend" }
+        ]
+    },
+    "92": {
+        "text": "La fuite est impossible. La ville s'effondre. Vous êtes piégé. Mais vous avez vécu une vie digne d'une chanson.",
+        "img": "Character sitting on a crumbling ledge watching the end of the world, peaceful acceptance",
+        "choices": [
+            { "text": "Fermer les yeux", "next": "end_tragic" }
+        ]
+    },
+    "93": {
+        "text": "Vous réveillez le Titan. La terre s'ouvre. Une main de la taille d'une montagne sort du sol et écrase le Temple. C'est l'apocalypse.",
+        "img": "Giant titan hand emerging from earth destroying a city, epic destruction scale, dust and fire",
+        "choices": [
+            { "text": "Admirer votre œuvre", "next": "end_chaos" }
+        ]
+    },
+    "94": {
+        "text": "Vous injectez le poison dans la veine terrestre. Le Titan s'endort pour l'éternité. La ville se stabilise. Vous avez sauvé Aethon, mais personne ne le saura jamais.",
+        "img": "Warrior injecting a glowing green serum into a pulsating glowing rock vein, sweat, relief",
+        "choices": [
+            { "text": "Disparaître dans l'ombre", "next": "end_hero" }
+        ]
+    },
+    "95": {
+        "text": "Vous rassemblez les survivants. Avec vos connaissances, vous les guidez hors de la ville mourante. Vous devenez leur chef, leur guide vers une nouvelle terre.",
+        "img": "Leading a group of ragged survivors through a mountain pass, sunrise, hope",
+        "choices": [
+            { "text": "Bâtir une nouvelle cité", "next": "end_king" }
+        ]
+    },
+    "96": {
+        "text": "Vous planifiez l'assaut final. Vous connaissez les faiblesses de l'Architecte, la carte du Temple, et vous avez les armes pour le tuer. C'est l'heure.",
+        "img": "Warrior sharpening sword by a campfire, staring at the dark castle in distance, determination",
+        "choices": [
+            { "text": "Lancer l'assaut", "next": "99" }
+        ]
+    },
+    "97": {
+        "text": "L'Architecte vous écoute. Vous débattez de la nature du pouvoir et du sacrifice. Il admet qu'il est fatigué. 'Si tu peux porter mon fardeau, je te le donne'.",
+        "img": "Philosophical debate with a glowing entity, floating symbols, peaceful but intense atmosphere",
+        "choices": [
+            { "text": "Accepter le fardeau de la Divinité", "next": "end_god" },
+            { "text": "Refuser : 'Le monde doit être libre'", "next": "end_free" }
+        ]
+    },
+    "98": {
+        "text": "Vous remplissez vos poches d'or maudit. Le poids vous ralentit. Le plafond s'effondre. Vous mourez riche, enseveli sous votre propre avidité.",
+        "img": "Skeleton buried under piles of gold coins and jewels, hand reaching out, irony",
+        "choices": [
+            { "text": "Fin", "next": "1" }
+        ]
+    },
+    "99": {
+        "text": "CHAPITRE FINAL : L'ULTIME CONFRONTATION. Vous êtes face à l'Architecte. Il déploie ses ailes de lumière. Le destin du monde se joue ici, maintenant.",
+        "img": "Final boss fight, tiny warrior vs giant winged god of light, epic scale, contrast",
+        "choices": [
+            { "text": "Frapper de toutes vos forces", "next": "end_godslayer" },
+            { "text": "Utiliser l'artefact secret", "next": "end_secret" }
+        ]
+    },
+
+    // --- FINS ALTERNATIVES ---
+    "end_godslayer": { "text": "FIN : LE DÉICIDE. Vous avez tué Dieu. Le monde est libre, mais sans protection contre le Néant. L'ère du Chaos commence.", "img": "Dead god on throne, darker sky, ominous future", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_traitor": { "text": "FIN : LE TRAÎTRE. Vous avez poignardé l'Architecte. Vous prenez sa couronne, mais elle brûle votre chair. Vous êtes un Roi maudit.", "img": "Warrior on throne wearing a burning crown, screaming in pain/power", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_destruction": { "text": "FIN : L'ANNIHILATION. Votre bombardement a tout détruit. Il ne reste que des cendres. La paix du silence.", "img": "Crater where a city used to be, smoke, silence", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_explorer": { "text": "FIN : LE LÂCHE OU LE SAGE ? Vous naviguez vers d'autres cieux. Aethon n'était qu'une étape.", "img": "Airship flying into sunset, adventure awaits elsewhere", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_survivor": { "text": "FIN : LE SURVIVANT. Vous avez vécu l'enfer et en êtes revenu. Vous vendez l'artefact et vivez riche, hanté par vos souvenirs.", "img": "Rich old merchant drinking wine looking sad, flashbacks in smoke", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_peace": { "text": "FIN : LA PAIX. Vous avez soigné l'âme du Dieu. Il quitte ce plan d'existence, laissant les hommes gérer leur destin.", "img": "God ascending to heavens in peaceful light, crowd cheering below", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_legend": { "text": "FIN : LA LÉGENDE. Vous êtes mort en héros. Des statues de vous sont érigées partout.", "img": "Golden statue of the hero in a town square, children playing around it", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_tragic": { "text": "FIN : L'OUBLI. Personne ne saura jamais ce que vous avez tenté de faire.", "img": "A grave with no name in ruins, rain, sad", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_chaos": { "text": "FIN : LE CHAOS. Le Titan détruit tout. La nature reprend ses droits sur les ruines de la civilisation.", "img": "Jungle growing over ruined skyscrapers, wild animals, no humans", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_hero": { "text": "FIN : L'OMBRE BIENVEILLANTE. Vous veillez sur la ville depuis les ombres, gardien silencieux.", "img": "Batman-like silhouette on a rooftop watching over a repaired city", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_king": { "text": "FIN : LE ROI FONDATEUR. Vous bâtissez une utopie loin de la magie et des dieux.", "img": "White marble city construction, happy people, hero supervising with plans", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_god": { "text": "FIN : L'APOTHÉOSE. Vous devenez le nouvel Architecte. Le cycle recommence.", "img": "Hero transforming into a being of pure light, ascending throne", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_free": { "text": "FIN : LA LIBERTÉ. Vous refusez le pouvoir. L'humanité entre dans l'âge de la Raison.", "img": "People destroying magical idols, reading science books, renaissance style", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_secret": { "text": "FIN SECRÈTE : LE JOUEUR. Vous réalisez que tout ceci n'est qu'un jeu. Vous brisez le quatrième mur.", "img": "Character looking directly at the screen/camera, matrix code rain background", "choices": [{ "text": "Recommencer", "next": "1" }] },
+    "end_home": { "text": "FIN : RETOUR AU BERCAIL. Vous rentrez chez vous. C'était juste un mauvais rêve... n'est-ce pas ?", "img": "Waking up in a normal bed, modern room, but the magical mark is still on the arm", "choices": [{ "text": "Recommencer", "next": "1" }] }        };
+
+        // --- 3. LOGIQUE ---
+        function render(id) {
+            const node = storyData[id];
+            if(!node) return alert("Fin de la démo ou chapitre manquant : " + id);
+
+            // Texte
+            document.getElementById("chapter-title").innerText = `Chapitre ${id}`;
+            document.getElementById("story-text").innerText = node.text;
+            
+            // Image
+            const img = document.getElementById("visual");
+            const loader = document.getElementById("loader");
+            img.style.opacity = 0;
+            loader.style.display = "block";
+            
+            const seed = Math.floor(Math.random() * 999);
+            const url = `${POLLINATIONS_URL}${encodeURIComponent(STYLE + node.img)}?width=800&height=400&nologo=true&seed=${seed}`;
+            
+            const newImg = new Image();
+            newImg.src = url;
+            newImg.onload = () => {
+                img.src = url;
+                loader.style.display = "none";
+                img.style.opacity = 1;
+            };
+
+            // Choix
+            const div = document.getElementById("choices");
+            div.innerHTML = "";
+            node.choices.forEach(c => {
+                const btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = c.text;
+                btn.onclick = () => {
+                    if(currentAudio) { window.speechSynthesis.cancel(); }
+                    render(c.next);
+                };
+                div.appendChild(btn);
+            });
+        }
+
+        function toggleTTS() {
+            const text = document.getElementById("story-text").innerText;
+            if(window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            } else {
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'fr-FR';
+                window.speechSynthesis.speak(u);
+            }
+        }
+
+        // Démarrage (si les données existent)
+        window.onload = () => {
+            if(Object.keys(storyData).length > 0) render("1");
+            else document.getElementById("story-text").innerText = "Veuillez coller les données JSON dans le script.";
+        };
+    </script>
+</body>
+</html>

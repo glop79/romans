@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Dernier Souffle de l'Éther</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0f0e17;
+            --card-bg: #1a1a24;
+            --text-color: #a7a9be;
+            --title-color: #fffffe;
+            --accent: #ff8906; /* Orange/Or magique */
+            --secondary: #f25f4c;
+            --border: #2e2f3e;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23232330' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        #game-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            box-shadow: 0 0 60px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header & Progress */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            background: linear-gradient(to bottom, #0a0a0f, var(--card-bg));
+        }
+
+        h1 {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--title-color);
+            font-size: 2.5rem;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(255, 137, 6, 0.5);
+        }
+
+        .chapter-indicator {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-top: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Image Scene */
+        #visual-container {
+            width: 100%;
+            height: 450px;
+            position: relative;
+            background-color: #000;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        #scene-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            color: var(--accent);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+        }
+
+        /* Controls (Audio) */
+        #controls {
+            padding: 10px 30px;
+            display: flex;
+            justify-content: flex-end;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .icon-btn {
+            background: none;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .icon-btn.speaking {
+            background: var(--secondary);
+            border-color: var(--secondary);
+            color: white;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(242, 95, 76, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(242, 95, 76, 0); } 100% { box-shadow: 0 0 0 0 rgba(242, 95, 76, 0); } }
+
+        /* Story Text */
+        #narrative {
+            padding: 40px;
+            font-size: 1.15rem;
+            line-height: 1.8;
+            flex-grow: 1;
+        }
+
+        #narrative p { margin-bottom: 20px; }
+
+        /* Choices */
+        #choices {
+            padding: 0 40px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .choice-card {
+            background: linear-gradient(45deg, #23232e, #2a2a35);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .choice-card:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+            background: linear-gradient(45deg, #2a2a35, #32323e);
+        }
+
+        .choice-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            color: var(--border);
+            font-weight: bold;
+        }
+        .choice-card:hover .choice-number { color: var(--accent); }
+
+        .choice-text { font-weight: 500; color: #fffffe; }
+
+        /* Endings */
+        .ending-box {
+            border: 2px solid var(--accent);
+            padding: 30px;
+            text-align: center;
+            margin-top: 20px;
+            border-radius: 10px;
+            background: rgba(255, 137, 6, 0.1);
+        }
+        .ending-title {
+            color: var(--accent);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            #visual-container { height: 300px; }
+            #narrative, #choices { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-wrapper">
+    <header>
+        <h1>Le Dernier Souffle de l'Éther</h1>
+        <div class="chapter-indicator" id="chapter-display">Chapitre 1</div>
+    </header>
+
+    <div id="visual-container">
+        <div class="loading-overlay" id="loader">Génération de la vision...</div>
+        <img id="scene-img" src="" alt="Scène fantastique">
+    </div>
+
+    <div id="controls">
+        <button class="icon-btn" id="tts-btn" onclick="toggleSpeech()">
+            <span>🔊</span> <span id="tts-text">Lire l'histoire</span>
+        </button>
+    </div>
+
+    <div id="narrative">
+        <!-- Le texte s'insère ici -->
+    </div>
+
+    <div id="choices">
+        <!-- Les choix s'insèrent ici -->
+    </div>
+</div>
+
+<script>
+    // --- Configuration ---
+    // Prompt de style global pour assurer la cohérence graphique
+    const ART_STYLE = "Epic High Fantasy Art, ethereal lighting, magic particles, cinematic composition, detailed textures, oil painting style by Greg Rutkowski, 8k, dramatic shadows, ";
+    const POLLINATIONS_ROOT = "https://image.pollinations.ai/prompt/";
+
+    // --- Données de l'Histoire (10 Chapitres / Niveaux de profondeur) ---
+    const storyNodes = {
+        "1": {
+            chapter: "Chapitre 1 : L'Éveil de l'Éther",
+            text: "Vous vous réveillez en sursaut. La marque sur votre bras brille d'une lueur azur aveuglante. Dehors, le ciel est déchiré par des éclairs violets. L'Éther, la source de toute magie, est en train de mourir, ou de muter. Vous êtes un Arcaniste, l'un des derniers capables de canaliser cette énergie. Votre village de Val-Clair est assailli par des créatures d'ombre nées de la corruption.",
+            img: "A glowing blue magical rune on a warrior arm, dark bedroom, violet lightning outside window, chaotic atmosphere",
+            choices: [
+                { txt: "Saisir votre bâton et défendre les villageois sur la place centrale.", next: "2a" },
+                { txt: "Fuir par les toits pour atteindre la Tour des Sages et comprendre ce phénomène.", next: "2b" }
+            ]
+        },
+        "2a": {
+            chapter: "Chapitre 2 : Le Défenseur",
+            text: "Vous déchaînez une vague d'énergie pure. Les ombres reculent, hurlant de douleur. Le forgeron, blessé, vous tend une épée imprégnée de résidu stellaire. 'Prends-la', grogne-t-il. 'C'est la seule chose qui coupe leur chair'. Au loin, une corne de brume sonne : l'armée du Roi de Fer approche, cherchant à purger la zone.",
+            img: "Warrior casting a blue magic wave against shadow monsters in a burning medieval village, holding a glowing sword",
+            choices: [
+                { txt: "Rejoindre l'armée du Roi de Fer pour unir vos forces.", next: "3a" },
+                { txt: "Partir seul vers les Montagnes, l'armée tuera tout le monde par précaution.", next: "3b" }
+            ]
+        },
+        "2b": {
+            chapter: "Chapitre 2 : L'Observateur",
+            text: "Vous courrez sur les tuiles glissantes. Du haut de la Tour, vous voyez la source du chaos : une fissure dimensionnelle au-dessus du Volcan d'Obsidienne. Vous trouvez le vieux Sage mourant. Il vous confie un cristal vide. 'Il faut... capturer l'essence... avant qu'elle ne détruise tout.'",
+            img: "A hooded figure standing on a rooftop looking at a giant purple rift in the sky over a volcano, rain, dark fantasy",
+            choices: [
+                { txt: "Absorber l'âme du Sage dans le cristal pour gagner sa connaissance.", next: "3c" },
+                { txt: "Prendre le cristal et partir immédiatement vers le Volcan.", next: "3b" }
+            ]
+        },
+        "3a": {
+            chapter: "Chapitre 3 : L'Alliance de Fer",
+            text: "Le Général du Roi est méfiant, mais votre démonstration de force l'a convaincu. Vous voyagez dans un char à vapeur blindé. La technologie humaine tente de repousser la magie sauvage. Cependant, vous sentez que les machines consomment l'Éther restant pour fonctionner, accélérant la fin du monde.",
+            img: "Steampunk armored tank convoy moving through a magical forest, soldiers in heavy iron armor, fog",
+            choices: [
+                { txt: "Saboter le moteur du char pour préserver l'Éther environnant.", next: "4a" },
+                { txt: "Utiliser vos pouvoirs pour surcharger le moteur et aller plus vite.", next: "4b" }
+            ]
+        },
+        "3b": {
+            chapter: "Chapitre 3 : La Route Solitaire",
+            text: "Le chemin des montagnes est traître. Le froid mordant est surnaturel. Vous rencontrez un Golem de Pierre, gardien d'un ancien temps. Il ne vous attaque pas, mais bloque le passage. Il semble attendre une réponse à une question silencieuse.",
+            img: "Giant stone golem covered in snow blocking a mountain pass, blizzard, tiny human figure in front",
+            choices: [
+                { txt: "Lui montrer votre marque lumineuse en signe de paix.", next: "4c" },
+                { txt: "Le contourner par les tunnels des nains, dangereux mais discrets.", next: "4d" }
+            ]
+        },
+        "3c": {
+            chapter: "Chapitre 3 : La Soif de Savoir",
+            text: "Le cristal vibre. La voix du Sage résonne dans votre tête, vous guidant, mais aussi vous jugeant. Vous connaissez désormais un raccourci : le Portail des Ombres. C'est une voie rapide, mais elle risque de corrompre votre esprit.",
+            img: "A glowing crystal in hand emitting ghostly whispers, dark portal swirling with black smoke in a library",
+            choices: [
+                { txt: "Traverser le Portail des Ombres.", next: "4e" },
+                { txt: "Ignorer la voix et voyager à cheval.", next: "3b" } // Retour vers le chemin physique
+            ]
+        },
+        // --- Chapitre 4 : Diversification des enjeux ---
+        "4a": {
+            chapter: "Chapitre 4 : La Rébellion",
+            text: "Le moteur explose. Le Général est furieux, mais vous lui expliquez que la technologie tue la magie. Dans la confusion, une bête de l'Éther attaque. Sans les machines, c'est à vous seul de protéger les soldats.",
+            img: "Explosion of a steampunk engine, smoke, chaos, glowing magical beast emerging from the smoke",
+            choices: [{ txt: "Combattre la bête et prouver la supériorité de la magie.", next: "5a" }]
+        },
+        "4b": {
+            chapter: "Chapitre 4 : La Vitesse",
+            text: "Le char file à une vitesse impossible, déchirant la réalité. Vous arrivez au pied du Volcan en un temps record, mais le véhicule est en miettes et les soldats sont épuisés. Vous êtes devant l'entrée des forges.",
+            img: "Crashed steampunk vehicle near a volcano with lava rivers, exhausted soldiers, ominous forge entrance",
+            choices: [{ txt: "Entrer dans les Forges Anciennes.", next: "5b" }]
+        },
+        "4c": {
+            chapter: "Chapitre 4 : L'Héritage",
+            text: "Le Golem s'écarte en grondant : 'Passe, Enfant de l'Étoile'. Il vous offre un Cœur de Pierre, un artefact capable d'absorber les coups. Vous vous sentez invincible.",
+            img: "Giant stone hand offering a glowing gemstone heart to a warrior, snowy mountains background",
+            choices: [{ txt: "Accepter le don et continuer l'ascension.", next: "5b" }]
+        },
+        "4d": {
+            chapter: "Chapitre 4 : Les Profondeurs",
+            text: "Les tunnels grouillent d'insectes géants. Vous devez utiliser votre magie pour créer de la lumière, ce qui attire les prédateurs. Vous trouvez une ancienne cité naine abandonnée.",
+            img: "Underground dwarven city ruins, gigantic stone pillars, darkness, bioluminescent spiders",
+            choices: [{ txt: "Fuir vers la sortie sans fouiller.", next: "5b" }]
+        },
+        "4e": {
+            chapter: "Chapitre 4 : La Corruption",
+            text: "Le monde des ombres est froid. Vous en sortez rapidement, mais votre peau est devenue grisâtre. Vous êtes au pied du volcan, mais vous sentez une faim insatiable de magie.",
+            img: "Character with pale grey skin and glowing purple eyes looking at a volcano, dark aura",
+            choices: [{ txt: "Drainer la vie d'une plante proche pour vous nourrir.", next: "5c" }]
+        },
+        // --- Convergence vers le milieu de l'histoire (Chapitre 5-6) ---
+        "5a": {
+            chapter: "Chapitre 5 : Le Champion",
+            text: "La bête est vaincue. Les soldats vous vénèrent comme un demi-dieu. Vous marchez vers le volcan avec une petite escouade d'élite. L'entrée est gardée par un Dragon de Magma.",
+            img: "Warrior leading elite soldiers towards a massive magma dragon guarding a cave",
+            choices: [
+                { txt: "Tenter de dompter le dragon.", next: "6a" },
+                { txt: "Lancer une attaque coordonnée.", next: "6b" }
+            ]
+        },
+        "5b": {
+            chapter: "Chapitre 5 : Le Cœur du Volcan",
+            text: "La chaleur est insoutenable. Vous êtes seul. Devant vous se dresse le Dragon de Magma. Il ne semble pas hostile, mais il garde le passage vers le Cœur de l'Éther.",
+            img: "Face to face with a giant magma dragon, intense heat, lava falls, epic scale",
+            choices: [
+                { txt: "Négocier votre passage en offrant un souvenir précieux.", next: "6a" },
+                { txt: "Utiliser la magie de glace pour vous frayer un chemin.", next: "6b" }
+            ]
+        },
+        "5c": {
+            chapter: "Chapitre 5 : Le Prédateur",
+            text: "La plante se dessèche instantanément. Vous êtes puissant, trop puissant. Le Dragon de Magma vous sent arriver et rugit de peur. Vous n'êtes plus une proie.",
+            img: "Scary powerful mage walking on lava, dragon looking fearful in background, dark energy swirls",
+            choices: [
+                { txt: "Détruire le dragon et absorber son feu.", next: "6c" }
+            ]
+        },
+        // --- Chapitre 6-9 (Accélération vers la fin) ---
+        "6a": {
+            chapter: "Chapitre 6 : L'Allié",
+            text: "Le Dragon accepte votre offre. Il vous porte sur son dos et plonge dans la cheminée du volcan. Vous descendez vers le Noyau de la Terre.",
+            img: "Riding a magma dragon diving into a volcano crater, epic dynamic shot, fire particles",
+            choices: [{ txt: "Se préparer à la confrontation finale.", next: "7" }]
+        },
+        "6b": {
+            chapter: "Chapitre 6 : Le Tueur de Dragon",
+            text: "Le combat est titanesque. Le dragon tombe, son corps formant un pont sur la lave. Vous traversez, blessé mais victorieux. Le Noyau est juste en bas.",
+            img: "Dead dragon body forming a bridge over lava, warrior walking on it, heroic atmosphere",
+            choices: [{ txt: "Descendre vers le Noyau.", next: "7" }]
+        },
+        "6c": {
+            chapter: "Chapitre 6 : L'Avatar du Vide",
+            text: "Vous avez absorbé le dragon. Votre corps est en feu. Vous ne marchez plus, vous lévitez. Le Noyau vous appelle.",
+            img: "Character floating with fire wings and dark energy, descending into a volcano",
+            choices: [{ txt: "Rejoindre le Noyau.", next: "7" }]
+        },
+        "7": {
+            chapter: "Chapitre 7 : Le Sanctuaire Intérieur",
+            text: "Vous y êtes. Une immense caverne de cristal. Au centre, le Cœur de l'Éther pulse faiblement. Une entité mécanique ancienne, le Gardien, s'éveille. 'L'équilibre est rompu', dit-il. 'Que choisis-tu ?'",
+            img: "Giant crystal cavern, floating heart of pure white energy, ancient robot guardian awakening",
+            choices: [
+                { txt: "Écouter ce que le Gardien a à dire.", next: "8" }
+            ]
+        },
+        "8": {
+            chapter: "Chapitre 8 : La Révélation",
+            text: "'Le monde doit changer', dit le Gardien. 'L'Éther est une ressource finie. Soit nous le restaurons en sacrifiant la technologie, soit nous fusionnons chair et machine pour survivre sans lui, soit nous laissons le cycle se terminer pour renaître.'",
+            img: "Close up on the ancient robot face, glowing eyes, philosophical atmosphere, reflection of the hero in the metal",
+            choices: [
+                { txt: "Compris. Je suis prêt à choisir.", next: "9" }
+            ]
+        },
+        "9": {
+            chapter: "Chapitre 9 : Le Choix Ultime",
+            text: "Vous vous tenez devant le Cœur. L'énergie crépite autour de vos mains. Le destin du monde repose sur cette décision unique.",
+            img: "Hero standing hand reached out towards the white glowing heart, energy sparks, suspense",
+            choices: [
+                { txt: "Restaurer la Magie Pure (Sacrifier la technologie).", next: "end1" },
+                { txt: "Fusionner Magie et Machine (L'ère Techno-Mage).", next: "end2" },
+                { txt: "Absorber le Cœur (Devenir un Dieu).", next: "end3" },
+                { txt: "Détruire le Cœur (Libérer l'humanité de la magie).", next: "end4" }
+            ]
+        },
+        // --- FINS ---
+        "end1": {
+            chapter: "Épilogue : L'Ère des Hommes",
+            text: "Le Cœur se brise. Plus de magie. Plus de monstres. Juste des hommes et des femmes, seuls face à leur destin, obligés de reconstruire de leurs mains. C'est dur, mais c'est libre.",
+            img: "People building a house with simple tools, sunset, realistic medieval style, gritty but hopeful",
+            choices: []
+        }
+    };
+
+    // --- Moteur de Jeu ---
+    const sceneImg = document.getElementById("scene-img");
+    const loader = document.getElementById("loader");
+    const narrativeDiv = document.getElementById("narrative");
+    const choicesDiv = document.getElementById("choices");
+    const chapterDisplay = document.getElementById("chapter-display");
+    const ttsBtn = document.getElementById("tts-btn");
+    const ttsText = document.getElementById("tts-text");
+
+    // Gestionnaire Audio (Text to Speech)
+    let speech = new SpeechSynthesisUtterance();
+    let isSpeaking = false;
+    
+    function setupVoice() {
+        const voices = window.speechSynthesis.getVoices();
+        // Tenter de trouver une voix française de qualité
+        const frVoice = voices.find(v => v.lang === 'fr-FR' && v.name.includes('Google')) || voices.find(v => v.lang === 'fr-FR');
+        if (frVoice) speech.voice = frVoice;
+        speech.lang = 'fr-FR';
+        speech.rate = 0.95; // Légèrement plus lent pour le côté épique
+        speech.pitch = 1.0;
+    }
+    // Charger les voix (parfois asynchrone)
+    window.speechSynthesis.onvoiceschanged = setupVoice;
+
+    function stopAudio() {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        ttsBtn.classList.remove("speaking");
+        ttsText.innerText = "Lire l'histoire";
+    }
+
+    function toggleSpeech() {
+        if (isSpeaking) {
+            stopAudio();
+        } else {
+            const textToRead = document.getElementById("current-text").innerText;
+            speech.text = textToRead;
+            window.speechSynthesis.speak(speech);
+            isSpeaking = true;
+            ttsBtn.classList.add("speaking");
+            ttsText.innerText = "Arrêter";
+            
+            speech.onend = function() {
+                isSpeaking = false;
+                ttsBtn.classList.remove("speaking");
+                ttsText.innerText = "Lire l'histoire";
+            };
+        }
+    }
+
+    // Moteur de Rendu
+    function renderNode(nodeId) {
+        const node = storyNodes[nodeId];
+        if (!node) return;
+
+        // 1. Stop Audio if playing
+        stopAudio();
+
+        // 2. Update Texte & Header
+        chapterDisplay.innerText = node.chapter;
+        
+        // Animation fade text
+        narrativeDiv.style.opacity = 0;
+        setTimeout(() => {
+            narrativeDiv.innerHTML = `<p id="current-text">${node.text}</p>`;
+            narrativeDiv.style.opacity = 1;
+        }, 200);
+
+        // 3. Génération Image
+        loader.style.display = "flex";
+        sceneImg.style.opacity = 0;
+        
+        // Seed aléatoire pour variation
+        const seed = Math.floor(Math.random() * 99999);
+        const finalPrompt = encodeURIComponent(ART_STYLE + node.img);
+        const imgUrl = `${POLLINATIONS_ROOT}${finalPrompt}?width=900&height=450&seed=${seed}&nologo=true`;
+
+        const imgLoader = new Image();
+        imgLoader.onload = () => {
+            sceneImg.src = imgUrl;
+            loader.style.display = "none";
+            sceneImg.style.opacity = 1;
+        };
+        imgLoader.src = imgUrl;
+
+        // 4. Update Choix
+        choicesDiv.innerHTML = "";
+        if (node.choices && node.choices.length > 0) {
+            node.choices.forEach((choice, index) => {
+                const btn = document.createElement("div");
+                btn.className = "choice-card";
+                btn.innerHTML = `
+                    <span class="choice-number">${index + 1}</span>
+                    <span class="choice-text">${choice.txt}</span>
+                `;
+                btn.onclick = () => renderNode(choice.next);
+                choicesDiv.appendChild(btn);
+            });
+        } else {
+            // C'est une fin
+            const endBox = document.createElement("div");
+            endBox.className = "ending-box";
+            endBox.innerHTML = `
+                <div class="ending-title">FIN DE L'AVENTURE</div>
+                <p>Votre destin est scellé.</p>
+            `;
+            choicesDiv.appendChild(endBox);
+
+            const restart = document.createElement("div");
+            restart.className = "choice-card";
+            restart.style.justifyContent = "center";
+            restart.style.marginTop = "10px";
+            restart.innerHTML = `<span class="choice-text">↺ Recommencer</span>`;
+            restart.onclick = () => renderNode("1");
+            choicesDiv.appendChild(restart);
+        }
+    }
+
+    // Init
+    window.onload = () => {
+        setupVoice();
+        renderNode("1");
+    };
+
+</script>
+
+</body>
+</html>
