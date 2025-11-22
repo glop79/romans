@@ -1,0 +1,233 @@
+window.GAME_DATA = {
+    "title": "Le Plus Grand Des Secrets",
+    "author": "D'après le roman original",
+    "nodes": {
+        "start": {
+            "chapter": "PROLOGUE : La Tablette Oubliée",
+            "text": "Site archéologique de Babylone, Irak. 4h14 du matin.<br><br>La lune, pâle faucille, éclaire les ruines millénaires. Vous êtes le professeur Elijah Shepherd. Votre main tremble en effleurant une brique anormale dans un mur effondré. Vous sentez une cavité. Avec votre truelle, vous grattez le mortier. Une pierre cède, révélant un objet enveloppé dans du lin.<br><br>Vous le déballez. C'est une tablette d'argile. Mais pas n'importe laquelle. Les symboles cunéiformes sont disposés en cercles concentriques. Au centre, le sceau de Nabonide. Vous déchiffrez les séquences : 6 × 7 × 6 × 7 × 10 = 17640. C'est une clé mathématique divine.<br><br>Soudain, un claquement sec résonne au-dehors. Un bruit métallique. Des hommes approchent.",
+            "img_prompt": "Archeologist holding an ancient clay tablet in babylon ruins at night, flashlight, mysterious atmosphere",
+            "choices": [
+                { "text": "Photographier la tablette et envoyer les données à Rébecca.", "next": "1_send_data" },
+                { "text": "Cacher la tablette et tenter de fuir immédiatement.", "next": "1_run_fail" }
+            ]
+        },
+        "1_run_fail": {
+            "chapter": "FIN : Le Secret Perdu",
+            "text": "Paniqué, vous glissez la tablette dans votre sac et courez vers le désert. Mais vous n'êtes pas un soldat. Une silhouette noire surgit de l'ombre. Un dard tranquillisant vous frappe la jambe. Alors que votre vision se trouble, l'homme en noir récupère votre sac.<br><br>'Merci professeur', dit-il. La vérité disparaît avec vous.",
+            "img_prompt": "Man falling in the desert sand at night, silhouette of a mercenary standing over him",
+            "choices": []
+        },
+        "1_send_data": {
+            "chapter": "PROLOGUE : Le Dernier Souffle",
+            "text": "Vos doigts volent sur votre téléphone. Destinataire : Rébecca Shepherd. Fichiers joints : 4. Vous entendez des cris, des rafales. Le chargement tourne... Message envoyé.<br><br>Vous cachez le téléphone et la tablette derrière un éboulis juste avant qu'un homme en costume noir n'émerge. Il vous tire une fléchette tranquillisante. Alors que la drogue vous emporte, vous savez que vous allez mourir, mais que le secret, lui, a survécu.",
+            "img_prompt": "Smartphone screen sending data in the dark, loading bar 100%, danger approaching",
+            "choices": [
+                { "text": "Passer au Chapitre 1 : Rébecca", "next": "2_princeton" }
+            ]
+        },
+        "2_princeton": {
+            "chapter": "CHAPITRE 1 : Le Code de Babylone",
+            "text": "Université de Princeton. 21h21.<br><br>Vous êtes le Dr. Rébecca Shepherd. Votre écran clignote. Une intrusion réseau ? Non, un paquet de données crypté venant d'Irak. L'expéditeur est masqué, mais vous savez. C'est votre père.<br><br>Le fichier est protégé par un mot de passe. Vous essayez les dates de naissance. Échec. Vous devez penser comme lui.",
+            "img_prompt": "Woman mathematician looking at computer screen in dark university office, matrix code reflection",
+            "choices": [
+                { "text": "Essayer le nom de son chien 'Buster'.", "next": "2_wrong_pass" },
+                { "text": "Essayer 'XADRINA', votre forteresse imaginaire d'enfance.", "next": "3_decoding" }
+            ]
+        },
+        "2_wrong_pass": {
+            "chapter": "Échec de sécurité",
+            "text": "ACCÈS REFUSÉ. Le système de sécurité de l'université détecte l'anomalie et verrouille le fichier. Quelques minutes plus tard, votre téléphone sonne. C'est la police... ou quelqu'un qui se fait passer pour elle. Ils arrivent.",
+            "img_prompt": "Computer screen displaying ACCESS DENIED in red, panic atmosphere",
+            "choices": [
+                { "text": "Recommencer", "next": "2_princeton" }
+            ]
+        },
+        "3_decoding": {
+            "chapter": "CHAPITRE 1 : La Mauvaise Nouvelle",
+            "text": "ACCÈS ACCORDÉ. Les images s'affichent. Une tablette cunéiforme complexe. Une note manuscrite de votre père : 'PRÉVIENS GALLOWAY. NE FAIS CONFIANCE À PERSO-'. Il y a du sang sur le papier.<br><br>Votre téléphone sonne. Un homme, Thomas Blackwood, prétend être d'Interpol. Il vous annonce la mort de votre père. Il vous demande si vous avez reçu des fichiers. Mentir ou dire la vérité ?",
+            "img_prompt": "Ancient cuneiform tablet photos on computer screen, blood stain on paper note",
+            "choices": [
+                { "text": "Dire la vérité : 'Oui, j'ai reçu des images.'", "next": "3_truth_death" },
+                { "text": "Mentir : 'Non, je n'ai rien reçu.'", "next": "4_call_galloway" }
+            ]
+        },
+        "3_truth_death": {
+            "chapter": "FIN : Erreur Fatale",
+            "text": "À la seconde où vous confirmez, Blackwood change de ton. 'Restez où vous êtes.' Deux minutes plus tard, des hommes en tenue tactique défoncent votre porte. Vous en savez trop.",
+            "img_prompt": "Tactical team breaking a door, gunpoint view",
+            "choices": []
+        },
+        "4_call_galloway": {
+            "chapter": "CHAPITRE 1 : L'Avertissement",
+            "text": "Vous raccrochez. Vous appelez le Père Michael Galloway, le vieil ami de votre père. Il vous dit de fuir, que les 'Veilleurs' arrivent. Juste après, vous recevez un SMS anonyme (de Blackwood ?) : 'Éteignez vos lumières et fuyez'.<br><br>Vous entendez des pas dans le couloir. Ils sont là.",
+            "img_prompt": "Shadow of a man under a door in a dark hallway, suspense",
+            "choices": [
+                { "text": "Se cacher sous le bureau.", "next": "4_hide_fail" },
+                { "text": "Utiliser la porte dérobée vers le labo informatique.", "next": "5_escape_princeton" }
+            ]
+        },
+        "4_hide_fail": {
+            "chapter": "FIN : Prise au piège",
+            "text": "La porte cède. Les hommes entrent. Ils scannent la pièce avec des viseurs laser. Ils vous trouvent immédiatement. 'Nous avons la fille. Et les données.'",
+            "img_prompt": "Laser dot on a frightened woman face hiding under desk",
+            "choices": []
+        },
+        "5_escape_princeton": {
+            "chapter": "CHAPITRE 2 : Le Protocole Prométhée",
+            "text": "Vous vous faufilez par la porte dérobée juste au moment où ils entrent. Vous traversez le campus dans la nuit. Vous devez trouver de l'aide. Vous pensez à Alex Keller, le hacker de génie, une vieille connaissance.<br><br>Vous activez votre téléphone d'urgence et envoyez le code : 'Le Protocole Prométhée est activé'.<br><br>Keller répond : 'Angle de Nassau. 15 minutes. Seule.'",
+            "img_prompt": "Woman running through university campus at night, gothic architecture shadows",
+            "choices": [
+                { "text": "Aller au rendez-vous avec Keller.", "next": "6_meet_keller" },
+                { "text": "Essayer de voler une voiture pour fuir seule.", "next": "6_car_fail" }
+            ]
+        },
+        "6_meet_keller": {
+            "chapter": "CHAPITRE 2 : Le Hacker",
+            "text": "Une vieille Ford Crown Victoria s'arrête. C'est Keller. Il vous emmène dans sa planque. Vous lui montrez les données. Il analyse les chiffres : 17640... 1640...<br><br>'Rébecca, 394 n'est pas une date. C'est la différence entre le calendrier grégorien et hébraïque. Ton père a trouvé une clé de chiffrement biblique.'<br><br>Soudain, votre téléphone vibre. Message de Blackwood : 'Ils ont tracé l'ordinateur. Fuyez. Allez au temple Beth El.'<br><br>Une grenade fumigène traverse la fenêtre !",
+            "img_prompt": "Messy hacker room with multiple screens, smoke grenade breaking window glass",
+            "choices": [
+                { "text": "Tenter de récupérer le matériel informatique.", "next": "7_too_slow" },
+                { "text": "Suivre Keller par la trappe secrète.", "next": "8_sewers" }
+            ]
+        },
+        "7_too_slow": {
+            "chapter": "FIN : Asphyxie",
+            "text": "Vous essayez de sauver le disque dur, mais la fumée est trop épaisse. Vous toussez, vos yeux brûlent. Les hommes en noir entrent avec des masques à gaz. C'est fini.",
+            "img_prompt": "Room filled with gas, silhouette of soldiers entering",
+            "choices": []
+        },
+        "8_sewers": {
+            "chapter": "CHAPITRE 3 : Sous la ville",
+            "text": "Keller vous pousse dans une trappe. 'Prends cette clé USB ! C'est une copie de tout ! Va ! Je les retiens !'.<br><br>Vous hésitez, mais il n'y a pas le choix. Vous descendez dans les égouts. Vous entendez des coups de feu au-dessus. Keller s'est sacrifié (ou a été capturé).<br><br>Vous émergez dans une ruelle. Vous devez aller au Temple Beth El voir le Rabbin Lévi, comme suggéré par le mystérieux Blackwood.",
+            "img_prompt": "Woman climbing down a ladder into dark tunnel, looking up at light",
+            "choices": [
+                { "text": "Prendre un taxi (Risqué mais rapide).", "next": "9_temple" },
+                { "text": "Marcher (Trop lent).", "next": "9_walk_fail" }
+            ]
+        },
+        "9_walk_fail": {
+            "chapter": "FIN : Interceptée",
+            "text": "Le temple est loin. Les Veilleurs patrouillent les rues. Une voiture noire s'arrête à votre hauteur. Vous n'avez aucune chance à pied.",
+            "img_prompt": "Black sedan car stopping near walking woman on night street",
+            "choices": []
+        },
+        "9_temple": {
+            "chapter": "CHAPITRE 3 : Le Rabbin",
+            "text": "Le Rabbin Lévi vous attendait. Il vous révèle que votre père avait découvert que la prophétie biblique est un algorithme mathématique. Il vous donne une lettre de votre père et un livre : le Sefer Yetzirah.<br><br>'Ils sont là', dit-il soudainement. Les Veilleurs enfoncent la porte.<br><br>Lévi ouvre un passage secret derrière une bibliothèque. 'Partez ! Je vais les retarder.'",
+            "img_prompt": "Old Rabbi handing an ancient book to a woman in a synagogue office, shadows",
+            "choices": [
+                { "text": "S'enfuir par le passage.", "next": "10_museum" }
+            ]
+        },
+        "10_museum": {
+            "chapter": "CHAPITRE 4 : La Rencontre",
+            "text": "Vous fuyez. Un message vous dirige vers le Musée d'Art. Là, Thomas Blackwood sort de l'ombre. Il ne veut pas vous arrêter. Il dit être un 'Gardien', opposé aux Veilleurs.<br><br>Il vous révèle que votre téléphone est tracé. Une voiture des Veilleurs approche. Blackwood sort une arme. 'Allez à la bibliothèque de théologie. Code 4973. Dr. Cohen vous attend. Je m'occupe d'eux.'",
+            "img_prompt": "Man in trenchcoat holding a revolver outside a museum at dawn, protecting woman",
+            "choices": [
+                { "text": "Faire confiance à Blackwood et courir à la bibliothèque.", "next": "11_library" },
+                { "text": "Refuser et tenter de fuir seule dans la ville.", "next": "11_alone_fail" }
+            ]
+        },
+        "11_alone_fail": {
+            "chapter": "FIN : Isolée",
+            "text": "Sans l'aide des Gardiens, vous êtes aveugle. Les drones des Veilleurs vous repèrent en quelques minutes. Vous êtes encerclée dans une impasse.",
+            "img_prompt": "Drone view of a woman trapped in an alley",
+            "choices": []
+        },
+        "11_library": {
+            "chapter": "CHAPITRE 4 : Trahison ?",
+            "text": "Vous entrez dans la bibliothèque avec le code. Le Dr. Sarah Cohen est là. Vous analysez les données : 2034 marque la fin d'un cycle de 6000 ans. Le retour du 'royaume millénaire'.<br><br>Soudain, Galloway, le prêtre ami de votre père, surgit. Il pointe une arme sur vous ! 'Donne-moi la clé, Rébecca. Les Veilleurs ont gagné. Le destin est écrit, on ne peut pas le changer.'<br><br>Sarah Cohen sort aussi une arme. Impasse mexicaine.",
+            "img_prompt": "Three people pointing guns at each other in an old library, tense atmosphere",
+            "choices": [
+                { "text": "Tenter de raisonner Galloway.", "next": "12_shootout" },
+                { "text": "Se jeter au sol.", "next": "12_shootout" }
+            ]
+        },
+        "12_shootout": {
+            "chapter": "CHAPITRE 5 : La Fuite",
+            "text": "Le chaos éclate. Sarah tire un coup de semonce. Les Veilleurs défoncent la porte avec un bélier. Galloway s'enfuit. Sarah vous couvre : 'Partez ! Trouvez Elias au cimetière !'.<br><br>Vous vous faufilez par une fenêtre arrière. Vous courrez dans la nuit jusqu'au vieux cimetière de Princeton.",
+            "img_prompt": "Woman escaping through a window at night, police lights in background, rain",
+            "choices": [
+                { "text": "Chercher la chapelle abandonnée.", "next": "13_cemetery" }
+            ]
+        },
+        "13_cemetery": {
+            "chapter": "CHAPITRE 6 : L'Ombre de la Chapelle",
+            "text": "Dans la chapelle, un homme encapuchonné émerge de l'ombre. C'est Elias, un 'Gardien'. Il vous explique que votre père a trouvé la clé du destin de l'humanité.<br><br>Il vous donne l'Amulette de Nabonide : un médaillon en bronze couvert de symboles. 'C'est le décodeur. Allez à l'abbaye de Maria Laach en Allemagne. Cherchez les Jésuites.'",
+            "img_prompt": "Mysterious hooded man handing a bronze amulet to a woman in a gothic cemetery chapel",
+            "choices": [
+                { "text": "Prendre l'avion pour l'Allemagne (Identité fausse).", "next": "14_germany" }
+            ]
+        },
+        "14_germany": {
+            "chapter": "CHAPITRE 8 : Le Secret des Moines",
+            "text": "Abbaye de Maria Laach. Vous trouvez une bibliothèque cachée derrière un mur. Avec Keller (qui a survécu !), vous utilisez l'amulette pour déchiffrer un manuscrit ancien.<br><br>Les chiffres de la tablette (17640) ne sont pas une date, mais des coordonnées géographiques et temporelles. Le plan de Dieu... ou le plan de Burke ? La prochaine clé est au Vatican.",
+            "img_prompt": "Secret library inside a monastery, light shining on an ancient manuscript map",
+            "choices": [
+                { "text": "Partir pour Rome en voiture diplomatique.", "next": "15_vatican" }
+            ]
+        },
+        "15_vatican": {
+            "chapter": "CHAPITRE 9 : Les Archives Secrètes",
+            "text": "Vatican. Crypte secrète. Vous croisez les données de la tablette avec les archives de l'Église. Vous découvrez la vérité : Burke, le chef des Veilleurs, utilise ces anciennes prophéties comme un 'business plan'.<br><br>Il ne veut pas empêcher l'Apocalypse. Il veut la provoquer artificiellement pour prendre le contrôle du monde. Prochaine étape : Le CERN.",
+            "img_prompt": "Underground vatican archives, candlelight, characters looking shocked at a map",
+            "choices": [
+                { "text": "S'échapper par les égouts du Tibre.", "next": "16_prague" }
+            ]
+        },
+        "16_prague": {
+            "chapter": "CHAPITRE 10 : Le QG des Gardiens",
+            "text": "Prague. Vous formez une équipe de résistance. Vous décodez la première attaque de Burke : 'Le feu sans flamme dévorera la matière'.<br><br>Il va saboter le LHC au CERN pour créer une catastrophe et voler des données sur l'antimatière. Vous devez l'arrêter.",
+            "img_prompt": "High tech command center in an old church crypt, screens showing world map and code",
+            "choices": [
+                { "text": "Lancer la mission d'infiltration au CERN.", "next": "17_cern" }
+            ]
+        },
+        "17_cern": {
+            "chapter": "CHAPITRE 11 : Le Tunnel",
+            "text": "Suisse. Vous êtes dans le tunnel de service du collisionneur. Le virus de Burke surchauffe les aimants. Vous avez 2 minutes pour injecter le contre-programme de Keller.<br><br>Les portes se verrouillent. Vous êtes piégés. Vous devez choisir : sauver la machine ou sauver les données ?",
+            "img_prompt": "Futuristic tunnel with pipes and cables, red alarm lights, hackers working on a tablet",
+            "choices": [
+                { "text": "Sauver la machine (Empêcher l'explosion).", "next": "18_years_later" }
+            ]
+        },
+        "18_years_later": {
+            "chapter": "CHAPITRE 19 : La Guerre de l'Ombre",
+            "text": "8 ans ont passé. Vous avez déjoué des dizaines d'attaques (Tsunami aux Açores, Virus en Espagne, Blackout à NY). Mais Burke est toujours là. Il construit quelque chose au Pôle Nord.<br><br>Vous localisez son repaire : 'L'Arche', sous la réserve de semences du Svalbard. C'est là qu'il garde son arme finale.",
+            "img_prompt": "Montage of newspaper headlines about averted disasters, map pointing to Svalbard arctic",
+            "choices": [
+                { "text": "Lancer l'assaut final sur l'Arctique.", "next": "19_svalbard" }
+            ]
+        },
+        "19_svalbard": {
+            "chapter": "CHAPITRE 21 : L'Arche",
+            "text": "Svalbard. Tempête de neige. Vous infiltrez le bunker de Burke. Vous découvrez 'GENESIS-12'. Ce n'est pas un satellite de communication. C'est une bombe à antimatière conçue pour stériliser la Terre.<br><br>Vous volez les codes, mais le bunker s'effondre. Blackwood se sacrifie pour vous laisser sortir.",
+            "img_prompt": "Inside a high tech ice bunker, server room, explosion in background, man holding a heavy door open",
+            "choices": [
+                { "text": "Fuir avec les codes. Blackwood est perdu.", "next": "20_genesis" }
+            ]
+        },
+        "20_genesis": {
+            "chapter": "CHAPITRE 22 : L'Ultimatum",
+            "text": "21 Mars 2034. Le satellite Genesis-12 est en position. Burke pirate tous les écrans du monde. Il annonce la 'Réinitialisation'.<br><br>Vos codes ne marchent pas. Il a changé le cryptage. Il ne reste qu'une chance : utiliser la fréquence de résonance de la Terre elle-même, amplifiée par la Pierre Angulaire à Jérusalem.",
+            "img_prompt": "Satellite in space opening weapon bay, earth in background, global panic on screens",
+            "choices": [
+                { "text": "Aller au Dôme du Rocher à Jérusalem.", "next": "21_jerusalem" }
+            ]
+        },
+        "21_jerusalem": {
+            "chapter": "CHAPITRE 23 : La Pierre Angulaire",
+            "text": "Jérusalem. Vous posez l'Amulette de Nabonide sur la roche sacrée. Vous lancez le signal harmonique.<br><br>Le faisceau d'énergie pure monte vers le ciel, traversant l'atmosphère. Il frappe le satellite.",
+            "img_prompt": "Woman placing a glowing amulet on a rock inside a golden dome, beam of light shooting up",
+            "choices": [
+                { "text": "Regarder le ciel.", "next": "22_miracle" }
+            ]
+        },
+        "22_miracle": {
+            "chapter": "FIN : L'Aube du Millénaire",
+            "text": "Il n'y a pas d'explosion. L'antimatière se transmute en lumière pure. Une nouvelle étoile brille un instant, puis disparaît.<br><br>Le système de Burke s'effondre. Le monde est sauvé. La peur laisse place à l'émerveillement. Vous avez réussi. Le secret n'était pas la fin du monde, mais son renouveau.",
+            "img_prompt": "Crowd looking up at a beautiful flash of light in the sky above Jerusalem, peaceful sunrise",
+            "choices": []
+        }
+    }
+}

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Plus Grand Des Secrets - Aventure Interactive</title>
+    <!-- Chargement des données de l'histoire ici -->
+    <script src="story.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0a0b10;
+            --text-color: #e0e0e0;
+            --accent-color: #c9a063; /* Or antique */
+            --secondary-color: #1f2430;
+            --danger-color: #b71c1c;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--secondary-color);
+            border-left: 2px solid #333;
+            border-right: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-color);
+            background: linear-gradient(to bottom, #000, var(--secondary-color));
+        }
+
+        #book-title {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        #book-author {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Zone Visuelle */
+        #visual-scene {
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        #scene-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-color);
+            font-family: 'Cinzel', serif;
+            display: none;
+        }
+
+        /* Contenu Narratif */
+        #narrative-box {
+            padding: 40px;
+            flex-grow: 1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .chapter-title {
+            color: var(--accent-color);
+            font-family: 'Cinzel', serif;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* Choix */
+        #choices-box {
+            padding: 0 40px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: var(--text-color);
+            padding: 15px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-color);
+            background: rgba(201, 160, 99, 0.1);
+            padding-left: 30px;
+        }
+
+        .restart-btn {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+            text-align: center;
+        }
+        
+        .restart-btn:hover {
+            background: rgba(183, 28, 28, 0.1);
+            border-color: #ff5252;
+        }
+
+        /* Message d'erreur si le JS n'est pas chargé */
+        #error-message {
+            display: none;
+            color: #ff5252;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ff5252;
+            margin: 20px;
+            background: rgba(183, 28, 28, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            #visual-scene { height: 250px; }
+            #narrative-box { padding: 20px; }
+            #choices-box { padding: 0 20px 20px 20px; }
+            #book-title { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <header>
+        <h1 id="book-title">Chargement...</h1>
+        <div id="book-author"></div>
+    </header>
+
+    <div id="visual-scene">
+        <div class="loader" id="loader">Génération de l'image...</div>
+        <img id="scene-img" src="" alt="Scene">
+    </div>
+
+    <div id="error-message">
+        <strong>Erreur critique !</strong><br>
+        Les données de l'histoire n'ont pas été trouvées.<br>
+        Vérifiez que le fichier <code>story.js</code> est bien dans le même dossier que ce fichier HTML.
+    </div>
+
+    <div id="narrative-box">
+        <h2 id="chapter-display" class="chapter-title"></h2>
+        <p id="story-text"></p>
+    </div>
+
+    <div id="choices-box"></div>
+</div>
+
+<script>
+    // Variable globale pour stocker l'histoire
+    let storyData = null;
+
+    const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
+    const STYLE_PROMPT = "Cinematic movie shot, thriller atmosphere, highly detailed, 8k, dramatic lighting, ";
+
+    // Fonction principale pour initialiser le jeu
+    function initGame() {
+        // On vérifie si window.GAME_DATA a été rempli par le fichier story.js
+        if (window.GAME_DATA) {
+            storyData = window.GAME_DATA;
+            console.log("Histoire chargée avec succès.");
+            renderNode("start");
+        } else {
+            // Si story.js n'a pas été chargé ou contient une erreur
+            console.error("Erreur : window.GAME_DATA est indéfini.");
+            document.getElementById("error-message").style.display = "block";
+            document.getElementById("book-title").innerText = "Erreur système";
+            document.getElementById("loader").style.display = "none";
+        }
+    }
+
+    function renderNode(nodeId) {
+        if (!storyData) return;
+        
+        const node = storyData.nodes[nodeId];
+        if (!node) return alert("Chapitre manquant : " + nodeId);
+
+        document.getElementById('book-title').innerText = storyData.title;
+        document.getElementById('book-author').innerText = storyData.author;
+
+        // Texte avec transition
+        const textEl = document.getElementById("story-text");
+        textEl.style.opacity = 0;
+        
+        document.getElementById("chapter-display").innerText = node.chapter || "";
+
+        setTimeout(() => {
+            textEl.innerHTML = node.text;
+            textEl.style.opacity = 1;
+        }, 300);
+
+        // Image
+        const img = document.getElementById("scene-img");
+        const loader = document.getElementById("loader");
+        
+        img.style.opacity = 0;
+        loader.style.display = "block";
+        loader.innerText = "Déchiffrement en cours...";
+        
+        // Génération de l'URL Pollinations
+        const seed = Math.floor(Math.random() * 9999);
+        const safePrompt = encodeURIComponent(STYLE_PROMPT + (node.img_prompt || "Mystery book cover"));
+        const url = `${POLLINATIONS_URL}${safePrompt}?width=800&height=400&nologo=true&seed=${seed}`;
+
+        const downloadingImage = new Image();
+        downloadingImage.onload = function(){
+            img.src = this.src;
+            loader.style.display = "none";
+            img.style.opacity = 1;
+        };
+        // Gestion d'erreur image
+        downloadingImage.onerror = function() {
+            loader.innerText = "Erreur image (API)";
+        };
+        downloadingImage.src = url;
+
+        // Choix
+        const choicesDiv = document.getElementById("choices-box");
+        choicesDiv.innerHTML = "";
+
+        if (node.choices && node.choices.length > 0) {
+            node.choices.forEach(choice => {
+                const btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = choice.text;
+                btn.onclick = () => renderNode(choice.next);
+                choicesDiv.appendChild(btn);
+            });
+        } else {
+            const btn = document.createElement("button");
+            btn.className = "btn restart-btn";
+            btn.innerText = "Recommencer l'aventure";
+            btn.onclick = () => renderNode("start");
+            choicesDiv.appendChild(btn);
+        }
+    }
+
+    // Démarrage
+    window.onload = initGame;
+
+</script>
+</body>
+</html>
