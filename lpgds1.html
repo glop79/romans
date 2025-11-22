@@ -245,7 +245,9 @@
         loader.innerText = "Déchiffrement en cours...";
         
         // Génération de l'URL Pollinations
-        const seed = Math.floor(Math.random() * 9999);
+        // const seed = Math.floor(Math.random() * 9999);
+		const seed = 2;
+
         const safePrompt = encodeURIComponent(STYLE_PROMPT + (node.img_prompt || "Mystery book cover"));
         const url = `${POLLINATIONS_URL}${safePrompt}?width=800&height=400&nologo=true&seed=${seed}`;
 
