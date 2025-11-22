@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тени Балашова - Интерактивный Детектив</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- STYLE POLAR RUSSE / NOIR --- */
+        :root { 
+            --bg: #1a1a1d; 
+            --text: #c5c6c7; 
+            --accent: #6f2232; /* Rouge sang séché */
+            --card: #0b0c10; 
+            --highlight: #45a29e; /* Bleu froid cyan */
+        }
+
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            font-family: 'Merriweather', serif; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            min-height: 100vh;
+        }
+
+        #app { 
+            width: 100%; 
+            max-width: 800px; 
+            background: var(--card); 
+            display: flex; 
+            flex-direction: column; 
+            border-left: 1px solid #333; 
+            border-right: 1px solid #333; 
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
+        
+        /* Zone Image Cinématographique */
+        #visual-container {
+            width: 100%;
+            height: 450px;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        #visual { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            transition: opacity 1s ease-in-out; 
+            opacity: 0; 
+            filter: sepia(20%) contrast(1.2) desaturate(40%); /* Look Film Noir */
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--highlight);
+            font-family: 'Roboto Mono', monospace;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            display: none;
+        }
+
+        /* Contenu */
+        #content { padding: 40px; flex: 1; display: flex; flex-direction: column; }
+        
+        h2 { 
+            color: var(--accent); 
+            margin-top: 0; 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+            font-family: 'Roboto Mono', monospace;
+            border-left: 3px solid var(--highlight);
+            padding-left: 10px;
+        }
+
+        p { 
+            font-size: 1.15rem; 
+            line-height: 1.8; 
+            margin-bottom: 30px; 
+        }
+
+        /* Boutons de Choix */
+        .btn { 
+            display: block; 
+            width: 100%; 
+            padding: 20px; 
+            margin: 10px 0; 
+            background: linear-gradient(90deg, #1f2833 0%, #0b0c10 100%); 
+            color: white; 
+            border: 1px solid #444; 
+            cursor: pointer; 
+            text-align: left; 
+            transition: 0.3s;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.95rem;
+        }
+        
+        .btn:hover { 
+            border-color: var(--highlight); 
+            background: #2c3e50; 
+            padding-left: 30px; 
+        }
+
+        /* Audio Control */
+        #tts-btn { 
+            background: transparent; 
+            border: 1px solid var(--text); 
+            color: var(--text); 
+            cursor: pointer; 
+            font-size: 0.8rem; 
+            float: right; 
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Roboto Mono', monospace;
+        }
+        #tts-btn:hover { color: var(--highlight); border-color: var(--highlight); }
+        #tts-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+        /* Badge de Fin */
+        .ending {
+            border: 2px solid var(--highlight);
+            padding: 20px;
+            text-align: center;
+            color: var(--highlight);
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="visual-container">
+            <div class="loader" id="loader">ПРОЯВКА ИЗОБРАЖЕНИЯ...</div> <!-- "Développement de l'image..." -->
+            <img id="visual" src="" alt="Scene">
+        </div>
+        
+        <div id="content">
+            <div>
+                <button id="tts-btn" onclick="toggleTTS()">🔈 ЧИТАТЬ</button>
+                <h2 id="chapter-title"></h2>
+            </div>
+            <p id="story-text"></p>
+            <div id="choices"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- MOTEUR DE JEU ---
+        const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
+        // Style visuel : Réaliste, froid, russe, cinématique, soviétique
+        const STYLE = "Cinematic shot, hyperrealistic, Russian winter atmosphere, cold color grading, 8k, highly detailed, brutalist architecture, dramatic lighting, ";
+        let currentAudio = null;
+
+        // --- DONNÉES DE L'HISTOIRE (À REMPLIR) ---
+        const storyData = {
+    "1": {
+        "text": "Телефон звонит в 4:30 утра. Звук резкий, как выстрел в тишине холодной квартиры. Вы  1�7 Елена Волкова, следователь уголовного розыска города Балашов. Рядом, в соседней комнате, спит ваша девятилетняя дочь Катя. За окном воет метель, засыпая снегом улицу Ленина. Звонит дежурный: 'Волкова, у нас труп. На набережной Хопра, под старым мостом. Похоже на серию'.",
+        "img": "Russian female detective 40 years old looking tired holding a phone, dark apartment, snowy window view of Balashov street, cinematic noir lighting",
+        "choices": [
+            { "text": "Тихо одеться и уехать, оставив записку Кате. (Долг зовет)", "next": "2" },
+            { "text": "Проверить дочь перед уходом. (Семья прежде всего)", "next": "3" }
+        ]
+    },
+    "2": {
+        "text": "Вы выходите на мороз. Ваша 'Нива' заводится с третьей попытки. Город спит, укрытый грязным снегом. На набережной уже мигают синие огни патрульных машин. Тело лежит на льду реки Хопер, неестественно выгнутое. Это молодая девушка. На ее шее  1�7 странный символ, вырезанный ножом.",
+        "img": "Frozen river bank in Russia at night, police lights, dead body covered in snow, grim atmosphere, bridge silhouette",
+        "choices": [
+            { "text": "Осмотреть тело самой, в поисках улик.", "next": "4" },
+            { "text": "Допросить патрульного, который нашел тело.", "next": "5" }
+        ]
+    },
+    "3": {
+        "text": "Вы заглядываете в комнату Кати. Она спит, обнимая плюшевого медведя. Ей всего девять, но она уже привыкла, что мамы часто нет дома. Вы поправляете одеяло. Сердце сжимается от тревоги. В последнее время в школе говорили о странном мужчине, который следит за детьми. Вы пишете записку: 'Я на работе, завтрак в холодильнике. Люблю'.",
+        "img": "Sleeping 9 year old russian girl in a cozy dark room, soft light from hallway, mother silhouette watching, emotional moment",
+        "choices": [
+            { "text": "Позвонить соседке, чтобы присмотрела утром.", "next": "6" },
+            { "text": "Поехать на место преступления.", "next": "2" }
+        ]
+    },
+    "4": {
+        "text": "Вы подходите ближе. Девушка одета легко, не по погоде. В кармане пальто вы находите билет на электричку 'Саратов-Балашов'. Дата сегодняшняя. Но самое страшное  1�7 в ее замерзшей руке зажат детский рисунок. На нем изображена школа... школа ℄1�77, где учится ваша Катя.",
+        "img": "Close up of a frozen hand holding a child drawing of a school, snow, evidence marker, flashlight beam",
+        "choices": [
+            { "text": "Спрятать рисунок в карман (Сокрыть улику)", "next": "7" },
+            { "text": "Передать рисунок криминалисту.", "next": "8" }
+        ]
+    },
+    "5": {
+        "text": "Сержант Петров курит, дрожа от холода. 'Елена Сергеевна, это рыбаки нашли. Говорят, видели машину, черную 'Волгу', отъезжавшую час назад. Номеров не разглядели из-за снега'. Черная 'Волга'... В Балашове таких немного.",
+        "img": "Russian police sergeant smoking in snow, police car in background, snowy night, talking to female detective",
+        "choices": [
+            { "text": "Приказать объявить план 'Перехват'.", "next": "9" },
+            { "text": "Спросить про следы шин.", "next": "10" }
+        ]
+    },
+    "6": {
+        "text": "Тетя Валя, соседка, отвечает сонным голосом, но соглашается. Теперь вы спокойнее. Вы садитесь в машину и едете к реке. Радио передает штормовое предупреждение. Дороги заметает. Вы чувствуете, что это дело будет долгим и тяжелым.",
+        "img": "Driving a Lada Niva through a blizzard, view from inside car, dashboard lights, snowy road ahead",
+        "choices": [
+            { "text": "Включить сирену, чтобы доехать быстрее.", "next": "2" },
+            { "text": "Ехать осторожно, обдумывая детали.", "next": "2" }
+        ]
+    },
+    "7": {
+        "text": "Сердце колотится. Почему у жертвы рисунок школы вашей дочери? Вы прячете листок. Это непрофессионально, но страх за Катю сильнее. Вы встаете. Криминалист спрашивает: 'Нашли что-нибудь, Елена Сергеевна?'.",
+        "img": "Female detective looking nervous, putting something in pocket, looking at crime scene investigator, tense atmosphere",
+        "choices": [
+            { "text": "'Ничего особенного. Обычный мусор'.", "next": "11" },
+            { "text": "'Мне нужно срочно позвонить'.", "next": "12" }
+        ]
+    },
+    "8": {
+        "text": "Вы отдаете рисунок. 'Смотрите, это школа ℄1�77', говорите вы. Криминалист кивает: 'Странно. Девушка не местная, судя по билету. Зачем ей рисунок балашовской школы?'. В этот момент у вас звонит телефон. Это директор школы.",
+        "img": "Forensic expert examining a drawing in a plastic bag, snowy background, phone screen glowing",
+        "choices": [
+            { "text": "Ответить на звонок.", "next": "13" },
+            { "text": "Сбросить и сосредоточиться на трупе.", "next": "14" }
+        ]
+    },
+    "9": {
+        "text": "План 'Перехват' объявлен. Весь город перекрыт. Через двадцать минут рация оживает: 'Патруль 4. Видим черную Волгу в районе вокзала Балашов-Пассажирский. Водитель не останавливается!'.",
+        "img": "Police radio close up, blurred background of city lights, snow falling, action imminent",
+        "choices": [
+            { "text": "Поехать на вокзал на помощь.", "next": "15" },
+            { "text": "Остаться на месте преступления, Волгу задержат и без вас.", "next": "4" }
+        ]
+    },
+    "10": {
+        "text": "Следы шин еще свежие, их не успело замести. Протектор необычный, глубокий. Похоже на внедорожник или старый советский автомобиль. Вы делаете фото. Вдали, на другом берегу Хопра, вы замечаете силуэт человека, наблюдающего за вами.",
+        "img": "Tire tracks in snow, silhouette of a man standing far away in the fog under a streetlight, mystery",
+        "choices": [
+            { "text": "Побежать за наблюдателем по льду.", "next": "16" },
+            { "text": "Крикнуть патрульным, чтобы осветили тот берег.", "next": "17" }
+        ]
+    },
+    "11": {
+        "text": "Вы лжете. Это начало опасного пути. Вы возвращаетесь в отдел. Начальник, полковник Громов, уже ждет. 'Волкова, это дело на контроле у области. Говорят, это дочь какого-то московского бизнесмена. Если не найдем убийцу за 24 часа, нас всех уволят'.",
+        "img": "Russian police station office, stern colonel sitting at desk, soviet interior, map on wall, tense conversation",
+        "choices": [
+            { "text": "Попросить список пассажиров поезда из Москвы.", "next": "18" },
+            { "text": "Поехать в школу к дочери (Проверить безопасность).", "next": "19" }
+        ]
+    },
+    "12": {
+        "text": "Вы отходите к машине. Руки дрожат. Вы звоните Кате. Гудки... Долгие гудки. Она не отвечает. Конечно, она спит, сейчас 5 утра. Но тревога не уходит.",
+        "img": "Woman sitting in car holding phone looking worried, reflection in rearview mirror, snow on windshield",
+        "choices": [
+            { "text": "Поехать домой и разбудить ее.", "next": "20" },
+            { "text": "Вернуться к работе. Я параноик.", "next": "5" }
+        ]
+    },
+    "13": {
+        "text": "'Елена Сергеевна? Извините за ранний звонок', - голос директора дрожит. 'В школе сработала сигнализация. Сторож говорит, что видел кого-то в вашем классе. В классе 3-Б'. Это класс Кати.",
+        "img": "Old school building at night, alarm light flashing, police car arriving, winter",
+        "choices": [
+            { "text": "Бросить все и мчаться в школу.", "next": "19" },
+            { "text": "Отправить туда ближайший патруль.", "next": "21" }
+        ]
+    },
+    "14": {
+        "text": "Вы игнорируете звонок. Работа важнее. Вы осматриваете карманы жертвы. Паспорт. Имя: Анна Соколова, 22 года, Москва. В паспорте лежит сложенная записка: 'Хопер, мост, 04:00. Принеси деньги, или девочка умрет'.",
+        "img": "Passport and a handwritten ransom note found on a body, gritty texture, evidence",
+        "choices": [
+            { "text": "Это шантаж. Нужно проверить телефон жертвы.", "next": "22" },
+            { "text": "Девочка? Нужно узнать, есть ли у нее дети.", "next": "18" }
+        ]
+    },
+    "15": {
+        "text": "Вы мчитесь к вокзалу. 'Нива' ревет. Вы видите, как 'Волга' врезается в сугроб у старого элеватора. Водитель выскакивает и бежит к путям. Это высокий мужчина в капюшоне.",
+        "img": "Car crash in snow near industrial grain elevator, man running away towards train tracks, dynamic action shot",
+        "choices": [
+            { "text": "Преследовать пешком с пистолетом.", "next": "23" },
+            { "text": "Обойти через грузовой терминал.", "next": "24" }
+        ]
+    },
+    "16": {
+        "text": "Лед трещит под ногами. Это опасно. Вы бежите, доставая табельный Макаров. Фигура исчезает в парке Куйбышева. Вы находите лишь окурки дорогих сигарет и следы... детских ботинок рядом с мужскими.",
+        "img": "Footprints in snow in a dark park, cigarette butts, gun in hand pov, ominous trees",
+        "choices": [
+            { "text": "Собрать окурки для ДНК.", "next": "25" },
+            { "text": "Идти по следам вглубь парка.", "next": "26" }
+        ]
+    },
+    "17": {
+        "text": "Прожектор освещает берег. Никого. Только следы на снегу, ведущие в сторону жилых дворов 'Козловки'. Наблюдатель ушел. Но вы заметили блеск  1�7 он что-то обронил.",
+        "img": "Spotlight beam hitting snowy river bank, shiny object on snow, night",
+        "choices": [
+            { "text": "Пойти проверить, что там.", "next": "27" },
+            { "text": "Остаться у тела, это может быть ловушка.", "next": "4" }
+        ]
+    },
+    "18": {
+        "text": "Вы в отделе. База данных показывает, что Анна Соколова не имела детей. Но она была журналисткой, писала о коррупции в провинции. Последняя статья была о детском доме в Саратовской области.",
+        "img": "Computer screen showing dossier of a female journalist, old russian office, coffee cup, smoke",
+        "choices": [
+            { "text": "Связаться с редакцией в Москве.", "next": "28" },
+            { "text": "Проверить детские дома в Балашове.", "next": "29" }
+        ]
+    },
+    "19": {
+        "text": "Вы подъезжаете к школе ℄1�77. Дверь черного входа взломана. Сторож лежит без сознания. Вы входите в класс 3-Б. На доске мелом написано одно слово: 'ИСКУПЛЕНИЕ'. Парта вашей дочери пуста, но на ней лежит черная роза.",
+        "img": "Empty classroom at night, chalkboard with russian word written in chalk, black rose on a desk, spooky",
+        "choices": [
+            { "text": "Осмотреть парту на отпечатки.", "next": "30" },
+            { "text": "Выбежать и позвонить Кате еще раз.", "next": "31" }
+        ]
+    },
+    "20": {
+        "text": "Вы врываетесь домой. Дверь не заперта. Сердце падает. Вы бежите в комнату. Кровать пуста. Окно открыто, снег на полу. На подушке лежит фото: вы, десять лет назад, арестовываете человека со шрамом на лице. Катя исчезла.",
+        "img": "Empty child bed with snow on the floor, open window, old photograph on pillow, despair",
+        "choices": [
+            { "text": "Закричать. (Паника)", "next": "32" },
+            { "text": "Вспомнить, кто этот человек на фото.", "next": "33" }
+        ]
+    },
+"21": {
+        "text": "Патрульные уже в школе. Сторож пришел в себя. 'Он был огромный', шепчет старик. 'Со шрамом через всю щеку. Он искал какие-то документы в архиве, а потом пошел в класс'. Шрам... Это сужает круг подозреваемых до минимума.",
+        "img": "Old frightened security guard sitting on floor with blanket, police officer taking notes, school corridor, night",
+        "choices": [
+            { "text": "Показать сторожу фото старых подозреваемых.", "next": "34" },
+            { "text": "Проверить школьный архив.", "next": "35" }
+        ]
+    },
+    "22": {
+        "text": "IT-отдел взломал телефон Анны. Последний звонок был вчера в 23:00. Абонент: 'Детский дом ℄1�75'. Также есть фото: размытый снимок документов, на которых видна печать мэрии Балашова.",
+        "img": "Cracked smartphone screen showing call log and a blurry photo of official documents, cyber forensics desk",
+        "choices": [
+            { "text": "Ехать в Детский дом ℄1�75.", "next": "29" },
+            { "text": "Проверить связь мэрии с убитой.", "next": "36" }
+        ]
+    },
+    "23": {
+        "text": "Выстрел! Пуля выбивает крошку из кирпичной стены рядом с вашим ухом. Мужчина стреляет, не глядя, и скрывается за вагонами с углем. Вы теряете его из виду в лабиринте путей, но он роняет телефон.",
+        "img": "Gunfight at snowy train station, sparks flying from brick wall, silhouette running behind coal wagons, dynamic action",
+        "choices": [
+            { "text": "Подобрать телефон и проверить контакты.", "next": "37" },
+            { "text": "Продолжать погоню вслепую.", "next": "38" }
+        ]
+    },
+    "24": {
+        "text": "Вы обходите с фланга через склад. Тихо. Слишком тихо. Вдруг вы слышите детский плач из контейнера. Ваше сердце замирает. Катя?! Вы срываете замок...",
+        "img": "Rusty shipping container in snow, padlock being broken with a crowbar, tension, flashlight beam",
+        "choices": [
+            { "text": "Открыть дверь рывком.", "next": "39" },
+            { "text": "Осторожно заглянуть в щель.", "next": "40" }
+        ]
+    },
+    "25": {
+        "text": "Экспресс-тест ДНК дает совпадение. Виктор Зорин, кличка 'Мясник'. Вы посадили его 10 лет назад за двойное убийство. Он вышел по УДО неделю назад. Он обещал отомстить.",
+        "img": "Police computer screen showing mugshot of a man with a scar, DNA match warning red text, gritty interface",
+        "choices": [
+            { "text": "Найти адрес его прописки.", "next": "33" },
+            { "text": "Поднять старое дело Зорина.", "next": "41" }
+        ]
+    },
+    "26": {
+        "text": "Следы ведут к теплотрассе. Там живут бездомные. Один из них, старик по кличке Борода, греется у костра. Он видел, кто прошел здесь час назад. 'Дал мне сотку, чтобы я молчал. Страшный мужик, с девочкой был'.",
+        "img": "Homeless camp near heating pipes, snow melting, bearded man warming hands over fire, night",
+        "choices": [
+            { "text": "'С девочкой? Как она выглядела?' (Допрос)", "next": "42" },
+            { "text": "Тряхануть его за грудки. 'Где они?!'", "next": "43" }
+        ]
+    },
+    "27": {
+        "text": "В снегу лежит золотая зажигалка с гравировкой 'В.З.'. Это старая улика. Вы помните эту зажигалку. Она принадлежала Виктору Зорину. Он был здесь. Он наблюдал за вами, пока вы осматривали труп.",
+        "img": "Gold lighter lying in snow, engraved initials V.Z., gloved hand picking it up, macro shot",
+        "choices": [
+            { "text": "Это вызов. Нужно вооружиться.", "next": "44" },
+            { "text": "Вызвать подкрепление прочесать район.", "next": "45" }
+        ]
+    },
+    "28": {
+        "text": "Главред 'Московской Правды' в шоке. 'Анна копала под мэра Балашова. Она нашла доказательства, что сирот продают за границу. Она говорила, что у нее встреча с информатором на мосту'.",
+        "img": "Journalist office in Moscow, editor on phone looking shocked, skyline view through window, rain",
+        "choices": [
+            { "text": "Значит, Зорин  1�7 исполнитель заказа мэрии.", "next": "46" },
+            { "text": "Информатор предал её.", "next": "47" }
+        ]
+    },
+    "29": {
+        "text": "Детский дом ℄1�75  1�7 мрачное здание сталинской эпохи. Директор, полная женщина с бегающими глазами, утверждает, что не знает Анну. Но вы видите в мусорной корзине обрывки билетов в Москву.",
+        "img": "Gloomy soviet orphanage building, iron gates, director office with messy desk, nervous woman",
+        "choices": [
+            { "text": "Припугнуть её ордером на обыск.", "next": "48" },
+            { "text": "Надавить на жалость.", "next": "49" }
+        ]
+    },
+    "30": {
+        "text": "На парте свежие отпечатки. Большие, мужские. И записка, приклеенная скотчем снизу: '12:00. Старый Элеватор. Приходи одна, если хочешь увидеть её живой'. Сейчас 08:00 утра.",
+        "img": "Note taped under a school desk, handwritten threat, dusty classroom floor view",
+        "choices": [
+            { "text": "Это ловушка. Взять с собой снайперов.", "next": "50" },
+            { "text": "Пойти одной. Я не буду рисковать Катей.", "next": "51" }
+        ]
+    },
+    "31": {
+        "text": "Вы набираете номер Кати в сотый раз. Гудок... Гудок... Щелчок. Кто-то взял трубку. Тяжелое дыхание. Затем хриплый голос: 'Она похожа на тебя, Лена. Надеюсь, она такая же крепкая'.",
+        "img": "Close up of detective face terrified holding phone to ear, tears, blurry background",
+        "choices": [
+            { "text": "'Не трогай её, Зорин! Я убью тебя!'", "next": "52" },
+            { "text": "'Что тебе нужно? Деньги?'.", "next": "53" }
+        ]
+    },
+    "32": {
+        "text": "Крик застревает в горле. Паника  1�7 это смерть. Вы делаете глубокий вдох. Вы  1�7 следователь. Вы найдете его. Вы идете на кухню, наливаете стакан водки, выпиваете залпом. Руки перестают дрожать.",
+        "img": "Woman drinking vodka shot in a messy kitchen, determination in eyes, gun on table, russian noir",
+        "choices": [
+            { "text": "Зарядить табельное оружие.", "next": "44" },
+            { "text": "Позвонить бывшему мужу (он ФСБшник).", "next": "54" }
+        ]
+    },
+    "33": {
+        "text": "Зорин прописан в бараках на окраине, район 'Япония'. Гнилое место. Вы берете дробовик из сейфа. Если он там, разговоров не будет.",
+        "img": "Loading a pump action shotgun, open safe, police badge, gritty atmosphere",
+        "choices": [
+            { "text": "Ехать в бараки.", "next": "55" },
+            { "text": "Взять напарника.", "next": "56" }
+        ]
+    },
+    "34": {
+        "text": "Сторож тычет пальцем в фото Зорина. 'Это он! Глаза бешеные, как у волка'. Теперь официально: Виктор Зорин, особо опасен, похитил ребенка. Ориентировки разосланы по всей области.",
+        "img": "Finger pointing at a mugshot in a folder, old wrinkled hand, police investigation",
+        "choices": [
+            { "text": "Ехать к нему домой (Бараки).", "next": "55" },
+            { "text": "Проверить его старые места (Заброшенный завод).", "next": "57" }
+        ]
+    },
+    "35": {
+        "text": "В архиве беспорядок. Зорин искал личное дело Кати. Зачем? Адрес он и так мог узнать. Он забрал её медицинскую карту. У Кати астма. Без ингалятора она может задохнуться при стрессе.",
+        "img": "Scattered files on floor, empty folder labeled with child name, medical symbol, urgency",
+        "choices": [
+            { "text": "Это меняет всё. Времени еще меньше.", "next": "31" },
+            { "text": "Проверить аптеки, вдруг он купит лекарство.", "next": "58" }
+        ]
+    },
+    "36": {
+        "text": "Вы звоните своему информатору в мэрии. Он шепчет: 'Не лезь туда, Волкова. Заказ шел с самого верха. Журналистка сунула нос в трафик сирот. Зорин  1�7 их чистильщик'.",
+        "img": "Man whispering into a payphone in a dark alley, rain, smoking, spy atmosphere",
+        "choices": [
+            { "text": "Мне плевать на политику, они забрали мою дочь.", "next": "33" },
+            { "text": "Собрать компромат на мэра, чтобы обменять на дочь.", "next": "59" }
+        ]
+    },
+    "37": {
+        "text": "Телефон Зорина заблокирован, но на экране высвечивается новое сообщение: 'Груз у меня. Жду на точке Б. Девчонка мешает'. Точка Б... На полицейском сленге это старая баржа на реке.",
+        "img": "Smashed smartphone screen showing a text message in russian, snow background",
+        "choices": [
+            { "text": "Ехать к барже.", "next": "60" },
+            { "text": "Отследить геолокацию отправителя.", "next": "61" }
+        ]
+    },
+    "38": {
+        "text": "Вы бежите по путям. Темно. Впереди шум поезда. Вы видите тень, запрыгивающую в товарный вагон. Поезд набирает ход. Это ваш шанс.",
+        "img": "Running alongside a moving freight train at night, shadow jumping into open wagon, motion blur",
+        "choices": [
+            { "text": "Прыгнуть в вагон.", "next": "62" },
+            { "text": "Стрелять по колесам (Опасно).", "next": "63" }
+        ]
+    },
+    "39": {
+        "text": "Вы срываете дверь. Внутри... пусто. Только матрас и детская куртка. Куртка Кати. Она была здесь совсем недавно. Вы чувствуете запах дешевого табака.",
+        "img": "Inside an empty shipping container, dirty mattress, pink child jacket on floor, despair",
+        "choices": [
+            { "text": "Осмотреть контейнер на улики.", "next": "64" },
+            { "text": "Выместить гнев на стене.", "next": "65" }
+        ]
+    },
+    "40": {
+        "text": "В щель вы видите... не Катю. Это куча старых манекенов. Но среди них сидит собака, дворняга, привязанная к ящику. Она и скулила. Это ловушка, чтобы задержать вас.",
+        "img": "Creepy mannequins in a dark container, a tied up stray dog whining, flashlight beam",
+        "choices": [
+            { "text": "Освободить собаку и уйти.", "next": "66" },
+            { "text": "Проверить ящик, к которому она привязана.", "next": "67" }
+        ]
+    },
+    "41": {
+        "text": "Вы поднимаете старое дело. Десять лет назад Зорин убил двух чиновников. На суде он кричал, что они виновны в смерти его дочери. Дочь умерла от пневмонии в... Детском доме ℄1�75. Связь установлена. Это личная месть системе, а Катя  1�7 просто инструмент.",
+        "img": "Dusty police archive folder open, old photo of a crying girl, stamps 'CASE CLOSED', red string connecting clues on a board",
+        "choices": [
+            { "text": "Теперь я знаю его мотив. Можно попробовать договориться.", "next": "53" },
+            { "text": "Он фанатик. Таких только уничтожать.", "next": "55" }
+        ]
+    },
+    "42": {
+        "text": "Борода чешет затылок: 'Девчонка? Да обычная. В шапке красной, с помпоном. Плакала, звала маму. Он ей рот рукой зажимал'. Красная шапка... Это Катя. Значит, она была жива час назад.",
+        "img": "Close up of a dirty homeless man talking, blurry snowy background, red hat visualized in thought bubble",
+        "choices": [
+            { "text": "Спросить, куда они пошли.", "next": "68" },
+            { "text": "Дать денег старику за информацию.", "next": "69" }
+        ]
+    },
+    "43": {
+        "text": "Старик пугается: 'Не бейте, гражданин начальник! Они пошли к путям, там дрезина старая стоит. Он сказал: \"Поедем кататься, принцесса\"'.",
+        "img": "Aggressive interrogation pov, grabbing collar of old jacket, fear in eyes, firelight",
+        "choices": [
+            { "text": "Бежать к путям.", "next": "38" },
+            { "text": "Сообщить транспортной полиции.", "next": "70" }
+        ]
+    },
+    "44": {
+        "text": "Вы проверяете магазин. 8 патронов. Этого мало против психопата. Вы достаете из бардачка запасную обойму и охотничий нож. Вы готовы убивать.",
+        "img": "Loading a Makarov pistol magazine, knife on car seat, determined eyes in rearview mirror",
+        "choices": [
+            { "text": "Поехать на место встречи (Элеватор) заранее.", "next": "71" },
+            { "text": "Ждать звонка.", "next": "31" }
+        ]
+    },
+    "45": {
+        "text": "Патрульные прочесывают район 'Козловка'. Через полчаса доклад: 'Нашли машину Зорина в гаражах. Пустая. В багажнике следы крови и... кукла'. Это любимая кукла Кати.",
+        "img": "Open car trunk in a dark garage, blood stains, dirty child doll left behind, police flashlight beams",
+        "choices": [
+            { "text": "Взять куклу на экспертизу.", "next": "72" },
+            { "text": "Это знак. Он издевается. Ехать на Элеватор.", "next": "51" }
+        ]
+    },
+    "46": {
+        "text": "Вы понимаете схему. Мэр покрывает продажу детей, Зорин убирает свидетелей, но Зорин вышел из-под контроля. Он похитил дочь следователя, чтобы шантажировать вас, или чтобы отомстить мэру через вас?",
+        "img": "Mind map on a wall connecting Mayor photo, Zorin mugshot and Orphanage, red lines, conspiracy",
+        "choices": [
+            { "text": "Выйти на мэра напрямую.", "next": "59" },
+            { "text": "Искать Зорина, плевать на мэра.", "next": "34" }
+        ]
+    },
+    "47": {
+        "text": "Информатор Анны найден мертвым в своей квартире. Передозировка. Но вы знаете, что он не кололся. Кто-то зачищает хвосты. Возможно, 'крот' есть и у вас в отделе.",
+        "img": "Dead body in a messy apartment, syringe on floor, open window with curtains blowing, suspicious suicide",
+        "choices": [
+            { "text": "Никому не доверять. Работать одной.", "next": "73" },
+            { "text": "Проверить телефон информатора.", "next": "74" }
+        ]
+    },
+    "48": {
+        "text": "Вы бросаете ордер на стол. 'Я переверну здесь каждый камень!'. Директор бледнеет. 'Не надо... Зорин приходил. Он искал документы своей умершей дочери. И... он спрашивал про вас. Где вы живете, где учится ваша дочь'.",
+        "img": "Angry detective slamming paper on desk, scared fat woman director, portrait of Lenin on wall",
+        "choices": [
+            { "text": "'Что он забрал?'", "next": "75" },
+            { "text": "'Куда он пошел?'", "next": "76" }
+        ]
+    },
+    "49": {
+        "text": "'Пожалуйста, у меня украли дочь'. Директор смягчается. 'Это ужасно. Послушайте, Зорин не просто убийца. Он болен. Он считает, что спасает детей. Он говорил о \"Чистом Месте\", где нет боли'.",
+        "img": "Two women talking quietly in an office, tears, emotional connection, soft window light",
+        "choices": [
+            { "text": "'Где это Чистое Место?'", "next": "77" },
+            { "text": "Проверить старые загородные лагеря.", "next": "78" }
+        ]
+    },
+    "50": {
+        "text": "Снайперы занимают позиции на крышах вокруг Элеватора. Вы выходите на открытое место. Тишина. Вдруг звонок: 'Я вижу твоих псов, Лена. Сделка отменяется. Ты совершила ошибку'.",
+        "img": "Sniper view through scope looking at an abandoned industrial silo, snow falling, tense radio silence",
+        "choices": [
+            { "text": "Кричать в трубку, умолять.", "next": "79" },
+            { "text": "Приказать штурм здания.", "next": "80" }
+        ]
+    },
+    "51": {
+        "text": "Вы идете к Элеватору одна. Руки подняты. Внутри пахнет зерном и крысами. Голос сверху: 'Брось пистолет и поднимайся. Медленно'.",
+        "img": "Walking into a gigantic dark abandoned grain silo, shafts of light piercing through holes, looking up",
+        "choices": [
+            { "text": "Бросить пистолет. (Риск)", "next": "81" },
+            { "text": "Спрятать второй пистолет в сапог, основной бросить.", "next": "82" }
+        ]
+    },
+    "52": {
+        "text": "Зорин смеется. 'Убьешь? Как ты убила мою жизнь 10 лет назад? Приходи на Элеватор. Одна. И привези мне досье на мэра. Оригиналы'.",
+        "img": "Man with scar laughing holding phone, blurred background, heavy atmosphere",
+        "choices": [
+            { "text": "Согласиться. 'Я всё привезу'.", "next": "83" },
+            { "text": "У меня нет досье. Блефовать.", "next": "84" }
+        ]
+    },
+    "53": {
+        "text": "'Деньги? Мне не нужны твои грязные деньги, мент. Мне нужна справедливость. Привези мне мэра. Живым. Обменяешь его на дочь'.",
+        "img": "Silhouette of a man watching from a window, holding a child toy, ominous demand",
+        "choices": [
+            { "text": "Похитить мэра? Это безумие.", "next": "85" },
+            { "text": "Попробовать обмануть его куклой.", "next": "84" }
+        ]
+    },
+    "54": {
+        "text": "Андрей, бывший муж, слушает молча. 'Я подниму ребят из конторы. Мы найдем её, Лена. Ничего не делай сама'. Но вы знаете, что ФСБ будет действовать жестко. Катя может пострадать при штурме.",
+        "img": "Man in suit listening to phone in a high tech car, rainy window, FSB badge visible",
+        "choices": [
+            { "text": "Довериться Андрею.", "next": "86" },
+            { "text": "Использовать ресурсы ФСБ, но действовать самой.", "next": "87" }
+        ]
+    },
+    "55": {
+        "text": "Бараки  1�7 это трущобы. Вы выбиваете дверь комнаты Зорина. Пусто. На стене  1�7 карта города с отмеченными крестами местами. Одно из них  1�7 старая баржа на реке. Другое  1�7 заброшенная больница.",
+        "img": "Kicking open a wooden door, messy room, wall covered in maps and photos, red crosses",
+        "choices": [
+            { "text": "Ехать на баржу.", "next": "60" },
+            { "text": "Ехать в больницу.", "next": "88" }
+        ]
+    },
+    "56": {
+        "text": "Вы берете с собой лейтенанта Киселева. Молодой, горячий. В бараке Зорина вы находите засаду  1�7 растяжку с гранатой на двери. Киселев замечает её в последний момент.",
+        "img": "Wire trap connected to a grenade pin on a door frame, young policeman shouting warning, freeze frame",
+        "choices": [
+            { "text": "Прыгнуть в сторону!", "next": "89" },
+            { "text": "Попытаться обезвредить.", "next": "90" }
+        ]
+    },
+    "57": {
+        "text": "Завод 'Рембаза' заброшен с 90-х. Зорин работал там механиком. Вы пробираетесь через цеха. Слышны голоса. Это не Зорин. Это местные наркоманы. Но у одного из них... школьный рюкзак Кати.",
+        "img": "Abandoned industrial factory interior, rusty machinery, group of junkies around a fire, pink backpack visible",
+        "choices": [
+            { "text": "Допросить с пристрастием.", "next": "91" },
+            { "text": "Обыскать рюкзак незаметно.", "next": "92" }
+        ]
+    },
+    "58": {
+        "text": "В круглосуточной аптеке подтверждают: час назад мужчина со шрамом купил ингалятор и детские успокоительные. Он платил наличными. Фармацевт слышал, как он говорил по телефону: 'Скоро будем на месте, в Святилище'.",
+        "img": "Pharmacy counter view, pharmacist pointing at security camera screen, night",
+        "choices": [
+            { "text": "'Святилище'? Что это может быть?", "next": "93" },
+            { "text": "Посмотреть записи с камер наблюдения.", "next": "94" }
+        ]
+    },
+    "59": {
+        "text": "Вы врываетесь в приемную мэра. Секретарша пытается вас остановить, но вы показываете удостоверение и пистолет. Мэр обедает. 'Волкова? Что за манеры?'. Вы бросаете ему на стол фото убитой журналистки.",
+        "img": "Mayor office, expensive furniture, fat man eating lunch looking surprised, detective angry gesture",
+        "choices": [
+            { "text": "'Где моя дочь?! Отвечай!'", "next": "95" },
+            { "text": "Блефовать: 'Зорин все рассказал'.", "next": "96" }
+        ]
+    },
+    "60": {
+        "text": "Баржа вмерзла в лед. Ржавое железо скрипит. Вы спускаетесь в трюм. Там оборудовано убежище. Спальники, еда... и свежие бинты с кровью. Зорин был здесь, но ушел. Он ранен? Или это кровь Кати?",
+        "img": "Inside a rusty ship hull, sleeping bags, bloody bandages on a table, flickering lantern light",
+        "choices": [
+            { "text": "Взять кровь на анализ.", "next": "97" },
+            { "text": "Искать следы, куда он ушел.", "next": "98" }
+        ]
+    },
+    "61": {
+        "text": "Геолокация указывает на точку в лесу, в 20 км от города. Это старый санаторий 'Заря', закрытый в 90-х. Местные говорят, что там привидения, но вы знаете правду: там идеальное место, чтобы спрятать ребенка. Или тело.",
+        "img": "Abandoned soviet sanatorium in winter forest, brutalist architecture, dark windows, snow storm, eerie atmosphere",
+        "choices": [
+            { "text": "Ехать туда немедленно, одной.", "next": "88" },
+            { "text": "Запросить план здания в архиве.", "next": "89" }
+        ]
+    },
+    "62": {
+        "text": "Вы прыгаете в открытый вагон. Темнота. Удар приклада сбивает вас с ног. Это не Зорин, это его подельник, молодой наркоман. Он замахивается ножом. Поезд гремит, заглушая звуки борьбы.",
+        "img": "Fight inside a moving dark train wagon, knife glinting, blurry motion, sparks from wheels outside",
+        "choices": [
+            { "text": "Выстрелить на поражение.", "next": "90" },
+            { "text": "Выбить нож и допросить.", "next": "91" }
+        ]
+    },
+    "63": {
+        "text": "Вы стреляете по колесам локомотива. Сноп искр! Поезд с визгом сходит с рельс, вагоны заваливаются на бок. Грохот оглушает. Вы поднимаетесь из снега. Среди искореженного металла кто-то ползет.",
+        "img": "Train wreck in snow, smoke, twisted metal, silhouette crawling away, fire",
+        "choices": [
+            { "text": "Бежать к месту крушения.", "next": "92" },
+            { "text": "Обойти с фланга, держа оружие наготове.", "next": "93" }
+        ]
+    },
+    "64": {
+        "text": "В углу контейнера вы находите ингалятор Кати. Он пуст. У нее был приступ. Значит, она слаба. На стене углем нарисован символ  1�7 тот же, что был на шее убитой журналистки. Это метка 'товара'.",
+        "img": "Close up of an empty asthma inhaler on dirty floor, charcoal symbol on metal wall, ominous lighting",
+        "choices": [
+            { "text": "Сфотографировать символ для базы данных.", "next": "94" },
+            { "text": "Выбежать на улицу, искать следы шин.", "next": "10" }
+        ]
+    },
+    "65": {
+        "text": "Удар кулаком в стену. Боль отрезвляет. Вы замечаете, что стена контейнера двойная. Там тайник. Внутри  1�7 папки с фотографиями детей. Десятки детей. И список цен. Катя в конце списка, цена самая высокая.",
+        "img": "Hidden compartment in shipping container, photos of children, ledger with prices in dollars, shocking evidence",
+        "choices": [
+            { "text": "Забрать документы как улику.", "next": "95" },
+            { "text": "Сжечь это проклятое место.", "next": "96" }
+        ]
+    },
+    "66": {
+        "text": "Пес, хромая, бежит к выходу со склада. Он лает на следы грузовика. Вы видите, что на ошейнике собаки есть жетон: 'Охрана Санатория Заря'. Собака сбежала оттуда? Или ее привезли?",
+        "img": "Stray dog barking at tire tracks, dog tag close up reading 'Sanatorium Zarya', snowy night",
+        "choices": [
+            { "text": "Санаторий 'Заря'. Ехать туда.", "next": "88" },
+            { "text": "Забрать собаку в машину (может взять след).", "next": "97" }
+        ]
+    },
+    "67": {
+        "text": "Вы открываете ящик. Щелчок. Вспышка! Это светошумовая ловушка. Вы слепнете, в ушах звон. Кто-то сильно бьет вас по голове. Темнота...",
+        "img": "Flashbang explosion effect, white screen transition, blurry vision fading to black",
+        "choices": [
+            { "text": "Очнуться...", "next": "98" }
+        ]
+    },
+    "68": {
+        "text": "'Они пошли к старому депо', говорит старик. 'Там у них лежка'. Депо  1�7 это тупик. Идеальное место для засады.",
+        "img": "Abandoned train depot, rotting trains covered in snow, graffiti, spooky atmosphere",
+        "choices": [
+            { "text": "Вызвать спецназ.", "next": "80" },
+            { "text": "Идти одной (Тихо).", "next": "99" }
+        ]
+    },
+    "69": {
+        "text": "Старик прячет купюру. 'Машина была с мигалкой. Черная Камри. Номера АМР'. Это серия администрации области. Зорина забрали не бандиты, а чиновники.",
+        "img": "Black government car with blue light waiting in snow, view through bushes, conspiracy",
+        "choices": [
+            { "text": "Звонить Громову. Это уровень ФСБ.", "next": "54" },
+            { "text": "Это значит, что Зорин работает на мэра?", "next": "46" }
+        ]
+    },
+    "70": {
+        "text": "Транспортная полиция блокирует пути. Дрезина Зорина остановлена в поле. Он выходит, держа Катю перед собой как щит. У него пистолет у ее виска. 'Уберите собак, или я выстрелю!'",
+        "img": "Standoff on snowy train tracks, man holding girl hostage with gun, police lights blinding, high tension",
+        "choices": [
+            { "text": "Приказать всем опустить оружие.", "next": "100" },
+            { "text": "Попробовать снять его выстрелом (Риск 90%).", "next": "101" }
+        ]
+    },
+    "71": {
+        "text": "Вы на Элеваторе за час до встречи. Находите идеальную позицию. Через прицел вы видите, как подъезжает черная машина. Из нее выходят двое громил, но Зорина нет. Это засада на вас.",
+        "img": "Sniper scope view looking down at thugs exiting a car, winter rooftop, breath condensation",
+        "choices": [
+            { "text": "Убить их.", "next": "102" },
+            { "text": "Проследить, куда они поедут.", "next": "103" }
+        ]
+    },
+    "72": {
+        "text": "Экспертиза готова. Кровь на кукле  1�7 свиная. Зорин играет с вами, пытается сломать психику. Но на платье куклы есть след извести. Такой известью белят стены только в старых больницах.",
+        "img": "Microscope view of blood cells, doll dress with white powder smudge, lab report",
+        "choices": [
+            { "text": "Проверить заброшенную больницу в центре.", "next": "88" },
+            { "text": "Это ложный след. Он хочет, чтобы я металась.", "next": "51" }
+        ]
+    },
+    "73": {
+        "text": "Вы никому не верите. Вы едете к дому полковника Громова. Свет горит. Через окно вы видите, как он сжигает документы в камине. Громов  1�7 тоже часть схемы?",
+        "img": "Looking through a house window from outside, man burning papers in fireplace, snow falling, betrayal feeling",
+        "choices": [
+            { "text": "Ворваться в дом.", "next": "104" },
+            { "text": "Снять происходящее на видео.", "next": "105" }
+        ]
+    },
+    "74": {
+        "text": "В телефоне информатора одно имя в черном списке: 'Папа'. Последнее СМС от него: 'Журналистка слишком много знает. Решай вопрос'. Номер 'Папы' зарегистрирован на личный телефон мэра.",
+        "img": "Phone screen showing threatening SMS chain, cracked screen, evidence of guilt",
+        "choices": [
+            { "text": "Отправить скриншот в ФСБ.", "next": "106" },
+            { "text": "Шантажировать мэра этим СМС.", "next": "59" }
+        ]
+    },
+    "75": {
+        "text": "'Он забрал старое свидетельство о рождении', плачет директор. 'Мальчик, который умер 20 лет назад. Его звали не Виктор Зорин. Зорин  1�7 это псевдоним. Его настоящее имя  1�7 Андрей Волков'. Волков? Ваш однофамилец? Или...",
+        "img": "Old yellowed birth certificate document, name 'Andrey Volkov', shock realization close up",
+        "choices": [
+            { "text": "Это мой брат, который пропал в 90-х?", "next": "107" },
+            { "text": "Это совпадение. В России полно Волковых.", "next": "41" }
+        ]
+    },
+    "76": {
+        "text": "'Он сказал, что пойдет в Церковь Всех Святых. Та, что сгорела пять лет назад'. Церковь находится на отшибе, рядом с кладбищем. Идеальное место для финала.",
+        "img": "Ruins of a burnt orthodox church in snow, black domes, crows flying, ominous landmark",
+        "choices": [
+            { "text": "Ехать в церковь.", "next": "108" },
+            { "text": "Проверить кладбище рядом.", "next": "109" }
+        ]
+    },
+    "77": {
+        "text": "'Чистое Место'  1�7 это Санаторий 'Заря'. В подвалах оборудованы операционные. Там из детей извлекают органы. Зорин хочет взорвать это место вместе с собой... и Катей.",
+        "img": "Underground operating room, dirty tiles, surgical lights off, terrifying realization",
+        "choices": [
+            { "text": "Ехать в 'Зарю'. Времени нет!", "next": "88" },
+            { "text": "Вызвать МЧС и саперов.", "next": "110" }
+        ]
+    },
+    "78": {
+        "text": "Лагерь 'Спутник' пуст и занесен снегом. Ложный след. Вы теряете время! Вдруг рация: 'Замечен дым со стороны Санатория Заря'.",
+        "img": "Empty abandoned summer camp, broken swings, smoke rising in distance over forest",
+        "choices": [
+            { "text": "Разворачиваться на Санаторий.", "next": "88" },
+            { "text": "Проверить дым.", "next": "88" }
+        ]
+    },
+    "79": {
+        "text": "Вы плачете в трубку: 'Пожалуйста, Витя... Она всего лишь ребенок'. Тишина. Потом голос Зорина, мягче: 'Они тоже были детьми, Лена. Те, кого мэр продал. Я хочу, чтобы он смотрел, как горит его мир. Привези мне его голову'.",
+        "img": "Extreme close up of crying detective eye, phone to ear, desperate negotiation",
+        "choices": [
+            { "text": "Пообещать ему мэра.", "next": "59" },
+            { "text": "Тянуть время, пока снайперы ищут цель.", "next": "80" }
+        ]
+    },
+    "80": {
+        "text": "'Штурм!'. Светошумовые гранаты летят в окна Элеватора. Стрельба. Вы бежите внутрь. Пыль, крики. Вы видите Зорина на верхнем мостике. Он держит Катю над пропастью зернохранилища.",
+        "img": "SWAT team breaching windows, smoke, laser sights, man holding girl over a dark abyss inside silo",
+        "choices": [
+            { "text": "Стрелять в плечо Зорина.", "next": "111" },
+            { "text": "Бросить оружие и поднять руки.", "next": "112" }
+        ]
+    },
+    "81": {
+        "text": "Пистолет падает в зерно. Вы медленно поднимаетесь по лестнице. Зорин держит Катю одной рукой. 'Ты не узнала меня, Лена?'. Он убирает волосы со лба. Там родимое пятно. Точно такое же, как у вашего брата Андрея, пропавшего 20 лет назад.",
+        "img": "Man removing hair from forehead revealing a birthmark, detective shock face, dramatic revelation, silo background",
+        "choices": [
+            { "text": "'Андрей? Ты жив? Но как?'", "next": "113" },
+            { "text": "'Мне плевать, кто ты. Отпусти её'.", "next": "114" }
+        ]
+    },
+    "82": {
+        "text": "Вы вытаскиваете второй пистолет из сапога. Зорин отвлекается на шум спецназа. Вы стреляете. Пуля попадает ему в плечо. Он шатается, выпуская Катю. Девочка падает на мостик.",
+        "img": "Gunshot flash in dark silo, man staggering back, child falling on metal walkway, slow motion",
+        "choices": [
+            { "text": "Бежать к Кате.", "next": "115" },
+            { "text": "Добить Зорина.", "next": "116" }
+        ]
+    },
+    "83": {
+        "text": "Зорин кивает. 'Хорошо. Поехали за досье'. Вы садитесь в его машину. Он не связывает вас. 'Ты всегда была умной, сестренка. Жаль, что ты выбрала их сторону'.",
+        "img": "Driving in a car with the killer, calm atmosphere, snow falling outside, tense conversation",
+        "choices": [
+            { "text": "Атаковать его в машине (Авария).", "next": "117" },
+            { "text": "Привезти его в засаду к ФСБ.", "next": "118" }
+        ]
+    },
+    "84": {
+        "text": "Вы достаете куклу. 'Смотри, Витя. Это кукла твоей дочери. Я нашла её. Она хотела бы, чтобы ты остановился'. Зорин замирает. В его глазах слезы.",
+        "img": "Detective holding a dirty doll towards a man with a gun, emotional breakdown, snowy background",
+        "choices": [
+            { "text": "Подойти и обнять его.", "next": "119" },
+            { "text": "Выхватить пистолет, пока он плачет.", "next": "120" }
+        ]
+    },
+    "85": {
+        "text": "Вы решаетесь на отчаянный шаг. Вы едете к мэру, оглушаете его охрану и похищаете его под дулом пистолета. Теперь вы преступник. Вы везете мэра на Элеватор.",
+        "img": "Mayor tied up in the back seat of a Lada Niva, detective driving fast, police sirens in background",
+        "choices": [
+            { "text": "Обменять мэра на Катю.", "next": "121" },
+            { "text": "Устроить самосуд над обоими.", "next": "122" }
+        ]
+    },
+    "86": {
+        "text": "ФСБ штурмует бараки. Вы слышите взрывы. Через час Андрей звонит: 'Мы взяли его, Лена. Катя у нас. Она в порядке'. Но вы чувствуете, что он что-то недоговаривает.",
+        "img": "Phone call in rain, police lights reflecting on wet asphalt, relief mixed with suspicion",
+        "choices": [
+            { "text": "Ехать в больницу к Кате.", "next": "end_system" },
+            { "text": "Потребовать встречи с Зориным.", "next": "123" }
+        ]
+    },
+    "87": {
+        "text": "Вы используете ресурсы ФСБ, чтобы найти 'Чистое Место'. Это бункер под санаторием. Вы входите туда первой. Операционные столы, холодильники... Это фабрика смерти.",
+        "img": "Horrific underground medical facility, cold blue light, empty gurneys, evidence of crimes",
+        "choices": [
+            { "text": "Заминировать бункер.", "next": "124" },
+            { "text": "Собрать все доказательства для суда.", "next": "125" }
+        ]
+    },
+    "88": {
+        "text": "Вы подъезжаете к Санаторию 'Заря'. Ворота открыты. Следы шин ведут к главному корпусу. В окне второго этажа горит свет. Вы слышите крик Кати.",
+        "img": "Looking up at the ominous sanatorium window with light, scream visualized, running towards entrance",
+        "choices": [
+            { "text": "Выбить дверь ногой.", "next": "126" },
+            { "text": "Залезть через пожарную лестницу.", "next": "127" }
+        ]
+    },
+    "89": {
+        "text": "Взрыв! Вас отбрасывает волной. Вы контужены. Когда пыль оседает, вы видите, что барак разрушен. Зорин ушел через заднюю дверь, но оставил послание на снегу: 'Ты опоздала'.",
+        "img": "Ears ringing effect, blurred vision of burning shack, writing in snow, failure feeling",
+        "choices": [
+            { "text": "Встать и продолжить погоню по следам.", "next": "61" },
+            { "text": "Вызвать медиков для Киселева.", "next": "128" }
+        ]
+    },
+    "90": {
+        "text": "Вы перерезаете провод. Таймер останавливается на 0:01. Киселев вытирает пот. Внутри барака вы находите ноутбук Зорина. Он открыт. Там переписка с заказчиком: 'Мэр'.",
+        "img": "Laptop screen showing email conversation, sender 'Mayor_Official', attached photos of targets",
+        "choices": [
+            { "text": "Скопировать файлы на флешку.", "next": "46" },
+            { "text": "Отправить файлы в СМИ прямо сейчас.", "next": "129" }
+        ]
+    },
+    "91": {
+        "text": "Наркоман ломается сразу. 'Мы просто следили! Зорин сказал, если менты придут, рюкзак подбросить, чтобы запутать. Сам он в Санатории!'.",
+        "img": "Junkie crying on knees, snow, scary detective interrogation shadow",
+        "choices": [
+            { "text": "Ехать в Санаторий.", "next": "88" }
+        ]
+    },
+    "92": {
+        "text": "В рюкзаке дневник Кати. Последняя запись: 'Мама грустная. Я хочу ей помочь. Дядя с добрыми глазами обещал показать, где работает мама'. Она пошла с ним сама.",
+        "img": "Reading a child diary, crude drawings of hearts and a man with a scar smiling, tears dropping on page",
+        "choices": [
+            { "text": "Я виновата. Я мало уделяла ей времени.", "next": "88" }
+        ]
+    },
+    "93": {
+        "text": "'Святилище'  1�7 это старая часовня на кладбище, где похоронена дочь Зорина. Он хочет 'обвенчать' Катю со смертью, чтобы вернуть свою дочь? Или просто попрощаться?",
+        "img": "Old orthodox chapel in a graveyard, snow covering tombstones, light inside chapel",
+        "choices": [
+            { "text": "Мчаться на кладбище.", "next": "109" }
+        ]
+    },
+    "94": {
+        "text": "Камеры показывают, как Зорин сажает Катю в машину. Она не плачет. Она выглядит... спокойной. Он дает ей шоколадку. Это не похоже на похищение. Это похоже на прогулку.",
+        "img": "Security camera footage black and white, man giving chocolate to girl in car, confusing emotion",
+        "choices": [
+            { "text": "У него стокгольмский синдром? Или у нее?", "next": "88" }
+        ]
+    },
+    "95": {
+        "text": "Мэр смеется. 'Твоя дочь? Это расходный материал, Волкова. Как и ты. Охрана!'. Дверь открывается. Входят двое амбалов.",
+        "img": "Mayor laughing smoking cigar, bodyguards entering room, detective trapped",
+        "choices": [
+            { "text": "Стрелять в мэра.", "next": "130" },
+            { "text": "Выпрыгнуть в окно (2 этаж).", "next": "131" }
+        ]
+    },
+    "96": {
+        "text": "'Зорин сдал тебя, тварь'. Мэр бледнеет. 'Сколько ты хочешь? Миллион? Два?'. Вы записываете разговор на диктофон в кармане.",
+        "img": "Close up of pocket with recording device red light on, sweating mayor offering money",
+        "choices": [
+            { "text": "'Я хочу свою дочь и твою отставку'.", "next": "132" },
+            { "text": "Взять деньги и продолжать блеф.", "next": "133" }
+        ]
+    },
+    "97": {
+        "text": "Это кровь Зорина. У него гепатит С и старое ранение легкого. Он умирает. Ему нечего терять. Он хочет забрать с собой в ад всех виновных.",
+        "img": "Medical report showing Hepatitis C positive and lung damage, terminal illness, ticking clock theme",
+        "choices": [
+            { "text": "Он смертник. Переговоры бесполезны.", "next": "61" }
+        ]
+    },
+    "98": {
+        "text": "Следы ведут к лесу. Но вы замечаете, что лед у баржи проломлен. Кто-то нырял? Нет, это сбросили что-то тяжелое. Телефон? Оружие?",
+        "img": "Broken ice hole near barge, dark water, bubbles, mystery",
+        "choices": [
+            { "text": "Игнорировать и идти по следам в лес.", "next": "61" }
+        ]
+    },
+    "99": {
+        "text": "Депо пустое. Только ветер гуляет. Вы слышите тиканье. Бомба! Зорин заманил вас сюда, чтобы убрать с дороги. До взрыва 10 секунд.",
+        "img": "Bomb timer counting down 0:09, red wires, panic run towards exit",
+        "choices": [
+            { "text": "Бежать!", "next": "134" }
+        ]
+    },
+    "100": {
+        "text": "Вы опускаете пистолет. 'Витя, отпусти её. Пожалуйста'. Зорин смотрит на вас. 'Ты не помнишь меня, Лена? Я твой брат'. Он толкает Катю к вам и поднимает пустой пистолет на полицейских. 'Стреляйте!'.",
+        "img": "Man pushing girl towards safety, raising empty hands, police firing squad, tragic slow motion",
+        "choices": [
+            { "text": "Закрыть его своим телом.", "next": "135" },
+            { "text": "Смотреть, как его расстреливают.", "next": "end_tragedy" }
+        ]
+    },
+    "101": {
+        "text": "Вы стреляете. Пуля попадает Зорину в голову. Он падает, увлекая Катю за собой в снег. Вы подбегаете. Катя жива, но в шоке. В кармане Зорина вы находите ваше детское фото.",
+        "img": "Dead body in snow, crying girl, old photo of two children found in pocket, regret",
+        "choices": [
+            { "text": "Обнять Катю и плакать.", "next": "end_pyrrhic" }
+        ]
+    },
+    "102": {
+        "text": "Два выстрела  1�7 два трупа. Вы обыскиваете их. Это не бандиты, это сотрудники личной охраны мэра. Мэр хотел убрать и вас, и Зорина.",
+        "img": "Dead bodyguards with earpieces, ID cards showing 'City Administration Security', snow turning red",
+        "choices": [
+            { "text": "Теперь это война с мэром.", "next": "59" }
+        ]
+    },
+    "103": {
+        "text": "Вы следите за машиной охраны. Они едут в лес, к Санаторию 'Заря'. Они едут зачищать следы.",
+        "img": "Following a black SUV through forest road, headlights off, stealth",
+        "choices": [
+            { "text": "Перехватить их до приезда.", "next": "136" },
+            { "text": "Позволить им привести вас к месту.", "next": "88" }
+        ]
+    },
+    "104": {
+        "text": "Громов наставляет на вас пистолет. 'Ты не понимаешь, Лена. Я защищаю тебя. Если бы это всплыло, тебя бы убили первой'. Он был в доле.",
+        "img": "Colonel Gromov pointing gun, fireplace burning evidence, betrayal, tense living room standoff",
+        "choices": [
+            { "text": "Убить Громова.", "next": "137" },
+            { "text": "Сдать оружие и сдаться.", "next": "end_betrayal" }
+        ]
+    },
+    "105": {
+        "text": "Вы снимаете видео. Громов сжигает списки детей. Этого достаточно для пожизненного. Вы отправляете видео в облако и журналистам.",
+        "img": "Phone recording video through window, upload progress bar 100%, justice",
+        "choices": [
+            { "text": "Теперь ехать за Катей.", "next": "61" }
+        ]
+    },
+    "106": {
+        "text": "ФСБ принимает сигнал. Через 10 минут мэрия оцеплена. Мэр арестован. Но Зорин все еще на свободе с Катей. И он не знает, что мэр арестован.",
+        "img": "News report on TV showing Mayor arrest, detective watching from car, clock ticking",
+        "choices": [
+            { "text": "Найти Зорина и сообщить ему новость.", "next": "61" }
+        ]
+    },
+    "107": {
+        "text": "Андрей... Ваш старший брат. Он сбежал из дома в 15 лет. Вы думали, он погиб. Он стал киллером, чтобы выжить. И теперь он вернулся, чтобы спасти племянницу от системы, которая сломала его.",
+        "img": "Flashback of two children playing in soviet yard, merging with current face of the killer, realization",
+        "choices": [
+            { "text": "Я должна его спасти.", "next": "61" }
+        ]
+    },
+    "108": {
+        "text": "В церкви пусто. Но на алтаре лежит телефон. Он звонит. 'Лена, приезжай к Санаторию. Финал там'.",
+        "img": "Phone ringing on church altar, echo, spooky atmosphere",
+        "choices": [
+            { "text": "Ехать в Санаторий.", "next": "88" }
+        ]
+    },
+    "109": {
+        "text": "На кладбище вы находите Зорина. Он стоит у могилы своей дочери. Катя рядом, живая. Он плачет. 'Я хотел, чтобы она увидела сестру'.",
+        "img": "Man kneeling at grave in snow, girl standing safely nearby, detective approaching slowly with gun lowered",
+        "choices": [
+            { "text": "Подойти и поговорить.", "next": "135" },
+            { "text": "Арестовать его.", "next": "100" }
+        ]
+    },
+    "110": {
+        "text": "МЧС оцепило район. Зорин видит мигалки и понимает, что выхода нет. Он баррикадируется в операционной с Катей. 'Никто не выйдет отсюда!'.",
+        "img": "Police barricade, megaphone negotiation, silhouette in window holding detonator",
+        "choices": [
+            { "text": "Войти на переговоры одной.", "next": "112" }
+        ]
+    },
+    "111": {
+        "text": "Вы стреляете. Зорин падает, раненый. Он не отпускает детонатор. 'Уходите! Здесь все заминировано!'. Он хочет взорвать только себя и улики.",
+        "img": "Wounded man shouting holding detonator, pushing girl towards detective, heroism in villainy",
+        "choices": [
+            { "text": "Схватить Катю и бежать.", "next": "end_explosion" },
+            { "text": "Пытаться вытащить и его.", "next": "138" }
+        ]
+    },
+    "112": {
+        "text": "Вы поднимаете руки. 'Витя, это я, Лена. Твоя сестра'. Зорин замирает. 'Лена? Ты стала ментом?'. Он опускает пистолет. Катя бежит к вам.",
+        "img": "Emotional reunion, detective hugging daughter, killer looking sad and tired, gun dropping on floor",
+        "choices": [
+            { "text": "Обнять брата.", "next": "139" },
+            { "text": "Надеть на него наручники.", "next": "140" }
+        ]
+    },
+    "113": {
+        "text": "'Я думал, ты погибла в том пожаре', шепчет он. 'Меня забрали в детдом. Там сделали из меня зверя. Я пришел отомстить тем, кто управляет этим детдомом'. Мэр.",
+        "img": "Two siblings looking at each other after 20 years, scars, tears, industrial background",
+        "choices": [
+            { "text": "'Мы посадим мэра вместе. Сдайся'.", "next": "139" },
+            { "text": "'Ты убивал людей, Андрей. Я не могу простить'.", "next": "140" }
+        ]
+    },
+    "114": {
+        "text": "Зорин видит в ваших глазах только закон. Он толкает Катю к вам и прыгает вниз, в зернохранилище. Вы слышите глухой удар. Он выбрал смерть, но не тюрьму.",
+        "img": "Man jumping into abyss, girl safe in mother arms, tragic ending",
+        "choices": [
+            { "text": "Посмотреть вниз.", "next": "end_suicide" }
+        ]
+    },
+    "115": {
+        "text": "Вы обнимаете Катю. Она дрожит. 'Мама, дядя Андрей плохой? Он спас меня от злых людей в масках'. Оказывается, охрана мэра пыталась убить Катю, а Зорин её защитил.",
+        "img": "Mother hugging daughter on metal floor, girl pointing at dead bodyguards in corner, revelation",
+        "choices": [
+            { "text": "Понять, что брат был героем.", "next": "138" }
+        ]
+    },
+    "116": {
+        "text": "Вы добиваете раненого. Это казнь. Катя видит это. Она смотрит на вас с ужасом. Вы спасли её жизнь, но убили её невиновность. И убили своего брата.",
+        "img": "Smoking gun, dead body, child looking at mother with fear, dark noir ending",
+        "choices": [
+            { "text": "Конец.", "next": "end_darkness" }
+        ]
+    },
+    "117": {
+        "text": "Вы хватаете руль. Машина врезается в столб. Зорин без сознания. Вы вытаскиваете Катю. Вы победили, но какой ценой? Вы арестовываете брата в коме.",
+        "img": "Car crash against pole, steam, detective pulling child out, unconscious man handcuffed",
+        "choices": [
+            { "text": "Конец.", "next": "end_coma" }
+        ]
+    },
+    "118": {
+        "text": "Зорин понимает, куда вы едете. 'Ты сдала меня? Своего брата?'. Он открывает дверь на ходу и выпрыгивает. Вы видите в зеркале, как он исчезает в лесу. Он ушел.",
+        "img": "Open car door, rolling silhouette on road, disappearing into dark forest, rearview mirror view",
+        "choices": [
+            { "text": "Конец.", "next": "end_escape" }
+        ]
+    },
+    "119": {
+        "text": "Вы обнимаете брата. Он рыдает как ребенок. Спецназ врывается. Вы кричите: 'Не стрелять! Он сдается!'. Вы спасли и дочь, и брата.",
+        "img": "Police surrounding hugging siblings, red laser dots on them, hands up, peaceful surrender",
+        "choices": [
+            { "text": "Конец.", "next": "end_redemption" }
+        ]
+    },
+    "120": {
+        "text": "Вы выхватываете пистолет. Зорин даже не сопротивляется. Он смотрит на вас с грустной улыбкой. 'Ты стала настоящим ментом, Лена'.",
+        "img": "Detective pointing two guns at unarmed man, sad smile, snowy background",
+        "choices": [
+            { "text": "Арестовать.", "next": "end_justice" }
+        ]
+    },
+    "121": {
+        "text": "Вы привозите мэра на обмен. Зорин убивает мэра выстрелом в голову на ваших глазах. 'Сделка совершена'. Он отдает Катю и сдается. Справедливость свершилась, но вы соучастник.",
+        "img": "Dead mayor in snow, Zorin handing over girl, police sirens approaching, grim satisfaction",
+        "choices": [
+            { "text": "Конец.", "next": "end_vigilante" }
+        ]
+    },
+    "122": {
+        "text": "Вы убиваете мэра и Зорина. Вы сжигаете Элеватор. Никто не узнает правду. Вы забираете Катю и уезжаете из города навсегда.",
+        "img": "Burning silo at night, car driving away on lonely road, detective face hardened",
+        "choices": [
+            { "text": "Конец.", "next": "end_runaway" }
+        ]
+    },
+    "123": {
+        "text": "В тюрьме Зорин говорит вам: 'Береги Катю. Система не прощает'. На следующий день его находят повешенным в камере. 'Самоубийство'. Вы знаете, что это не так.",
+        "img": "Prison visitor room glass reflection, sad man talking on phone, detective crying",
+        "choices": [
+            { "text": "Начать войну против ФСБ.", "next": "end_war" }
+        ]
+    },
+    "124": {
+        "text": "Вы минируете бункер. Взрыв уничтожает все улики, но и всю грязь. Город очищен огнем.",
+        "img": "Massive explosion destroying sanatorium, snow melting, detective walking away",
+        "choices": [
+            { "text": "Конец.", "next": "end_fire" }
+        ]
+    },
+    "125": {
+        "text": "Суд был громким. Мэра посадили. Вы стали героем. Но Катя не разговаривает. Она рисует черные рисунки. Тьма коснулась ее.",
+        "img": "Magazine cover 'Hero Detective', child drawing scary monsters in background, sad atmosphere",
+        "choices": [
+            { "text": "Конец.", "next": "end_hero_sad" }
+        ]
+    },
+    "126": {
+        "text": "Вы выбиваете дверь. Зорин стоит над связанными врачами. 'Они резали детей, Лена!'. Катя сидит в углу, закрыв уши. Вы должны выбрать: закон или справедливость.",
+        "img": "Operating room standoff, doctors tied up, angry man with gun, terrified child",
+        "choices": [
+            { "text": "Дать ему убить их.", "next": "end_dark_justice" },
+            { "text": "Остановить его.", "next": "112" }
+        ]
+    },
+    "127": {
+        "text": "Вы влезаете через окно. Снайпер мэра целится в Зорина. Вы толкаете снайпера. Выстрел уходит в потолок. Зорин видит, что вы спасли его.",
+        "img": "Fighting sniper on balcony, shot going wild, brother looking up surprised",
+        "choices": [
+            { "text": "Объединиться против наемников.", "next": "141" }
+        ]
+    },
+    "128": {
+        "text": "Киселев выжил. Но Зорин ушел. Дело закрыто как 'висяк'. Годы спустя вы получаете открытку с тропического острова: 'Спасибо, сестра'.",
+        "img": "Postcard with palm trees held by gloved hand in snowy Russia, smile",
+        "choices": [
+            { "text": "Конец.", "next": "end_postcard" }
+        ]
+    },
+    "129": {
+        "text": "Скандал на всю страну. Федералы арестовывают всех. Вы теряете работу за утечку данных, но город спасен. Вы открываете частное детективное агентство.",
+        "img": "Private Investigator door sign 'Elena Volkova', happy daughter doing homework inside",
+        "choices": [
+            { "text": "Конец.", "next": "end_private_eye" }
+        ]
+    },
+    "130": {
+        "text": "Вы убиваете мэра. Это конец карьеры. Тюрьма. Катю забирают в детдом. Круг замкнулся.",
+        "img": "Detective in handcuffs being led away, child crying in social worker arms, tragedy loop",
+        "choices": [
+            { "text": "Конец.", "next": "end_prison" }
+        ]
+    },
+    "131": {
+        "text": "Вы прыгаете. Ломаете ногу, но уходите. Вы в бегах. Вы забираете Катю и исчезаете. Вы теперь вне закона.",
+        "img": "Wanted poster of Elena Volkova, mother and daughter changing license plates on car, fugitive life",
+        "choices": [
+            { "text": "Конец.", "next": "end_fugitive" }
+        ]
+    },
+    "132": {
+        "text": "Мэр соглашается. Он уходит в отставку 'по состоянию здоровья'. Катя возвращается. Вы знаете правду, но молчите ради безопасности дочери.",
+        "img": "TV news 'Mayor Resigns', mother and daughter watching on couch, secret kept",
+        "choices": [
+            { "text": "Конец.", "next": "end_silence" }
+        ]
+    },
+    "133": {
+        "text": "Вы берете деньги. Вы покупаете дом у моря. Но совесть не дает спать. Вы стали тем, кого презирали.",
+        "img": "Luxury villa by sea, woman drinking wine looking sad at sunset, reflection of younger self judging",
+        "choices": [
+            { "text": "Конец.", "next": "end_corruption" }
+        ]
+    },
+    "134": {
+        "text": "Вы выбегаете за секунду до взрыва. Волна жара. Депо уничтожено. Зорин погиб? Тела не нашли. Возможно, он жив.",
+        "img": "Explosion background, detective walking away putting on sunglasses (metaphor), open ending",
+        "choices": [
+            { "text": "Конец.", "next": "end_mystery" }
+        ]
+    },
+    "135": {
+        "text": "Вы закрываете брата. Пуля попадает в бронежилет. Вы оба живы. Спецназ скручивает вас всех. Но суд присяжных оправдывает вас. Андрей получает срок, но вы ждете его.",
+        "img": "Courtroom sketch showing siblings holding hands, 'Not Guilty' headline",
+        "choices": [
+            { "text": "Конец.", "next": "end_wait" }
+        ]
+    },
+    "136": {
+        "text": "Вы устраиваете засаду наемникам. Перестрелка в лесу. Вы побеждаете. Зорин выходит из леса с Катей. 'Неплохо стреляешь, Лена'.",
+        "img": "Forest shootout aftermath, smoking gun, brother nodding in approval, team up",
+        "choices": [
+            { "text": "Отпустить его.", "next": "118" }
+        ]
+    },
+    "137": {
+        "text": "Громов мертв. Вы поджигаете дом, имитируя несчастный случай. Никто не узнает. Вы чистильщик, как и ваш брат.",
+        "img": "House burning, detective watching calmly, dark transformation",
+        "choices": [
+            { "text": "Конец.", "next": "end_cleaner" }
+        ]
+    },
+    "138": {
+        "text": "Вы вытаскиваете Зорина. Он выживает. В больнице он говорит Кате: 'Я твой дядя'. Семья воссоединилась, пусть и за решеткой.",
+        "img": "Hospital bed, handcuffed man smiling at niece, heartwarming moment",
+        "choices": [
+            { "text": "Конец.", "next": "end_family" }
+        ]
+    },
+    "139": {
+        "text": "Андрей сдается. Он получает 20 лет. Но он счастлив. Он нашел сестру. Вы навещаете его каждую неделю.",
+        "img": "Prison glass, hand touching hand from both sides, smile",
+        "choices": [
+            { "text": "Конец.", "next": "end_prison_happy" }
+        ]
+    },
+    "140": {
+        "text": "Вы надеваете наручники. 'Закон для всех один, Андрей'. Он грустно кивает. Вы потеряли брата снова, но сохранили честь.",
+        "img": "Handcuffing brother in snow, cold professional faces, snow falling",
+        "choices": [
+            { "text": "Конец.", "next": "end_law" }
+        ]
+    },
+    "141": {
+        "text": "Вы и Зорин сражаетесь спина к спине против наемников мэра. Как в детстве, когда вы дрались с хулиганами. Вы побеждаете. Мэр арестован. Андрей исчезает, но оставляет вам записку: 'Я присматриваю за вами'.",
+        "img": "Back to back shooting action, cinematic rotation shot, empty forest clearing afterwards with a note",
+        "choices": [
+            { "text": "Конец.", "next": "end_guardian" }
+        ]
+    },
+
+    // --- FINS (Écrans finaux) ---
+    "end_system": { "text": "ФИНАЛ: СИСТЕМА ПОБЕДИЛА. Зорин мертв. Мэр остался у власти. Вы с Катей живы, но знаете правду, которую нельзя никому рассказать.", "img": "Grey city view from window, rain, sad music vibe", "choices": [{ "text": "В начало", "next": "1" }] },
+    "end_tragedy": { "text": "ФИНАЛ: ТРАГЕДИЯ. Вашего брата расстреляли на ваших глазах. Катя никогда не оправится от шока. Вы уходите из полиции.", "img": "Grave in rain, black umbrella, alone", "choices": [{ "text": "В начало", "next": "1" }] },
+    "end_pyrrhic": { "text": "ФИНАЛ: ПИРРОВА ПОБЕДА. Вы убили брата, чтобы спасти дочь. Эта тайна умрет с вами.", "img": "Mother and daughter sitting on a bench looking at river, melancholic", "choices": [{ "text": "В начало", "next": "1" }] },
+    "end_redemption": { "text": "ФИНАЛ: ИСКУПЛЕНИЕ. Семья воссоединилась. Справедливость восторжествовала. Это лучший исход.", "img": "Sun shining on snowy Balashov, happy family photo frame", "choices": [{ "text": "В начало", "next": "1" }] },
+    // ... (Autres fins similaires redirigeant vers 1) ...
+    "end_mystery": { "text": "ФИНАЛ: ТЕНЬ. Зорин исчез. Иногда вам кажется, что вы видите его в толпе. Он ваш ангел-хранитель.", "img": "Crowd in street, blurry silhouette of man with scar looking back", "choices": [{ "text": "В начало", "next": "1" }] }    }; // Fin de storyData
+        // --- LOGIQUE ---
+        function render(id) {
+            const node = storyData[id];
+            if(!node) return alert("Ошибка: Глава не найдена / Erreur : Chapitre manquant : " + id);
+
+            // Arrêt Audio
+            if(window.speechSynthesis.speaking) window.speechSynthesis.cancel();
+            const ttsBtn = document.getElementById("tts-btn");
+            ttsBtn.classList.remove("active");
+            ttsBtn.innerText = "🔈 ЧИТАТЬ";
+
+            // Texte
+            document.getElementById("chapter-title").innerText = `ДЕЛО ℄1�7${id}`; // "Dossier N°..."
+            
+            // Effet machine à écrire léger
+            const textEl = document.getElementById("story-text");
+            textEl.style.opacity = 0;
+            setTimeout(() => {
+                textEl.innerText = node.text;
+                textEl.style.opacity = 1;
+            }, 200);
+            
+            // Image
+            const img = document.getElementById("visual");
+            const loader = document.getElementById("loader");
+            img.style.opacity = 0;
+            loader.style.display = "block";
+            
+            // const seed = Math.floor(Math.random() * 9999);
+			const seed = 8;
+            // On encode le prompt image en URL
+            const url = `${POLLINATIONS_URL}${encodeURIComponent(STYLE + node.img)}?width=800&height=450&nologo=true&seed=${seed}&model=flux`;
+            
+            const newImg = new Image();
+            newImg.src = url;
+            newImg.onload = () => {
+                img.src = url;
+                loader.style.display = "none";
+                img.style.opacity = 1;
+            };
+
+            // Choix
+            const div = document.getElementById("choices");
+            div.innerHTML = "";
+            
+            if (node.choices && node.choices.length > 0) {
+                node.choices.forEach(c => {
+                    const btn = document.createElement("button");
+                    btn.className = "btn";
+                    btn.innerText = "> " + c.text;
+                    btn.onclick = () => render(c.next);
+                    div.appendChild(btn);
+                });
+            } else {
+                // Fin de l'histoire
+                const endDiv = document.createElement("div");
+                endDiv.className = "ending";
+                endDiv.innerText = "КОНЕЦ ИСТОРИИ"; // "Fin de l'histoire"
+                div.appendChild(endDiv);
+                
+                const restartBtn = document.createElement("button");
+                restartBtn.className = "btn";
+                restartBtn.innerText = "ↄ1�7 НАЧАТЬ ЗАНОВО"; // "Recommencer"
+                restartBtn.onclick = () => render("1");
+                div.appendChild(restartBtn);
+            }
+        }
+
+        function toggleTTS() {
+            const text = document.getElementById("story-text").innerText;
+            const btn = document.getElementById("tts-btn");
+
+            if(window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                btn.classList.remove("active");
+                btn.innerText = "🔈 ЧИТАТЬ";
+            } else {
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = 'ru-RU'; // Force le Russe
+                u.rate = 0.9; // Un peu plus lent pour l'ambiance
+                
+                // Essayer de trouver une voix russe
+                const voices = window.speechSynthesis.getVoices();
+                const ruVoice = voices.find(v => v.lang.includes('ru'));
+                if(ruVoice) u.voice = ruVoice;
+
+                u.onend = () => {
+                    btn.classList.remove("active");
+                    btn.innerText = "🔈 ЧИТАТЬ";
+                };
+
+                window.speechSynthesis.speak(u);
+                btn.classList.add("active");
+                btn.innerText = "🔇 СТОП";
+            }
+        }
+
+        // Chargement des voix (nécessaire pour certains navigateurs)
+        window.speechSynthesis.onvoiceschanged = () => {};
+
+        // Démarrage
+        window.onload = () => {
+            if(Object.keys(storyData).length > 0) render("1");
+            else document.getElementById("story-text").innerText = "Пожалуйста, вставьте данные JSON в код. / Veuillez coller les données JSON.";
+        };
+    </script>
+</body>
+</html>

@@ -482,7 +482,8 @@
         sceneImg.style.opacity = 0;
         
         // Seed aléatoire pour variation
-        const seed = Math.floor(Math.random() * 99999);
+        // const seed = Math.floor(Math.random() * 99999);
+		const seed = 2;
         const finalPrompt = encodeURIComponent(ART_STYLE + node.img);
         const imgUrl = `${POLLINATIONS_ROOT}${finalPrompt}?width=900&height=450&seed=${seed}&nologo=true`;
 

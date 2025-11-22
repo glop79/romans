@@ -854,7 +854,8 @@
             img.style.opacity = 0;
             loader.style.display = "block";
             
-            const seed = Math.floor(Math.random() * 999);
+            // const seed = Math.floor(Math.random() * 999);
+			const seed = 3;
             const url = `${POLLINATIONS_URL}${encodeURIComponent(STYLE + node.img)}?width=800&height=400&nologo=true&seed=${seed}`;
             
             const newImg = new Image();

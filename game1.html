@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Sang de l'Architecte - Aventure Interactive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #c0392b; /* Rouge sang */
+            --secondary: #ecf0f1; /* Blanc cassé */
+            --bg-color: #0a0a0a; /* Noir profond */
+            --card-bg: #141414; /* Gris très sombre */
+            --accent: #d35400; /* Orange brûlé */
+            --text-shadow: 2px 2px 4px #000;
+        }
+
+        * { box-sizing: border_box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--secondary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at center, #1a1a1a 0%, #000000 100%);
+        }
+
+        /* Conteneur Principal */
+        #game-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--card-bg);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* En-tête */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary);
+            background: linear-gradient(to bottom, #000, #141414);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--primary);
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            text-shadow: var(--text-shadow);
+        }
+
+        /* Zone Image */
+        #scene-display {
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid #333;
+        }
+
+        #scene-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; /* Caché par défaut avant chargement */
+        }
+
+        /* Loader animé pour l'image */
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 4px solid #333;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* Zone Texte */
+        #story-content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        /* Zone Choix */
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 0 30px 30px 30px;
+        }
+
+        .choice-btn {
+            background: transparent;
+            border: 1px solid #444;
+            color: var(--secondary);
+            padding: 15px 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--primary);
+            background: rgba(192, 57, 43, 0.1);
+            padding-left: 30px;
+        }
+
+        .choice-btn::before {
+            content: '⚔';
+            position: absolute;
+            left: -20px;
+            transition: left 0.3s ease;
+            color: var(--primary);
+        }
+
+        .choice-btn:hover::before {
+            left: 10px;
+        }
+
+        /* Badge de Fin */
+        .ending-badge {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-top: 20px;
+            border: 1px solid var(--primary);
+            padding: 10px;
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            #scene-display { height: 250px; }
+            h1 { font-size: 1.5rem; }
+            #story-content { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <header>
+            <h1>Le Sang de l'Architecte</h1>
+        </header>
+
+        <div id="scene-display">
+            <div class="loader" id="loader"></div>
+            <img id="scene-image" src="" alt="Scène actuelle">
+        </div>
+
+        <div id="story-content">
+            <p id="story-text">Chargement de votre destinée...</p>
+        </div>
+
+        <div id="choices-container">
+            <!-- Les boutons seront injectés ici -->
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
+        // Paramètres pour un style Dark Fantasy cohérent
+        const IMG_PARAMS = "?width=800&height=600&nologo=true&model=flux&seed="; 
+        const STYLE_PREFIX = "Dark fantasy concept art, oil painting style, dramatic lighting, gritty, highly detailed, 8k, cinematic, ";
+
+        // --- Données de l'Histoire (Arbre Narratif) ---
+        const storyData = {
+            "start": {
+                text: "La porte de la Cité Interdite d'Aethon grince devant vous. Vous êtes Kaelen, un mercenaire dont le sang est empoisonné par une malédiction noire. La légende raconte que l'Architecte, un dieu ancien endormi au cœur de la ville, peut exaucer un vœu. Mais la ville est envahie par la Brume. Deux chemins s'offrent à vous pour entrer.",
+                image_prompt: "A huge ominous ancient gate of a ruined gothic city covered in fog, a lone warrior standing in front, dark fantasy atmosphere",
+                choices: [
+                    { text: "Forcer la grande porte principale gardée par des automates rouillés.", next: "2a" },
+                    { text: "Se faufiler par les égouts labyrinthiques.", next: "2b" }
+                ]
+            },
+            // --- Chapitre 2 ---
+            "2a": {
+                text: "Vous chargez, votre épée lourde fendant l'air. Les automates, bien que lents, sont puissants. Vous parvenez à en détruire deux, mais votre bras maudit vous lance une douleur atroce. Vous arrivez sur la Place du Marché, jonchée d'ossements.",
+                image_prompt: "Action shot, warrior fighting rusty steampunk golems in ruins, dynamic pose, sparks, fog, dark fantasy",
+                choices: [
+                    { text: "Chercher un apothicaire dans les ruines pour soigner votre bras.", next: "3a" },
+                    { text: "Ignorer la douleur et foncer vers le Temple au sommet.", next: "3b" }
+                ]
+            },
+            "2b": {
+                text: "L'odeur est pestilentielle. Les égouts sont sombres, éclairés par des champignons luminescents. Vous tombez sur une secte d'adorateurs de la Brume en plein rituel. Ils ne vous ont pas vu.",
+                image_prompt: "Underground sewer tunnels with bioluminescent glowing mushrooms, cultists in robes conducting a ritual, dark green atmosphere",
+                choices: [
+                    { text: "Les attaquer par surprise pour voler leurs artefacts.", next: "3c" },
+                    { text: "Utiliser votre magie d'ombre pour passer inaperçu.", next: "3d" }
+                ]
+            },
+            // --- Chapitre 3 ---
+            "3a": {
+                text: "L'apothicairerie est un piège. Une sorcière vous attendait. Elle propose de soigner votre bras en échange d'un fragment de votre âme. La douleur est insupportable.",
+                image_prompt: "Creepy witch laboratory, potions, dust, an old hag holding a glowing vial, interior dark fantasy",
+                choices: [
+                    { text: "Accepter le pacte. Le pouvoir avant tout.", next: "4a" },
+                    { text: "Refuser et la tuer. Vous prendrez ce dont vous avez besoin.", next: "4b" }
+                ]
+            },
+            "3b": {
+                text: "La montée vers le Temple est brutale. La Brume devient solide, formant des spectres. Votre volonté vacille, mais votre rage vous maintient en vie. Vous arrivez devant le pont brisé.",
+                image_prompt: "A destroyed stone bridge high in the sky leading to a dark tower, ghosts emerging from fog, epic scale",
+                choices: [
+                    { text: "Sauter par-dessus le vide grâce à la force de la malédiction.", next: "4c" },
+                    { text: "Chercher un mécanisme ancien pour réparer le pont.", next: "4d" }
+                ]
+            },
+            "3c": {
+                text: "Le massacre est rapide. Vous récupérez une Amulette de Sang sur le cadavre du grand prêtre. Elle pulse au rythme de votre cœur. Soudain, le sol s'effondre, vous menant directement dans la Crypte Royale.",
+                image_prompt: "An ancient crypt with stone sarcophagus, red glowing amulet in hand, debris falling, dust",
+                choices: [
+                    { text: "Utiliser l'amulette pour réveiller les morts à votre service.", next: "4e" },
+                    { text: "Détruire l'amulette, c'est une magie trop dangereuse.", next: "4f" }
+                ]
+            },
+            "3d": {
+                text: "Invisible comme une ombre, vous traversez le sanctuaire. Vous entendez les cultistes parler d'une 'Porte des Étoiles' cachée sous le palais. Vous trouvez l'entrée secrète.",
+                image_prompt: "Stealthy warrior hiding in shadows, mysterious glowing door with star runes, ancient stone walls",
+                choices: [
+                    { text: "Ouvrir la porte et entrer dans l'inconnu.", next: "4g" },
+                    { text: "Piéger la porte pour ensevelir les cultistes derrière vous.", next: "4h" }
+                ]
+            },
+            // --- Chapitre 4 (Dernier embranchement avant les fins) ---
+            // Ici nous allons directement vers les fins pour simplifier la démo (normalement Chapitre 5)
+            "4a": {
+                text: "Votre bras est guéri, mais votre humanité s'est effritée. Vous entrez dans la chambre de l'Architecte. Il dort sur son trône. Vous sentez que vous pouvez voler sa place.",
+                image_prompt: "Throne room of a god, giant sleeping stone titan, ethereal light, epic composition",
+                choices: [ { text: "Voler l'essence divine de l'Architecte.", next: "end1" } ]
+            },
+            "4b": {
+                text: "La sorcière morte, vous buvez une potion au hasard. Elle vous soigne mais vous rend fou de rage. Vous défoncez la porte du Temple. L'Architecte se réveille.",
+                image_prompt: "Berserk warrior with glowing red eyes, smashing a golden door, dynamic action",
+                choices: [ { text: "Attaquer le Dieu avec une fureur aveugle.", next: "end2" } ]
+            },
+            "4c": {
+                text: "Le saut est surhumain. Vous atterrissez devant l'Architecte. Il vous regarde avec pitié. Il propose de retirer votre malédiction si vous devenez son gardien éternel.",
+                image_prompt: "A divine entity made of light and geometry offering a hand to a weary warrior, peaceful but imposing",
+                choices: [ { text: "Accepter la servitude éternelle.", next: "end3" } ]
+            },
+            "4d": {
+                text: "Le mécanisme s'active, mais le bruit attire une horde de démons. Vous êtes submergé. L'Architecte observe la scène depuis son balcon.",
+                image_prompt: "Warrior surrounded by hundreds of shadow demons, fighting back to back alone, tragic atmosphere",
+                choices: [ { text: "Faire s'effondrer le pont pour les emporter avec vous.", next: "end4" } ]
+            },
+            "4e": {
+                text: "L'armée des morts se lève. Vous marchez sur le Temple, conquérant. L'Architecte n'est plus un dieu pour vous, mais un rival.",
+                image_prompt: "Warrior leading an army of skeletons and ghosts, green necromancy fog, epic wide shot",
+                choices: [ { text: "Ordonner l'assaut final.", next: "end5" } ]
+            },
+            "4f": {
+                text: "Sans l'amulette, vous êtes vulnérable. Vous arrivez devant l'Architecte, épuisé, sans arme, seulement avec votre courage.",
+                image_prompt: "Broken warrior kneeling before a giant god, no weapons, light shining down",
+                choices: [ { text: "Demander simplement la paix.", next: "end6" } ]
+            },
+            "4g": {
+                text: "La Porte des Étoiles mène... ailleurs. Hors du temps. Vous voyez la vérité sur l'univers. L'Architecte n'est qu'un rouage.",
+                image_prompt: "Cosmic horror landscape, space nebula swirling inside a room, silhouette of a man floating",
+                choices: [ { text: "Transcender la réalité.", next: "end7" } ]
+            },
+            "4h": {
+                text: "L'explosion détruit le palais. Vous êtes coincé dans les décombres. L'Architecte apparaît sous forme spectrale. Il est amusé par votre ténacité.",
+                image_prompt: "Ruins of a palace, warrior trapped under rocks, ghostly face smiling in the smoke",
+                choices: [ { text: "Rire au visage du Dieu.", next: "end8" } ]
+            },
+
+            // --- Les 8 Fins ---
+            "end1": {
+                text: "FIN 1 : LE NOUVEAU DIEU. Vous avez drainé l'Architecte. Vous êtes désormais le maître d'Aethon, immortel mais seul pour l'éternité.",
+                image_prompt: "A god-like figure glowing with power sitting on a throne, dark atmosphere, power radiating",
+                choices: []
+            },
+            "end2": {
+                text: "FIN 2 : LE DÉICIDE. Dans votre folie, vous avez tué le Dieu. Sans lui, la réalité s'effondre. Le monde s'éteint dans le néant.",
+                image_prompt: "The world crumbling into void, black hole eating the scenery, destruction, apocalyptic",
+                choices: []
+            },
+            "end3": {
+                text: "FIN 3 : LE GARDIEN. Votre malédiction est levée, mais vous êtes désormais une statue de pierre vivante, gardant le sommeil de l'Architecte à jamais.",
+                image_prompt: "A stone statue of a warrior standing guard in front of a gate, moss growing, silent, atmospheric",
+                choices: []
+            },
+            "end4": {
+                text: "FIN 4 : LE SACRIFICE. Vous chutez dans l'abîme avec les démons. Aethon est sauvée de l'invasion grâce à votre mort.",
+                image_prompt: "Falling into a dark abyss with demons, a single ray of light from above, heroic sacrifice",
+                choices: []
+            },
+            "end5": {
+                text: "FIN 5 : LE ROI LICHE. Vous avez vaincu l'Architecte, mais la nécromancie vous a consumé. Vous régnez sur un royaume de cendres.",
+                image_prompt: "Skull faced warrior on a throne of bones, grey desolate landscape, necromancy energy",
+                choices: []
+            },
+            "end6": {
+                text: "FIN 6 : LA RÉDEMPTION. Touché par votre humilité, l'Architecte vous libère et vous renvoie chez vous, mortel mais heureux.",
+                image_prompt: "A warrior walking away into a beautiful sunset, peaceful field, removing armor",
+                choices: []
+            },
+            "end7": {
+                text: "FIN 7 : L'EXPLORATEUR COSMIQUE. Vous n'êtes plus humain. Vous voyagez entre les étoiles, une conscience pure explorant l'infini.",
+                image_prompt: "Abstract cosmic entity traversing galaxies, colorful, surreal art, space",
+                choices: []
+            },
+            "end8": {
+                text: "FIN 8 : LA LÉGENDE. Vous mourrez sous les décombres, mais votre défi face aux Dieux inspirera les bardes pendant mille ans.",
+                image_prompt: "A bard singing by a fire in a tavern, shadowy figure of a hero in the smoke background",
+                choices: []
+            }
+        };
+
+        // --- Moteur de Jeu ---
+        const imgElement = document.getElementById("scene-image");
+        const loader = document.getElementById("loader");
+        const titleElement = document.getElementById("story-text");
+        const choicesContainer = document.getElementById("choices-container");
+
+        function renderNode(nodeId) {
+            const node = storyData[nodeId];
+            if (!node) return;
+
+            // 1. Mise à jour du Texte avec effet de fondu
+            titleElement.style.opacity = 0;
+            setTimeout(() => {
+                titleElement.innerText = node.text;
+                titleElement.style.opacity = 1;
+            }, 300);
+
+            // 2. Génération de l'image
+            loader.style.display = "block";
+            imgElement.style.opacity = 0;
+            
+            // Création d'une graine aléatoire pour varier l'image même si le prompt est le même
+            // const seed = Math.floor(Math.random() * 10000);
+			const seed = 1;
+
+            const finalPrompt = encodeURIComponent(STYLE_PREFIX + node.image_prompt);
+            const imgUrl = `${POLLINATIONS_URL}${finalPrompt}${IMG_PARAMS}${seed}`;
+
+            // Préchargement de l'image
+            const downloadingImage = new Image();
+            downloadingImage.onload = function(){
+                imgElement.src = this.src;
+                loader.style.display = "none";
+                imgElement.style.opacity = 1;
+            };
+            downloadingImage.src = imgUrl;
+
+            // 3. Mise à jour des Choix
+            choicesContainer.innerHTML = ""; // Nettoyer
+            
+            if (node.choices.length > 0) {
+                node.choices.forEach(choice => {
+                    const btn = document.createElement("button");
+                    btn.className = "choice-btn";
+                    btn.innerText = choice.text;
+                    btn.onclick = () => renderNode(choice.next);
+                    choicesContainer.appendChild(btn);
+                });
+            } else {
+                // C'est une fin
+                const badge = document.createElement("div");
+                badge.className = "ending-badge";
+                badge.innerText = "Destinée Achevée";
+                choicesContainer.appendChild(badge);
+
+                const restartBtn = document.createElement("button");
+                restartBtn.className = "choice-btn";
+                restartBtn.style.marginTop = "20px";
+                restartBtn.style.borderColor = "#fff";
+                restartBtn.innerText = "↺ Recommencer l'Aventure";
+                restartBtn.onclick = () => renderNode("start");
+                choicesContainer.appendChild(restartBtn);
+            }
+        }
+
+        // Démarrage du jeu
+        renderNode("start");
+
+    </script>
+</body>
+</html>
+
