@@ -8,7 +8,7 @@ window.GAME_DATA = {
         "start": {
             "chapter": "INTRODUCTION",
             "text": "Vous êtes le Dr Elena Rossi. Chirurgienne cardiaque de renommée mondiale. Mère. Épouse. Héroïne.<br><br>Ce soir, vous recevez le Prix Laennec, la consécration ultime. Mais un message anonyme s'apprête à détruire votre vie. Votre mémoire est-elle fiable ? Êtes-vous une imposteur ?<br><br>Objectif : Retrouver la vérité avant de tout perdre.",
-            "img_prompt": "Cinematic close up of a woman surgeon looking at her reflection in a mirror, face split in two, psychological thriller",
+            "img_prompt": "Cinematic close up of a woman surgeon looking at her reflection in a mirror, psychological thriller",
             "choices": [
                 { "text": "Commencer l'histoire (La Cérémonie)", "next": "1_ceremony_start" },
                 { "text": "Consulter le dossier 'Elena Rossi' (Contexte)", "next": "intro_context" }
