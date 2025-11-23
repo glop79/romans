@@ -358,7 +358,7 @@ window.GAME_DATA = {
         "c1_012_ask": {
             "chapter": "CHAPITRE 1",
             "text": "'Ouvrez, Dr Valmont. Nous savons que vous avez téléchargé les données du Kunlun. Nous ne sommes pas la police.' La voix est calme, autoritaire.",
-            "img_prompt": "Close up on Leo's worried face",
+            "img_prompt": "a close up on Leo's worried face",
             "choices": [
                 { "text": "Ouvrir la porte.", "next": "c1_011_open" }
             ]
@@ -420,7 +420,7 @@ window.GAME_DATA = {
         "c2_003_sam_direct": {
             "chapter": "CHAPITRE 2",
             "text": "Elle vous dévisage. 'Il est occupé. Et vous êtes un invité, pas un roi. Je suis Samira Belkacem. Si vous sortez des clous, c'est à moi que vous aurez affaire.'",
-            "img_prompt": "Samira looking menacingly at Leo",
+            "img_prompt": "Samira is looking menacingly at Leo",
             "choices": [
                 { "text": "Baisser les yeux et suivre.", "next": "c2_004_sterling_meet" }
             ]
@@ -428,7 +428,7 @@ window.GAME_DATA = {
         "c2_004_sterling_meet": {
             "chapter": "CHAPITRE 2 : Le Visionnaire",
             "text": "Le bureau de Sterling. Immense. Vue sur la mer. Il est là, en chair et en os. Il semble... fatigué. Une légère toux. 'Bienvenue à bord, Léo. Prêt à changer l'histoire ?'",
-            "img_prompt": "Sterling standing by a large window overlooking the ocean",
+            "img_prompt": "Sterling is standing near a large window overlooking the ocean",
             "choices": [
                 { "text": "Je veux voir le corps.", "next": "c2_005_lab" },
                 { "text": "Vous êtes malade ?", "next": "c2_006_sick" }
@@ -437,7 +437,7 @@ window.GAME_DATA = {
         "c2_006_sick": {
             "chapter": "CHAPITRE 2",
             "text": "Le visage de Sterling se durcit. 'Nous avons tous une date de péremption, Léo. J'essaie juste de repousser la mienne indéfiniment. Ne perdons pas de temps.'",
-            "img_prompt": "Sterling looking annoyed, checking a watch on his wrist",
+            "img_prompt": "Sterling is looking annoyed, checking a watch on his wrist",
             "choices": [
                 { "text": "Aller au laboratoire.", "next": "c2_005_lab" }
             ]

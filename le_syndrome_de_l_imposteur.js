@@ -47,7 +47,7 @@ window.GAME_DATA = {
         "1_speech_mentor": {
             "chapter": "Le Père Spirituel",
             "text": "Dubois vous sourit paternellement. Il connaît votre parcours, vos sacrifices. Il semble si fier. Pourtant, vous vous sentez... illégitime.",
-            "img_prompt": "Old professor with white hair clapping hands, looking proud",
+            "img_prompt": "Old professor with white hair clapping hands, looking proud and self-assured",
             "choices": [
                 { "text": "Terminer le discours sur une note professionnelle.", "next": "1_speech_end" }
             ]
@@ -358,7 +358,7 @@ window.GAME_DATA = {
         "4_camera_discovery": {
             "chapter": "L'Espion",
             "text": "Nuit. Cuisine. Vous cherchez de l'eau. Le bouquet de fleurs du Prix Laennec. Une lumière rouge clignote dedans. Une micro-caméra.",
-            "img_prompt": "Tiny camera hidden inside a white lily flower",
+            "img_prompt": "A tiny, discreet camera, hidden inside a white fleur-de-lis",
             "choices": [
                 { "text": "L'écraser.", "next": "5_media_storm" },
                 { "text": "La laisser et faire semblant de rien.", "next": "5_play_along" }
