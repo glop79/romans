@@ -7,7 +7,7 @@ window.GAME_DATA = {
         // ------------------------------------------------------------------
         "start": {
             "chapter": "ACCUEIL",
-            "text": "Bienvenue dans l'adaptation intégrale du <b>GÈNE DE QIN</b>.<br><br>Ce récit interactif contient plus de 500 embranchements. Vos choix auront des conséquences immédiates (mort, blessure) ou retardées (alliances, indices).<br><br>Vous allez explorer l'histoire à travers les yeux de plusieurs personnages à travers les millénaires.",
+            "text": "Bienvenue dans l'adaptation intégrale du <b>GÈNE DE QIN</b>.<br><br>Vos choix auront des conséquences immédiates (mort, blessure) ou retardées (alliances, indices).<br><br>Vous allez explorer l'histoire à travers les yeux de plusieurs personnages à travers les millénaires.",
             "img_prompt": "Cinematic title screen, DNA helix made of ice and ancient bronze, dark background, 8k",
             "choices": [
                 { "text": "Commencer l'aventure (Prologue : 221 av. J.-C.)", "next": "p_001_intro" },
@@ -73,7 +73,7 @@ window.GAME_DATA = {
         "p_006_jin_talk": {
             "chapter": "PROLOGUE",
             "text": "Jin tourne lentement la tête. Ses yeux sont cernés de fatigue. 'Demi-tour ? Il n'y a pas de retour, scribe. L'Empereur veut l'immortalité. Si nous rentrons les mains vides, nous serons exécutés. Si nous restons, nous gèlerons. Choisis ta mort.'",
-            "img_prompt": "General Jin talking to the scribe, intense expression",
+            "img_prompt": "General Jin talking to the scribe, intense expression, fatigue",
             "choices": [
                 { "text": "Retourner à votre poste.", "next": "p_010_alert" }
             ]
