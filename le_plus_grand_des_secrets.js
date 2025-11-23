@@ -430,8 +430,7 @@ window.GAME_DATA = {
             "text": "Lévi vous pousse dans un passage derrière la bibliothèque. 'Partez !' Vous entendez une détonation. Lévi est mort. Vous êtes dans une ruelle.",
             "img_prompt": "Narrow alleyway at dawn, birds flying away",
             "choices": [
-                { "text": "Aller au Musée d'Art (Message de Blackwood).", "next": "c3_001_museum" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Aller au Musée d'Art (Message de Blackwood).", "next": "c3_001_museum" }
             ]
         },
         "c2_013_save_rabbi_fail": {
@@ -489,7 +488,7 @@ window.GAME_DATA = {
         },
         "c3_006_car_threat": {
             "chapter": "CHAPITRE 3 : Embuscade",
-            "text": "Une berline aux vitres teintées tourne le coin. Blackwood vous pousse derrière une colonne. 'Ils vous ont tracée via votre téléphone ! Jetez la carte SIM !'",
+            "text": "Une berline aux vitres teintées tourne au coin de la rue. Blackwood vous pousse derrière une colonne. 'Ils vous ont tracée via votre téléphone ! Jetez la carte SIM !'",
             "img_prompt": "Black sedan car driving slowly, menacingly",
             "choices": [
                 { "text": "Jeter la carte SIM.", "next": "c3_007_sim_out" },
@@ -527,7 +526,8 @@ window.GAME_DATA = {
             "img_prompt": "Gothic library door with electronic keypad",
             "choices": [
                 { "text": "Taper 4-9-7-3.", "next": "c3_011_inside" },
-                { "text": "Taper 4-7-9-3 (Erreur).", "next": "c3_012_code_error" }
+                { "text": "Taper 4-3-9-7.", "next": "c3_012_code_error" },
+                { "text": "Taper 4-7-9-3.", "next": "c3_012_code_error" }
             ]
         },
         "c3_012_code_error": {
@@ -695,8 +695,7 @@ window.GAME_DATA = {
             "text": "Vous fuyez sous la terre. Vous ressortez loin. Vous utilisez le kit de Keller pour changer d'identité. Rébecca Shepherd meurt ce soir. Susan Reid prend le premier vol pour Francfort.",
             "img_prompt": "Woman putting on a wig and glasses in an airport bathroom",
             "choices": [
-                { "text": "Prendre l'avion pour l'Europe.", "next": "c5_001_train" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Prendre l'avion pour l'Europe.", "next": "c5_001_train" }
             ]
         },
         // ------------------------------------------------------------------
