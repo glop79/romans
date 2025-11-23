@@ -239,7 +239,7 @@ window.GAME_DATA = {
         "3_directors_office": {
             "chapter": "L'Inquisition",
             "text": "Bureau vitré. Vue sur Lyon. Le Directeur Moreau est assis. Vincent Dubois est debout, sourire carnassier. Votre rival. Le policier 'à l'ancienne'.",
-            "img_prompt": "Office with panoramic view, two men waiting, tense atmosphere",
+            "img_prompt": "Office with panoramic view, two men waiting, tense atmosphere, suspense",
             "choices": [
                 { "text": "Rester debout face à eux.", "next": "3_stand_tall" },
                 { "text": "S'asseoir sans invitation.", "next": "3_sit_down" }
@@ -690,7 +690,7 @@ window.GAME_DATA = {
         "17_joris_refuses": {
             "chapter": "GAME OVER",
             "text": "Joris panique et vous dénonce. Dubois vous arrête. Fin.",
-            "img_prompt": "Handcuffs being placed on Atlas",
+            "img_prompt": "Handcuffs being placed on Commandant Gabriel Atlas",
             "choices": [
                 { "text": "Recommencer le dialogue", "next": "17_recruit_joris" }
             ]
