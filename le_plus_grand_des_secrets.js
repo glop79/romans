@@ -294,7 +294,7 @@ window.GAME_DATA = {
         "c1_016_backdoor": {
             "chapter": "CHAPITRE 1",
             "text": "Vous vous glissez dans le local technique. La porte de votre bureau s'ouvre avec fracas. Vous retenez votre souffle. Vous traversez le labo désert et sortez dans la nuit.",
-            "img_prompt": "Night campus of Princeton, shadows",
+            "img_prompt": "Night campus of Princeton, shadows, Princeton streets",
             "choices": [
                 { "text": "Aller à sa voiture.", "next": "c1_017_car_trap" },
                 { "text": "Contacter Alex Keller (Le Hacker).", "next": "c1_018_keller" }

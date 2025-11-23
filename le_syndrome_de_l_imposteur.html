@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Plus Grand Des Secrets - Aventure Interactive</title>
+    <title>Le Syndrome De L’Imposteur - Aventure Interactive</title>
     
     <!-- Chargement des données de l'histoire -->
-    <script src="le_plus_grand_des_secrets.js"></script>
+    <script src="le_syndrome_de_l_imposteur.js"></script>
     
     <!-- Polices Google -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
@@ -23,8 +23,7 @@
 
         body {
             /* Arrière-plan personnalisé pour Le Plus Grand Des Secrets */
-			background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://image.pollinations.ai/prompt/mysterious%20ancient%20babylon%20ruins%20background%2C%20cryptography%20symbols%20overlay%2C%20dark%20academic%20atmosphere%2C%20golden%20dust%2C%20cinematic%20lighting%20dark?width=1920&height=1080&model=turbo&enhance=true&nologo=true&seed=9999');
-			
+			background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://image.pollinations.ai/prompt/sterile%20hospital%20corridor%20background%2C%20surgical%20light%20bokeh%2C%20medical%20thriller%20atmosphere%2C%20cold%20blue%20and%20white%20tones%2C%20cinematic?width=1920&height=1080&model=turbo&enhance=true&nologo=true&seed=9993');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -298,7 +297,7 @@
     <div id="error-message">
         <strong>Erreur critique !</strong><br>
         Les données de l'histoire n'ont pas été trouvées.<br>
-        Vérifiez que le fichier <code>le_plus_grand_des_secrets.js</code> est bien dans le même dossier que ce fichier HTML.
+        Vérifiez que le fichier <code>le_syndrome_de_l_imposteur.js</code> est bien dans le même dossier que ce fichier HTML.
     </div>
 
     <div id="narrative-box">
@@ -344,7 +343,8 @@
     const SAVE_KEY = "save_lpgds_progress";
 
     const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
-    const STYLE_PROMPT = "Cinematic movie shot, thriller atmosphere, highly detailed, 8k, dramatic lighting, ";
+//    const STYLE_PROMPT = "Cinematic movie shot, thriller atmosphere, highly detailed, 8k, dramatic lighting, ";
+	const STYLE_PROMPT = "Medical thriller atmosphere, sterile hospital lighting, surgical precision, clean white and blue tones, psychological tension, photorealistic, 8k, ";
 
     // --- Initialisation ---
     function initGame() {
@@ -530,7 +530,7 @@
         loader.innerText = "Déchiffrement en cours...";
         
         // const seed = Math.floor(Math.random() * 9999);
-        const seed = 9999; 
+        const seed = 9993; 
         const safePrompt = encodeURIComponent(STYLE_PROMPT + (node.img_prompt || "Mystery book cover"));
         const url = `${POLLINATIONS_URL}${safePrompt}?width=800&height=400&nologo=true&seed=${seed}`;
 
