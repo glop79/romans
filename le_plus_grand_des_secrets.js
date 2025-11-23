@@ -7,7 +7,7 @@ window.GAME_DATA = {
         // ------------------------------------------------------------------
         "start": {
             "chapter": "ACCUEIL",
-            "text": "Bienvenue dans l'adaptation interactive du roman <b>Le Plus Grand Des Secrets</b>.<br><br>Vous allez plonger dans une conspiration millénaire qui mêle archéologie, cryptographie et prophéties apocalyptiques. Vous incarnerez plusieurs personnages clés, dont le Professeur Elijah Shepherd et sa fille, Rébecca.<br><br>Ce récit contient plus de 500 embranchements. Vos choix détermineront la survie de l'humanité face à Nathanaël Burke et ses Veilleurs.",
+            "text": "Bienvenue dans l'adaptation interactive du roman <b>Le Plus Grand Des Secrets</b>.<br><br>Vous allez plonger dans une conspiration millénaire qui mêle archéologie, cryptographie et prophéties apocalyptiques.<br><br>Vos choix détermineront la survie de l'humanité face à des menaces planétaires.",
             "img_prompt": "Ancient clay tablet glowing with digital binary code, cinematic lighting, mysterious atmosphere, 8k",
             "choices": [
                 { "text": "Commencer l'aventure (Prologue : Babylone)", "next": "p_001_babylon_night" },
