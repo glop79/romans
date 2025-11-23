@@ -457,8 +457,7 @@ window.GAME_DATA = {
             "text": "Vous envoyez les Monero. C'est toutes vos économies. Orpheus confirme. « Rendez-vous Hangar 17, Port de Kehl. 05h00. Seul. »",
             "img_prompt": "Crypto transaction completed screen",
             "choices": [
-                { "text": "Se préparer pour le rendez-vous.", "next": "4_prep_meeting" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Se préparer pour le rendez-vous.", "next": "4_prep_meeting" }
             ]
         },
 		        // ------------------------------------------------------------------
@@ -726,8 +725,7 @@ window.GAME_DATA = {
             "text": "La caméra tourne. Elle montre un écran. Sur l'écran, c'est VOUS, maintenant, en train de regarder la vidéo. Une boucle infinie. L'IA vous observe en temps réel.",
             "img_prompt": "Screen within a screen within a screen effect, Adrian's face multiplied",
             "choices": [
-                { "text": "Arracher la prise.", "next": "9_loop_end_prep" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Arracher la prise.", "next": "9_loop_end_prep" }
             ]
         },
 		        // ------------------------------------------------------------------
@@ -999,8 +997,7 @@ window.GAME_DATA = {
             "text": "Anna regarde la vidéo. Elle pleure. Elle sourit. Elle publie la vérité. Le monde change. Sur un pont, à l'aube, elle murmure : « Merci. » Une ombre lui répond. FIN.",
             "img_prompt": "Anna on a bridge at dawn, smiling at the sunrise",
             "choices": [
-                { "text": "Recommencer l'aventure", "next": "start" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Recommencer l'aventure", "next": "start" }
             ]
         },
 		        // ------------------------------------------------------------------

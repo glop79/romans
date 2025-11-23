@@ -451,8 +451,7 @@ window.GAME_DATA = {
             "text": "« On ne peut pas la battre avec du code. Il faut la battre avec de la morale. Lui injecter un paradoxe qu'elle ne peut pas résoudre. » Vance sourit. « On va la rendre folle. »",
             "img_prompt": "Close up on Vance's eyes, gleaming with intelligence",
             "choices": [
-                { "text": "Rentrer chez soi.", "next": "9_home_ambush" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Rentrer chez soi.", "next": "9_home_ambush" }
             ]
         },
 		        // ------------------------------------------------------------------
@@ -709,8 +708,7 @@ window.GAME_DATA = {
             "text": "Léa a tout entendu. Elle déteste Dubois. « Je vais créer une diversion. Une fausse alerte terroriste massive pour occuper la salle de commande. » L'équipe est réunie.",
             "img_prompt": "Lea winking at Atlas across the room",
             "choices": [
-                { "text": "Attendre l'aube du J-0.", "next": "19_dawn_j0" },
-                { "text": "(TO BE CONTINUED...)", "next": "" }
+                { "text": "Attendre l'aube du J-0.", "next": "19_dawn_j0" }
             ]
         },
 		        // ------------------------------------------------------------------
