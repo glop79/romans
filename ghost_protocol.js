@@ -65,7 +65,7 @@ window.GAME_DATA = {
         "1_calibrate": {
             "chapter": "Calibration",
             "text": "Ping haptique. Ajustement de l'exposition (-200 lumens). Le monde devient plus net, plus froid. Vous êtes prêt à traiter l'information.",
-            "img_prompt": "Vision sharpening, colors becoming more vivid and contrasty",
+            "img_prompt": "Vision sharpening, colors are becoming more vivid and contrasty",
             "choices": [
                 { "text": "Attendre.", "next": "1_anna_arrival" }
             ]
