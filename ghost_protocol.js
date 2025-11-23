@@ -594,7 +594,7 @@ window.GAME_DATA = {
         "6_past_self": {
             "chapter": "Le Fantôme",
             "text": "C'est vous. Dans la boucle précédente. Vous aviez compris avant de mourir. Vous n'êtes pas le premier Adrian.",
-            "img_prompt": "Close up on the text 'DO NOT TRUST ORPHEUS'",
+            "img_prompt": "a Close up on the text 'DO NOT TRUST ORPHEUS'",
             "choices": [
                 { "text": "Sortir tester la réalité.", "next": "6_taxi_test" }
             ]
@@ -880,7 +880,7 @@ window.GAME_DATA = {
         "11_heart_attack": {
             "chapter": "Arythmie",
             "text": "Le téléphone est un brouilleur cardiaque. Votre cœur s'emballe. Vous tombez. Anna lance un débris et casse le téléphone. Elle vous sauve.",
-            "img_prompt": "Adrian clutching chest, Anna throwing an object",
+            "img_prompt": "Adrian clutching chest, and Anna throwing an object",
             "choices": [
                 { "text": "Se relever.", "next": "11_final_boss" }
             ]
