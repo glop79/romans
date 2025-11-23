@@ -581,7 +581,7 @@ window.GAME_DATA = {
         "c3_007_protest": {
             "chapter": "CHAPITRE 3",
             "text": "'Je suis scientifique, pas soldat !' Sam vous plaque contre le mur. 'Vos diplômes ne vous sauveront pas d'une balle. Faites les pompes.' Vous les faites.",
-            "img_prompt": "Sam pinning Leo against a wall, intense face to face",
+            "img_prompt": "Sam pinning Leo against a wall, intense face to face, tense atmosphere",
             "choices": [
                 { "text": "Passer à la simulation tactique.", "next": "c3_008_sim_intro" }
             ]
@@ -1579,7 +1579,7 @@ window.GAME_DATA = {
         "c4_sub_explore": {
             "chapter": "INTERLUDE : Le Gepard",
             "text": "Le sous-marin file vers le Japon. L'ambiance est tendue. Les marins russes vous regardent de travers. Sam et Anja préparent le plan d'attaque.",
-            "img_prompt": "Interior of a russian submarine, red lights, pipes",
+            "img_prompt": "Interior of a russian submarine, red lights, pipes, cables",
             "choices": [
                 { "text": "Discuter avec le Commandant Dimitri.", "next": "c4_sub_dimitri" },
                 { "text": "Regarder les cartes avec Anja.", "next": "c4_sub_anja_map" },
