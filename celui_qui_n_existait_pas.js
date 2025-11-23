@@ -347,7 +347,7 @@ window.GAME_DATA = {
         "7_osint_start": {
             "chapter": "Méthodologie",
             "text": "Vous ne cherchez plus au hasard. Vous appliquez le cycle du renseignement. 1. Objectif. 2. Collecte. 3. Analyse. Carnet noir : « QUI EST MAXIME ? »",
-            "img_prompt": "Black notebook with 'WHO IS MAXIME?' written in bold",
+            "img_prompt": "a Black notebook with 'WHO IS MAXIME?' written in bold",
             "choices": [
                 { "text": "Chercher 'Maxime' sur Google (Trop vague).", "next": "7_google_fail" },
                 { "text": "Utiliser des 'Google Dorks' (Recherche avancée).", "next": "7_dorks" }

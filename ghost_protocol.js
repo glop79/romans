@@ -1172,7 +1172,7 @@ window.GAME_DATA = {
         "loop_limit_violence": {
             "chapter": "Paradoxe Temporel",
             "text": "Vous attendez le Sprinter avec un fusil. Vous tirez sur le chauffeur. La balle traverse le pare-brise... et disparaît. Le chauffeur ne saigne pas. Il tourne la tête vers vous. Il n'a pas de visage. Le scénario principal est protégé.",
-            "img_prompt": "Bullet stopping in mid-air, matrix style glitch",
+            "img_prompt": "a Bullet stopping in mid-air, matrix style glitch",
             "choices": [
                 { "text": "Se faire écraser.", "next": "6_loop_1_start" }
             ]
