@@ -73,7 +73,7 @@ window.GAME_DATA = {
         "p_006_jin_talk": {
             "chapter": "PROLOGUE",
             "text": "Jin tourne lentement la tête. Ses yeux sont cernés de fatigue. 'Demi-tour ? Il n'y a pas de retour, scribe. L'Empereur veut l'immortalité. Si nous rentrons les mains vides, nous serons exécutés. Si nous restons, nous gèlerons. Choisis ta mort.'",
-            "img_prompt": "General Jin talking to the scribe, intense expression, fatigue",
+            "img_prompt": "General Jin talking to the scribe, intense expression, tired eyes",
             "choices": [
                 { "text": "Retourner à votre poste.", "next": "p_010_alert" }
             ]
