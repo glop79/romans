@@ -18,9 +18,11 @@
             --accent-color: #c9a063; /* Or antique */
             --secondary-color: #1f2430;
             --danger-color: #b71c1c;
+            --success-color: #2e7d32;
         }
 
         body {
+            /* Arrière-plan personnalisé pour Le Plus Grand Des Secrets */
             background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://image.pollinations.ai/prompt/frozen%20dna%20double%20helix%20background%2C%20ancient%20chinese%20terracotta%20atmosphere%2C%20blue%20ice%20texture%2C%20medical%20thriller%2C%20dark%20cinematic?width=1920&height=10800&model=turbo&enhance=true&nologo=true&seed=9998');
             background-size: cover;
             background-position: center;
@@ -127,7 +129,6 @@
             border: 1px solid #333;
         }
 
-        /* Style de la checkbox personnalisée */
         .tts-checkbox-wrapper {
             display: flex;
             align-items: center;
@@ -138,13 +139,10 @@
             user-select: none;
         }
 
-        .tts-checkbox-wrapper input {
-            display: none; /* Cache la checkbox par défaut */
-        }
+        .tts-checkbox-wrapper input { display: none; }
 
         .checkmark {
-            width: 18px;
-            height: 18px;
+            width: 18px; height: 18px;
             background-color: transparent;
             border: 1px solid var(--accent-color);
             margin-right: 8px;
@@ -154,23 +152,13 @@
             transition: all 0.2s;
         }
 
-        .tts-checkbox-wrapper input:checked + .checkmark {
-            background-color: var(--accent-color);
-        }
+        .tts-checkbox-wrapper input:checked + .checkmark { background-color: var(--accent-color); }
 
         .tts-checkbox-wrapper input:checked + .checkmark::after {
-            content: '';
-            position: absolute;
-            left: 5px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid var(--bg-color);
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
+            content: ''; position: absolute; left: 5px; top: 2px; width: 5px; height: 10px;
+            border: solid var(--bg-color); border-width: 0 2px 2px 0; transform: rotate(45deg);
         }
 
-        /* Selecteur de voix */
         #voice-select {
             background: var(--secondary-color);
             color: #aaa;
@@ -186,7 +174,6 @@
         
         #voice-select:hover { border-color: var(--accent-color); color: var(--accent-color); }
 
-        /* Bouton Play */
         #tts-btn {
             background: transparent;
             border: 1px solid var(--accent-color);
@@ -209,11 +196,7 @@
             box-shadow: 0 0 15px rgba(201, 160, 99, 0.3);
         }
 
-        #tts-btn svg {
-            width: 14px;
-            height: 14px;
-            fill: currentColor;
-        }
+        #tts-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
         .speaking-anim {
             animation: pulse-gold 1.5s infinite;
@@ -263,6 +246,19 @@
         .restart-btn:hover {
             background: rgba(183, 28, 28, 0.1);
             border-color: #ff5252;
+        }
+
+        /* Bouton Reprendre (Nouveau) */
+        .resume-btn {
+            border-color: var(--success-color);
+            color: var(--success-color);
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .resume-btn:hover {
+            background: rgba(46, 125, 50, 0.1);
+            border-color: #4caf50;
         }
 
         /* --- Erreur --- */
@@ -336,12 +332,15 @@
     // --- Variables Globales ---
     let storyData = null;
     
-    // Variables pour le TTS (Synthèse Vocale)
+    // Variables pour le TTS
     const synth = window.speechSynthesis;
     let utteranceQueue = []; 
     let isSpeaking = false;
     let availableVoices = [];
     let selectedVoiceIndex = 0;
+
+    // Clé de sauvegarde LocalStorage (Unique pour ce jeu)
+    const SAVE_KEY = "save_lpgds_progress";
 
     const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
     const STYLE_PROMPT = "Cinematic movie shot, thriller atmosphere, highly detailed, 8k, dramatic lighting, ";
@@ -356,7 +355,11 @@
         if (window.GAME_DATA) {
             storyData = window.GAME_DATA;
             console.log("Histoire chargée avec succès.");
+            
+            // On lance toujours la page d'accueil ('start') au début
+            // Le choix de reprendre ou non se fera via les boutons générés dans renderNode
             renderNode("start");
+            
         } else {
             console.error("Erreur : window.GAME_DATA est indéfini.");
             document.getElementById("error-message").style.display = "block";
@@ -397,7 +400,6 @@
                 }
             };
 
-            // Insérer avant le bouton
             container.insertBefore(voiceSelect, document.getElementById("tts-btn"));
         }
     }
@@ -408,56 +410,44 @@
         const label = document.getElementById("tts-label");
         const icon = document.getElementById("tts-icon");
 
-        // Si on force le démarrage (mode auto) ou si on n'est pas en train de parler
         if (forceStart || !isSpeaking) {
             const textToRead = document.getElementById("story-text").innerText;
             if(!textToRead || textToRead.trim() === "") return;
 
-            // Si on force le démarrage alors qu'il parle déjà, on arrête d'abord proprement
             if(isSpeaking) stopTTS();
 
             isSpeaking = true;
-            
-            // Mise à jour UI
             btn.classList.add("speaking-anim");
             label.innerText = "Arrêter";
-            icon.innerHTML = '<path d="M6 6h12v12H6z"/>'; // Icone Stop
+            icon.innerHTML = '<path d="M6 6h12v12H6z"/>'; 
 
             speakTextFluently(textToRead);
         } else {
-            // Arrêt manuel
             stopTTS();
         }
     }
 
-    // --- Lecture fluide par phrases ---
+    // --- Lecture fluide ---
     function speakTextFluently(text) {
         synth.cancel();
         utteranceQueue = [];
-
         const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
 
         sentences.forEach((sentence) => {
             if (sentence.trim().length > 0) {
                 const utterance = new SpeechSynthesisUtterance(sentence.trim());
-                
                 if (availableVoices.length > 0) {
                     utterance.voice = availableVoices[selectedVoiceIndex];
                 } else {
                     utterance.lang = 'fr-FR';
                 }
-                
-                utterance.rate = 1.0; 
-                utterance.pitch = 1.0;
+                utterance.rate = 1.0; utterance.pitch = 1.0;
 
                 utterance.onend = () => {
                     if (!synth.speaking && isSpeaking) {
-                        setTimeout(() => {
-                            if (!synth.speaking) resetTTSButton();
-                        }, 200);
+                        setTimeout(() => { if (!synth.speaking) resetTTSButton(); }, 200);
                     }
                 };
-
                 utteranceQueue.push(utterance);
                 synth.speak(utterance);
             }
@@ -475,25 +465,44 @@
         const btn = document.getElementById("tts-btn");
         const label = document.getElementById("tts-label");
         const icon = document.getElementById("tts-icon");
-
         if(btn) {
             isSpeaking = false;
             btn.classList.remove("speaking-anim");
             label.innerText = "Écouter";
-            icon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // Icone Play
+            icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
         }
+    }
+
+    // --- SAUVEGARDE ---
+    function saveProgress(nodeId) {
+        if(nodeId && nodeId !== 'start') {
+            localStorage.setItem(SAVE_KEY, nodeId);
+        }
+    }
+
+    function loadProgress() {
+        return localStorage.getItem(SAVE_KEY);
+    }
+
+    function resetProgress() {
+        localStorage.removeItem(SAVE_KEY);
     }
 
     // --- Moteur de Rendu ---
     function renderNode(nodeId) {
         if (!storyData) return;
         
-        // Arrêter l'audio précédent
         stopTTS();
 
         const node = storyData.nodes[nodeId];
         if (!node) return alert("Chapitre manquant : " + nodeId);
 
+        // Sauvegarde automatique (sauf si on est au menu principal)
+        if (nodeId !== "start") {
+            saveProgress(nodeId);
+        }
+
+        // Mise à jour Textes
         document.getElementById('book-title').innerText = storyData.title;
         document.getElementById('book-author').innerText = storyData.author;
 
@@ -501,25 +510,17 @@
         textEl.style.opacity = 0;
         document.getElementById("chapter-display").innerText = node.chapter || "";
 
-        // Délai pour l'apparition du texte et le déclenchement de l'audio auto
         setTimeout(() => {
             textEl.innerHTML = node.text;
             textEl.style.opacity = 1;
 
-            // --- LOGIQUE LECTURE AUTO ---
             const autoCheckbox = document.getElementById("auto-tts-checkbox");
-            // On ne lance pas l'audio au tout début (start) pour ne pas surprendre l'utilisateur
             if (autoCheckbox && autoCheckbox.checked && nodeId !== "start") {
-                // Petit délai pour laisser le temps au cerveau de voir le changement d'image
-                setTimeout(() => {
-                    toggleTTS(true);
-                }, 500);
+                setTimeout(() => { toggleTTS(true); }, 500);
             }
-            // ----------------------------
-
         }, 300);
 
-        // Image
+        // Mise à jour Image
         const img = document.getElementById("scene-img");
         const loader = document.getElementById("loader");
         
@@ -543,11 +544,55 @@
         };
         downloadingImage.src = url;
 
-        // Choix
+        // Mise à jour Choix
         const choicesDiv = document.getElementById("choices-box");
         choicesDiv.innerHTML = "";
 
-        if (node.choices && node.choices.length > 0) {
+        // Gestion spéciale pour le nœud "start" (Menu Principal)
+        if (nodeId === "start") {
+            const savedNode = loadProgress();
+            
+            // Bouton "Commencer" (Classique)
+            const startBtn = document.createElement("button");
+            startBtn.className = "btn";
+            // Si une sauvegarde existe, on change le texte pour être clair
+            startBtn.innerText = savedNode ? "Nouvelle Partie (Effacer la sauvegarde)" : "Commencer l'aventure";
+            startBtn.onclick = () => {
+                if(savedNode) {
+                    if(confirm("Attention : Cela effacera votre progression actuelle. Êtes-vous sûr ?")) {
+                        resetProgress();
+                        // On suppose que le premier nœud de l'histoire s'appelle 'p_001_babylon_night' 
+                        // ou le premier choix du nœud start.
+                        // Pour être générique, on prend le premier choix défini dans le JSON
+                        renderNode(node.choices[0].next);
+                    }
+                } else {
+                    renderNode(node.choices[0].next);
+                }
+            };
+            choicesDiv.appendChild(startBtn);
+
+            // Bouton "Reprendre" (Si sauvegarde)
+            if (savedNode && storyData.nodes[savedNode]) {
+                const resumeBtn = document.createElement("button");
+                resumeBtn.className = "btn resume-btn";
+                resumeBtn.innerText = "Reprendre la partie en cours";
+                resumeBtn.onclick = () => renderNode(savedNode);
+                choicesDiv.appendChild(resumeBtn);
+            }
+
+            // Autres choix du menu (Règles, etc.) - on saute le premier qui est "Commencer"
+            for (let i = 1; i < node.choices.length; i++) {
+                const choice = node.choices[i];
+                const btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = choice.text;
+                btn.onclick = () => renderNode(choice.next);
+                choicesDiv.appendChild(btn);
+            }
+
+        } else if (node.choices && node.choices.length > 0) {
+            // Choix normaux en cours de jeu
             node.choices.forEach(choice => {
                 const btn = document.createElement("button");
                 btn.className = "btn";
@@ -556,10 +601,14 @@
                 choicesDiv.appendChild(btn);
             });
         } else {
+            // Fin de jeu
             const btn = document.createElement("button");
             btn.className = "btn restart-btn";
             btn.innerText = "Recommencer l'aventure";
-            btn.onclick = () => renderNode("start");
+            btn.onclick = () => {
+                resetProgress(); // On efface la sauvegarde à la fin
+                renderNode("start");
+            };
             choicesDiv.appendChild(btn);
         }
     }
