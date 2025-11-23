@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Gène De Qin - Aventure Interactive</title>
+    
+    <!-- Chargement des données de l'histoire -->
+    <script src="le_gene_de_qin.js"></script>
+    
+    <!-- Polices Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #0a0b10;
+            --text-color: #e0e0e0;
+            --accent-color: #c9a063; /* Or antique */
+            --secondary-color: #1f2430;
+            --danger-color: #b71c1c;
+        }
+
+        body {
+            background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%), url('https://image.pollinations.ai/prompt/frozen%20dna%20double%20helix%20background%2C%20ancient%20chinese%20terracotta%20atmosphere%2C%20blue%20ice%20texture%2C%20medical%20thriller%2C%20dark%20cinematic?width=1920&height=10800&model=turbo&enhance=true&nologo=true&seed=9998');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            font-family: 'Lato', sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--secondary-color);
+            border-left: 2px solid #333;
+            border-right: 2px solid #333;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--accent-color);
+            background: linear-gradient(to bottom, #000, var(--secondary-color));
+        }
+
+        #book-title {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        #book-author {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* --- Zone Visuelle --- */
+        #visual-scene {
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--accent-color);
+        }
+
+        #scene-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-color);
+            font-family: 'Cinzel', serif;
+            display: none;
+        }
+
+        /* --- Contenu Narratif --- */
+        #narrative-box {
+            padding: 40px;
+            flex-grow: 1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        .chapter-title {
+            color: var(--accent-color);
+            font-family: 'Cinzel', serif;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        /* --- Contrôles Audio (TTS) --- */
+        .tts-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+            flex-wrap: wrap;
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+
+        /* Style de la checkbox personnalisée */
+        .tts-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .tts-checkbox-wrapper input {
+            display: none; /* Cache la checkbox par défaut */
+        }
+
+        .checkmark {
+            width: 18px;
+            height: 18px;
+            background-color: transparent;
+            border: 1px solid var(--accent-color);
+            margin-right: 8px;
+            position: relative;
+            display: inline-block;
+            border-radius: 3px;
+            transition: all 0.2s;
+        }
+
+        .tts-checkbox-wrapper input:checked + .checkmark {
+            background-color: var(--accent-color);
+        }
+
+        .tts-checkbox-wrapper input:checked + .checkmark::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid var(--bg-color);
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Selecteur de voix */
+        #voice-select {
+            background: var(--secondary-color);
+            color: #aaa;
+            border: 1px solid #555;
+            padding: 5px;
+            border-radius: 5px;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.8rem;
+            max-width: 150px;
+            cursor: pointer;
+            outline: none;
+        }
+        
+        #voice-select:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* Bouton Play */
+        #tts-btn {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        #tts-btn:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(201, 160, 99, 0.3);
+        }
+
+        #tts-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .speaking-anim {
+            animation: pulse-gold 1.5s infinite;
+            background: rgba(201, 160, 99, 0.1) !important;
+            border-color: #fff !important;
+            color: #fff !important;
+        }
+
+        @keyframes pulse-gold {
+            0% { box-shadow: 0 0 0 0 rgba(201, 160, 99, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(201, 160, 99, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(201, 160, 99, 0); }
+        }
+
+        /* --- Choix --- */
+        #choices-box {
+            padding: 0 40px 40px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid #555;
+            color: var(--text-color);
+            padding: 15px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+        }
+
+        .btn:hover {
+            border-color: var(--accent-color);
+            background: rgba(201, 160, 99, 0.1);
+            padding-left: 30px;
+        }
+
+        .restart-btn {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+            text-align: center;
+        }
+        
+        .restart-btn:hover {
+            background: rgba(183, 28, 28, 0.1);
+            border-color: #ff5252;
+        }
+
+        /* --- Erreur --- */
+        #error-message {
+            display: none;
+            color: #ff5252;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #ff5252;
+            margin: 20px;
+            background: rgba(183, 28, 28, 0.1);
+        }
+
+        @media (max-width: 600px) {
+            #visual-scene { height: 250px; }
+            #narrative-box { padding: 20px; }
+            #choices-box { padding: 0 20px 20px 20px; }
+            #book-title { font-size: 1.5rem; }
+            .tts-container { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <header>
+        <h1 id="book-title">Chargement...</h1>
+        <div id="book-author"></div>
+    </header>
+
+    <div id="visual-scene">
+        <div class="loader" id="loader">Génération de l'image...</div>
+        <img id="scene-img" src="" alt="Scene">
+    </div>
+
+    <div id="error-message">
+        <strong>Erreur critique !</strong><br>
+        Les données de l'histoire n'ont pas été trouvées.<br>
+        Vérifiez que le fichier <code>le_gene_de_qin.js</code> est bien dans le même dossier que ce fichier HTML.
+    </div>
+
+    <div id="narrative-box">
+        <!-- Zone Contrôles Audio -->
+        <div class="tts-container">
+            
+            <!-- Checkbox Lecture Auto -->
+            <label class="tts-checkbox-wrapper">
+                <input type="checkbox" id="auto-tts-checkbox">
+                <span class="checkmark"></span>
+                Lecture auto
+            </label>
+
+            <!-- Le sélecteur de voix sera injecté ici par JS -->
+            
+            <button id="tts-btn" onclick="toggleTTS()">
+                <svg id="tts-icon" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/> <!-- Icone Play -->
+                </svg>
+                <span id="tts-label">Écouter</span>
+            </button>
+        </div>
+
+        <h2 id="chapter-display" class="chapter-title"></h2>
+        <p id="story-text"></p>
+    </div>
+
+    <div id="choices-box"></div>
+</div>
+
+<script>
+    // --- Variables Globales ---
+    let storyData = null;
+    
+    // Variables pour le TTS (Synthèse Vocale)
+    const synth = window.speechSynthesis;
+    let utteranceQueue = []; 
+    let isSpeaking = false;
+    let availableVoices = [];
+    let selectedVoiceIndex = 0;
+
+    const POLLINATIONS_URL = "https://image.pollinations.ai/prompt/";
+    const STYLE_PROMPT = "Cinematic movie shot, thriller atmosphere, highly detailed, 8k, dramatic lighting, ";
+
+    // --- Initialisation ---
+    function initGame() {
+        loadVoices();
+        if (synth.onvoiceschanged !== undefined) {
+            synth.onvoiceschanged = loadVoices;
+        }
+
+        if (window.GAME_DATA) {
+            storyData = window.GAME_DATA;
+            console.log("Histoire chargée avec succès.");
+            renderNode("start");
+        } else {
+            console.error("Erreur : window.GAME_DATA est indéfini.");
+            document.getElementById("error-message").style.display = "block";
+            document.getElementById("book-title").innerText = "Erreur système";
+            document.getElementById("loader").style.display = "none";
+        }
+    }
+
+    // --- Gestion des Voix ---
+    function loadVoices() {
+        availableVoices = synth.getVoices().filter(voice => voice.lang.startsWith('fr'));
+        const container = document.querySelector(".tts-container");
+        let existingSelect = document.getElementById("voice-select");
+        
+        if (existingSelect) return;
+
+        if (availableVoices.length > 0 && container) {
+            const voiceSelect = document.createElement("select");
+            voiceSelect.id = "voice-select";
+            
+            availableVoices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.textContent = voice.name.replace('Microsoft', '').replace('Google', '').trim(); 
+                option.value = index;
+                
+                if (voice.name.includes("Google") || voice.name.includes("Natural")) {
+                    option.selected = true;
+                    selectedVoiceIndex = index;
+                }
+                voiceSelect.appendChild(option);
+            });
+
+            voiceSelect.onchange = (e) => {
+                selectedVoiceIndex = e.target.value;
+                if (isSpeaking) {
+                    stopTTS();
+                    toggleTTS();
+                }
+            };
+
+            // Insérer avant le bouton
+            container.insertBefore(voiceSelect, document.getElementById("tts-btn"));
+        }
+    }
+
+    // --- Gestion Lecture (Play/Stop) ---
+    function toggleTTS(forceStart = false) {
+        const btn = document.getElementById("tts-btn");
+        const label = document.getElementById("tts-label");
+        const icon = document.getElementById("tts-icon");
+
+        // Si on force le démarrage (mode auto) ou si on n'est pas en train de parler
+        if (forceStart || !isSpeaking) {
+            const textToRead = document.getElementById("story-text").innerText;
+            if(!textToRead || textToRead.trim() === "") return;
+
+            // Si on force le démarrage alors qu'il parle déjà, on arrête d'abord proprement
+            if(isSpeaking) stopTTS();
+
+            isSpeaking = true;
+            
+            // Mise à jour UI
+            btn.classList.add("speaking-anim");
+            label.innerText = "Arrêter";
+            icon.innerHTML = '<path d="M6 6h12v12H6z"/>'; // Icone Stop
+
+            speakTextFluently(textToRead);
+        } else {
+            // Arrêt manuel
+            stopTTS();
+        }
+    }
+
+    // --- Lecture fluide par phrases ---
+    function speakTextFluently(text) {
+        synth.cancel();
+        utteranceQueue = [];
+
+        const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
+
+        sentences.forEach((sentence) => {
+            if (sentence.trim().length > 0) {
+                const utterance = new SpeechSynthesisUtterance(sentence.trim());
+                
+                if (availableVoices.length > 0) {
+                    utterance.voice = availableVoices[selectedVoiceIndex];
+                } else {
+                    utterance.lang = 'fr-FR';
+                }
+                
+                utterance.rate = 1.0; 
+                utterance.pitch = 1.0;
+
+                utterance.onend = () => {
+                    if (!synth.speaking && isSpeaking) {
+                        setTimeout(() => {
+                            if (!synth.speaking) resetTTSButton();
+                        }, 200);
+                    }
+                };
+
+                utteranceQueue.push(utterance);
+                synth.speak(utterance);
+            }
+        });
+    }
+
+    function stopTTS() {
+        synth.cancel();
+        isSpeaking = false;
+        utteranceQueue = [];
+        resetTTSButton();
+    }
+
+    function resetTTSButton() {
+        const btn = document.getElementById("tts-btn");
+        const label = document.getElementById("tts-label");
+        const icon = document.getElementById("tts-icon");
+
+        if(btn) {
+            isSpeaking = false;
+            btn.classList.remove("speaking-anim");
+            label.innerText = "Écouter";
+            icon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // Icone Play
+        }
+    }
+
+    // --- Moteur de Rendu ---
+    function renderNode(nodeId) {
+        if (!storyData) return;
+        
+        // Arrêter l'audio précédent
+        stopTTS();
+
+        const node = storyData.nodes[nodeId];
+        if (!node) return alert("Chapitre manquant : " + nodeId);
+
+        document.getElementById('book-title').innerText = storyData.title;
+        document.getElementById('book-author').innerText = storyData.author;
+
+        const textEl = document.getElementById("story-text");
+        textEl.style.opacity = 0;
+        document.getElementById("chapter-display").innerText = node.chapter || "";
+
+        // Délai pour l'apparition du texte et le déclenchement de l'audio auto
+        setTimeout(() => {
+            textEl.innerHTML = node.text;
+            textEl.style.opacity = 1;
+
+            // --- LOGIQUE LECTURE AUTO ---
+            const autoCheckbox = document.getElementById("auto-tts-checkbox");
+            // On ne lance pas l'audio au tout début (start) pour ne pas surprendre l'utilisateur
+            if (autoCheckbox && autoCheckbox.checked && nodeId !== "start") {
+                // Petit délai pour laisser le temps au cerveau de voir le changement d'image
+                setTimeout(() => {
+                    toggleTTS(true);
+                }, 500);
+            }
+            // ----------------------------
+
+        }, 300);
+
+        // Image
+        const img = document.getElementById("scene-img");
+        const loader = document.getElementById("loader");
+        
+        img.style.opacity = 0;
+        loader.style.display = "block";
+        loader.innerText = "Déchiffrement en cours...";
+        
+        // const seed = Math.floor(Math.random() * 9999);
+        const seed = 9998; 
+        const safePrompt = encodeURIComponent(STYLE_PROMPT + (node.img_prompt || "Mystery book cover"));
+        const url = `${POLLINATIONS_URL}${safePrompt}?width=800&height=400&nologo=true&seed=${seed}`;
+
+        const downloadingImage = new Image();
+        downloadingImage.onload = function(){
+            img.src = this.src;
+            loader.style.display = "none";
+            img.style.opacity = 1;
+        };
+        downloadingImage.onerror = function() {
+            loader.innerText = "Erreur image (API)";
+        };
+        downloadingImage.src = url;
+
+        // Choix
+        const choicesDiv = document.getElementById("choices-box");
+        choicesDiv.innerHTML = "";
+
+        if (node.choices && node.choices.length > 0) {
+            node.choices.forEach(choice => {
+                const btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = choice.text;
+                btn.onclick = () => renderNode(choice.next);
+                choicesDiv.appendChild(btn);
+            });
+        } else {
+            const btn = document.createElement("button");
+            btn.className = "btn restart-btn";
+            btn.innerText = "Recommencer l'aventure";
+            btn.onclick = () => renderNode("start");
+            choicesDiv.appendChild(btn);
+        }
+    }
+
+    window.onload = initGame;
+
+</script>
+</body>
+</html>
