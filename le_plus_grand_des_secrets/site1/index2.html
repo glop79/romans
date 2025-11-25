@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumière • Éther Edition</title>
+
+    <!-- FONTS & ICONS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- LIBS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Merriweather', 'serif'],
+                        lora: ['Lora', 'serif'],
+                        display: ['Cinzel', 'serif'],
+                    },
+                    colors: {
+                        day: { bg: '#F9F7F1', text: '#2d3436', ui: 'rgba(255,255,255,0.85)' },
+                        night: { bg: '#1a1a1a', text: '#d1d5db', ui: 'rgba(30,30,30,0.9)' },
+                        sepia: { bg: '#f4ecd8', text: '#5d4037', ui: 'rgba(244, 236, 216, 0.9)' },
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root { --bg-color: #F9F7F1; --text-color: #2d3436; --ui-bg: rgba(255, 255, 255, 0.85); --highlight-yellow: #ffeb3b; --highlight-green: #a5d6a7; --highlight-pink: #f48fb1; }
+        
+        body { background-color: var(--bg-color); color: var(--text-color); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; user-select: none; }
+        
+        /* Hyper-Glassmorphism */
+        .glass {
+            background: var(--ui-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.125);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+
+        .book-cover-gradient {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+
+        /* 3D Book Effect */
+        .book-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .book-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2); }
+
+        .ui-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .ui-hidden-top { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        .ui-hidden-bottom { opacity: 0; transform: translateY(20px); pointer-events: none; }
+        
+        .transition-ui { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .click-zone { z-index: 40; position: absolute; top: 0; bottom: 0; width: 15%; cursor: pointer; }
+        
+        /* Loader Sophistiqué */
+        .loader-dots div { animation-timing-function: cubic-bezier(0, 1, 1, 0); }
+        .loader-dots div:nth-child(1) { left: 8px; animation: loader-dots1 0.6s infinite; }
+        .loader-dots div:nth-child(2) { left: 8px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(3) { left: 32px; animation: loader-dots2 0.6s infinite; }
+        .loader-dots div:nth-child(4) { left: 56px; animation: loader-dots3 0.6s infinite; }
+        @keyframes loader-dots1 { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        @keyframes loader-dots3 { 0% { transform: scale(1); } 100% { transform: scale(0); } }
+        @keyframes loader-dots2 { 0% { transform: translate(0, 0); } 100% { transform: translate(24px, 0); } }
+
+        /* Highlight Menu */
+        #highlight-menu { 
+            animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* Pulse TTS */
+        .speaking-pulse { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); animation: pulse-red 2s infinite; }
+        @keyframes pulse-red { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col font-sans antialiased overflow-hidden">
+
+    <!-- 1. VUE BIBLIOTHÈQUE (DESIGN AMÉLIORÉ) -->
+    <div id="library-view" class="flex-1 flex flex-col p-8 relative z-50 overflow-y-auto bg-gray-50/50">
+        
+        <div class="max-w-6xl mx-auto w-full pt-10">
+            <header class="mb-12 text-center animate-fade-in">
+                <h1 class="text-6xl font-display font-semibold text-gray-800 mb-4 tracking-tight">Lumière</h1>
+                <p class="text-gray-500 font-light text-lg">Votre bibliothèque personnelle éthérée.</p>
+            </header>
+
+            <!-- Zone Drag & Drop Stylisée -->
+            <div id="drop-zone" class="mx-auto max-w-2xl border-2 border-dashed border-gray-300 rounded-3xl p-10 text-center hover:border-gray-500 hover:bg-white hover:shadow-xl transition-all cursor-pointer group mb-16 bg-white/40 backdrop-blur-sm animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="w-20 h-20 bg-gradient-to-tr from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <i class="fa-solid fa-plus text-2xl text-gray-600"></i>
+                </div>
+                <h3 class="text-xl font-medium text-gray-700">Ajouter un livre</h3>
+                <p class="text-sm text-gray-400 mt-2">Supporte .epub et .pdf</p>
+                <input type="file" id="file-input" class="hidden" accept=".epub,.pdf">
+            </div>
+
+            <!-- Grille de livres (Générée) -->
+            <div class="text-left animate-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8 border-b pb-2">Lectures Récentes</h2>
+                <div id="recent-books" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 pb-20">
+                    <!-- Javascript injectera les couvertures ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. VUE LECTEUR -->
+    <div id="reader-view" class="fixed inset-0 z-0 hidden opacity-0 transition-opacity duration-700 bg-[var(--bg-color)]">
+        
+        <!-- Top Bar -->
+        <header id="top-bar" class="fixed top-0 left-0 right-0 h-16 glass z-50 flex items-center justify-between px-6 transition-ui ui-hidden-top">
+            <div class="flex items-center gap-3">
+                <button id="btn-library" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="btn-toc" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-list-ul"></i></button>
+            </div>
+            
+            <h1 id="book-title" class="font-lora italic text-sm opacity-70 truncate max-w-xs md:max-w-md text-[var(--text-color)]">Titre</h1>
+
+            <div class="flex items-center gap-3">
+                <button id="btn-tts" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-volume-high"></i></button>
+                <button id="btn-settings" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-font"></i></button>
+            </div>
+        </header>
+
+        <!-- Viewer Area -->
+        <div id="viewer" class="w-full h-full flex items-center justify-center relative pt-10 pb-10">
+            <div id="epub-area" class="w-full h-full max-w-3xl lg:max-w-4xl mx-auto shadow-sm transition-all duration-300"></div>
+            <div id="pdf-area" class="hidden w-full h-full overflow-auto flex justify-center py-10">
+                <canvas id="pdf-canvas" class="shadow-2xl"></canvas>
+            </div>
+            
+            <!-- Loader Moderne -->
+            <div id="loading-spinner" class="absolute inset-0 flex items-center justify-center bg-[var(--bg-color)] z-10 hidden">
+                <div class="loader-dots relative w-20 h-5"><div></div><div></div><div></div><div></div></div>
+            </div>
+        </div>
+
+        <!-- Zones tactiles -->
+        <div id="prev-zone" class="click-zone left-0" title="Précédent"></div>
+        <div id="next-zone" class="click-zone right-0" title="Suivant"></div>
+
+        <!-- Highlight Popover (Caché par défaut) -->
+        <div id="highlight-menu" class="fixed hidden z-[60] glass rounded-full px-4 py-2 shadow-xl flex gap-3 items-center" style="top:0; left:0;">
+            <button class="w-6 h-6 rounded-full bg-yellow-300 hover:scale-125 transition-transform shadow-sm" onclick="App.addHighlight('yellow')"></button>
+            <button class="w-6 h-6 rounded-full bg-green-300 hover:scale-125 transition-transform shadow-sm" onclick="App.addHighlight('green')"></button>
+            <button class="w-6 h-6 rounded-full bg-pink-300 hover:scale-125 transition-transform shadow-sm" onclick="App.addHighlight('pink')"></button>
+            <div class="w-px h-4 bg-gray-400 opacity-30"></div>
+            <button class="text-xs text-red-500 hover:text-red-700 font-medium" onclick="App.removeHighlight()">Suppr</button>
+        </div>
+
+        <!-- Bottom Bar -->
+        <footer id="bottom-bar" class="fixed bottom-0 left-0 right-0 h-14 glass z-50 flex flex-col justify-center px-8 transition-ui ui-hidden-bottom">
+            <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-50 mb-2 font-sans text-[var(--text-color)]">
+                <span id="reading-time">Calcul...</span>
+                <span id="progress-info">0%</span>
+            </div>
+            <div class="w-full h-1 bg-gray-500/10 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-[var(--text-color)] opacity-60 transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </footer>
+
+        <!-- Modals (Settings, TTS, TOC) -->
+        <!-- Settings -->
+        <div id="settings-modal" class="fixed top-20 right-6 w-72 glass rounded-2xl p-5 shadow-2xl hidden z-50 animate-fade-in backdrop-blur-xl">
+            <div class="space-y-6">
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2 block">Ambiance</span>
+                    <div class="flex gap-2">
+                        <button class="flex-1 h-10 rounded-xl border border-gray-300 bg-[#F9F7F1] text-[#333] shadow-sm" onclick="App.setTheme('day')">Jour</button>
+                        <button class="flex-1 h-10 rounded-xl border border-gray-400 bg-[#f4ecd8] text-[#5d4037] shadow-sm" onclick="App.setTheme('sepia')">Sépia</button>
+                        <button class="flex-1 h-10 rounded-xl border border-gray-700 bg-[#1a1a1a] text-[#d1d5db] shadow-sm" onclick="App.setTheme('night')">Nuit</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2 block">Typographie</span>
+                    <div class="flex flex-col gap-1">
+                        <button class="text-left px-3 py-2 rounded-lg hover:bg-black/5 font-serif text-sm" onclick="App.setFont('Merriweather')">Merriweather</button>
+                        <button class="text-left px-3 py-2 rounded-lg hover:bg-black/5 font-lora text-sm" onclick="App.setFont('Lora')">Lora (Élégant)</button>
+                        <button class="text-left px-3 py-2 rounded-lg hover:bg-black/5 font-sans text-sm" onclick="App.setFont('Inter')">Inter (Moderne)</button>
+                    </div>
+                </div>
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest opacity-40 mb-2 block">Taille</span>
+                    <input type="range" min="80" max="180" value="100" class="w-full accent-[var(--text-color)] h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer" oninput="App.setFontSize(this.value)">
+                </div>
+            </div>
+        </div>
+
+        <!-- TTS -->
+        <div id="tts-modal" class="fixed top-20 right-20 w-80 glass rounded-2xl p-6 shadow-2xl hidden z-50 animate-fade-in">
+            <div class="flex items-center justify-center gap-6 mb-6">
+                <button onclick="App.ttsPrev()" class="text-[var(--text-color)] opacity-60 hover:opacity-100"><i class="fa-solid fa-backward-step fa-lg"></i></button>
+                <button onclick="App.ttsToggle()" id="tts-play-btn" class="w-16 h-16 rounded-full bg-[var(--text-color)] text-[var(--bg-color)] flex items-center justify-center text-xl shadow-lg hover:scale-105 transition-transform"><i class="fa-solid fa-play ml-1"></i></button>
+                <button onclick="App.ttsNext()" class="text-[var(--text-color)] opacity-60 hover:opacity-100"><i class="fa-solid fa-forward-step fa-lg"></i></button>
+            </div>
+            <select id="tts-voice-select" class="w-full p-2 rounded-lg bg-black/5 border-none text-xs mb-4 outline-none truncate text-[var(--text-color)]"></select>
+            <p id="tts-status" class="text-[10px] text-center opacity-50 uppercase tracking-widest">Prêt à lire</p>
+        </div>
+
+        <!-- TOC Sidebar -->
+        <div id="toc-sidebar" class="fixed inset-y-0 left-0 w-80 glass border-r border-white/20 transform -translate-x-full transition-transform duration-300 z-[60] flex flex-col shadow-2xl backdrop-blur-2xl">
+            <div class="p-6 border-b border-black/5 flex justify-between items-center">
+                <h2 class="font-display font-semibold text-lg text-[var(--text-color)]">Sommaire</h2>
+                <button onclick="App.toggleTOC()" class="opacity-50 hover:opacity-100"><i class="fa-solid fa-times"></i></button>
+            </div>
+            <div id="toc-list" class="flex-1 overflow-y-auto p-4 space-y-1"></div>
+        </div>
+        
+        <div id="overlay-bg" class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 hidden transition-opacity" onclick="App.closeAllMenus()"></div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const App = {
+            state: {
+                currentBook: null, bookType: null, rendition: null, pdfDoc: null, pdfPage: 1,
+                theme: 'day', fontSize: 100, fontFamily: 'Merriweather', fileName: '',
+                isUIVisible: false, uiTimeout: null,
+                tts: { active: false, synth: window.speechSynthesis, voice: null, rate: 1 },
+                selectedRange: null, highlights: [] 
+            },
+
+            init() {
+                this.bindEvents();
+                this.loadPreferences();
+                this.applyTheme(this.state.theme);
+                this.renderLibrary();
+                this.initTTSVoices();
+            },
+
+            bindEvents() {
+                const els = {
+                    dropZone: document.getElementById('drop-zone'),
+                    fileInput: document.getElementById('file-input'),
+                    reader: document.getElementById('reader-view'),
+                };
+
+                // File Handling
+                els.dropZone.onclick = () => els.fileInput.click();
+                els.fileInput.onchange = (e) => this.handleFile(e.target.files[0]);
+                els.dropZone.ondragover = (e) => { e.preventDefault(); els.dropZone.classList.add('border-blue-400'); };
+                els.dropZone.ondragleave = (e) => { e.preventDefault(); els.dropZone.classList.remove('border-blue-400'); };
+                els.dropZone.ondrop = (e) => {
+                    e.preventDefault(); els.dropZone.classList.remove('border-blue-400');
+                    if (e.dataTransfer.files.length) this.handleFile(e.dataTransfer.files[0]);
+                };
+
+                // Menu Buttons
+                document.getElementById('btn-library').onclick = () => { this.stopTTS(); location.reload(); };
+                document.getElementById('btn-settings').onclick = (e) => { e.stopPropagation(); this.toggleMenu('settings-modal'); };
+                document.getElementById('btn-tts').onclick = (e) => { e.stopPropagation(); this.toggleMenu('tts-modal'); };
+                document.getElementById('btn-toc').onclick = (e) => { e.stopPropagation(); this.toggleTOC(); };
+                
+                // Nav
+                document.getElementById('prev-zone').onclick = () => this.prevPage();
+                document.getElementById('next-zone').onclick = () => this.nextPage();
+                document.addEventListener('keydown', (e) => {
+                    if (els.reader.classList.contains('hidden')) return;
+                    if (e.key === 'ArrowLeft') this.prevPage();
+                    if (e.key === 'ArrowRight') this.nextPage();
+                });
+
+                // Zen UI
+                document.addEventListener('mousemove', (e) => {
+                    if (els.reader.classList.contains('hidden')) return;
+                    if (e.clientY < 80 || e.clientY > window.innerHeight - 80) this.showUI();
+                });
+                els.reader.onclick = (e) => {
+                    if(!e.target.closest('button') && !e.target.closest('.glass') && !e.target.closest('#highlight-menu')) {
+                        this.state.isUIVisible ? this.hideUI() : this.showUI();
+                    }
+                    // Hide highlight menu if clicking elsewhere
+                    document.getElementById('highlight-menu').classList.add('hidden');
+                };
+            },
+
+            // --- UI ANIMATIONS ---
+            showUI() {
+                document.getElementById('top-bar').classList.remove('ui-hidden-top');
+                document.getElementById('bottom-bar').classList.remove('ui-hidden-bottom');
+                document.getElementById('top-bar').classList.add('ui-visible');
+                document.getElementById('bottom-bar').classList.add('ui-visible');
+                this.state.isUIVisible = true;
+                clearTimeout(this.state.uiTimeout);
+                this.state.uiTimeout = setTimeout(() => this.hideUI(), 3000);
+            },
+            hideUI() {
+                if (!document.getElementById('settings-modal').classList.contains('hidden') || 
+                    !document.getElementById('tts-modal').classList.contains('hidden') ||
+                    !document.getElementById('highlight-menu').classList.contains('hidden')) return;
+                
+                document.getElementById('top-bar').classList.remove('ui-visible');
+                document.getElementById('bottom-bar').classList.remove('ui-visible');
+                document.getElementById('top-bar').classList.add('ui-hidden-top');
+                document.getElementById('bottom-bar').classList.add('ui-hidden-bottom');
+                this.state.isUIVisible = false;
+            },
+
+            // --- FILE & LIBRARY ---
+            handleFile(file) {
+                if (!file) return;
+                this.state.fileName = file.name;
+                this.addToRecents(file.name);
+                
+                document.getElementById('library-view').classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    document.getElementById('library-view').classList.add('hidden');
+                    document.getElementById('reader-view').classList.remove('hidden');
+                    setTimeout(() => document.getElementById('reader-view').classList.remove('opacity-0'), 100);
+                }, 500);
+
+                document.getElementById('loading-spinner').classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    file.name.endsWith('.pdf') ? this.initPDF(e.target.result) : this.initEPUB(e.target.result);
+                };
+                reader.readAsArrayBuffer(file);
+            },
+
+            renderLibrary() {
+                const recents = JSON.parse(localStorage.getItem('lumiere-recents') || '[]');
+                const container = document.getElementById('recent-books');
+                container.innerHTML = '';
+                
+                if (recents.length === 0) {
+                    container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic mt-10">Votre bibliothèque est vide. Glissez un livre pour commencer.</p>`;
+                    return;
+                }
+
+                // Génération de couvertures artistiques
+                const gradients = [
+                    'bg-gradient-to-br from-rose-100 to-teal-100',
+                    'bg-gradient-to-tr from-blue-200 to-indigo-100',
+                    'bg-gradient-to-bl from-amber-200 to-orange-100',
+                    'bg-gradient-to-br from-emerald-100 to-cyan-100',
+                    'bg-gradient-to-t from-slate-300 to-slate-100'
+                ];
+
+                recents.forEach((name, index) => {
+                    const cleanName = name.replace('.epub', '').replace('.pdf', '');
+                    const grad = gradients[index % gradients.length];
+                    const initials = cleanName.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase();
+
+                    const card = document.createElement('div');
+                    card.className = "book-card group cursor-pointer";
+                    card.onclick = () => alert("Veuillez réimporter " + cleanName + " (Sécurité navigateur).");
+                    
+                    card.innerHTML = `
+                        <div class="aspect-[2/3] ${grad} rounded-r-2xl rounded-l-md shadow-md mb-4 relative overflow-hidden flex flex-col items-center justify-center p-4 border-l-4 border-black/5">
+                            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            <!-- Title Typography -->
+                            <h3 class="font-display font-bold text-gray-800 text-center text-lg leading-tight line-clamp-3 z-10 break-words w-full">${cleanName}</h3>
+                            <div class="mt-4 text-xs font-serif italic opacity-50">Lumière Edition</div>
+                            <!-- Spine effect -->
+                            <div class="absolute left-0 top-0 bottom-0 w-3 bg-black/10"></div>
+                        </div>
+                        <p class="text-xs font-medium text-gray-500 text-center truncate px-2 group-hover:text-black transition-colors">${cleanName}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            },
+
+            // --- EPUB ENGINE (Avec Highlight & Fixes) ---
+            initEPUB(data) {
+                this.state.bookType = 'epub';
+                document.getElementById('epub-area').classList.remove('hidden');
+                
+                this.state.currentBook = ePub(data);
+                this.state.rendition = this.state.currentBook.renderTo("epub-area", {
+                    width: "100%", height: "100%", flow: "paginated"
+                });
+
+                this.state.currentBook.ready.then(() => {
+                    let title = this.state.currentBook.package.metadata.title || this.state.fileName.replace('.epub', '');
+                    document.getElementById('book-title').textContent = title;
+                    this.state.currentBook.loaded.navigation.then(nav => this.generateTOC(nav.toc));
+
+                    // Load saved position
+                    const savedCfi = localStorage.getItem('lumiere-pos-' + this.state.fileName);
+                    this.state.rendition.display(savedCfi || 0);
+
+                    // Load saved highlights
+                    this.loadHighlights();
+                    
+                    document.getElementById('loading-spinner').classList.add('hidden');
+                    this.applySettingsToEpub();
+                });
+
+                // HOOK: Selection pour surlignage
+                this.state.rendition.on('selected', (cfiRange, contents) => {
+                    this.state.selectedRange = cfiRange;
+                    // Positionner le menu de surlignage
+                    const range = this.state.rendition.getRange(cfiRange);
+                    const rect = range.getBoundingClientRect();
+                    
+                    // Note: les coordonnées sont relatives à l'iframe, on doit ajuster
+                    // C'est complexe avec iframe. Pour simplifier, on affiche le menu au centre haut ou via la souris
+                    const menu = document.getElementById('highlight-menu');
+                    menu.classList.remove('hidden');
+                    
+                    // Simple centering fallback car coordonnées iframe difficiles
+                    const viewerRect = document.getElementById('epub-area').getBoundingClientRect();
+                    menu.style.top = (viewerRect.top + 50) + 'px'; 
+                    menu.style.left = (viewerRect.left + viewerRect.width/2 - 70) + 'px';
+                    
+                    // Nettoyer la selection système pour éviter conflit
+                    contents.window.getSelection().removeAllRanges();
+                });
+
+                this.state.rendition.on("relocated", (loc) => {
+                    this.updateProgress(loc);
+                    localStorage.setItem('lumiere-pos-' + this.state.fileName, loc.start.cfi);
+                    // Hide Highlight menu on turn
+                    document.getElementById('highlight-menu').classList.add('hidden');
+                    if(this.state.tts.active) setTimeout(() => this.readCurrentPage(), 600);
+                });
+
+                this.state.rendition.on("click", () => this.state.isUIVisible ? this.hideUI() : this.showUI());
+            },
+
+            // --- HIGHLIGHT SYSTEM ---
+            addHighlight(color) {
+                if(!this.state.selectedRange) return;
+                
+                // 1. Visuel dans epub.js
+                this.state.rendition.annotations.add('highlight', this.state.selectedRange, {}, null, `highlight-${color}`);
+                
+                // 2. Sauvegarde
+                const hl = { cfi: this.state.selectedRange, color: color };
+                this.state.highlights.push(hl);
+                this.saveHighlights();
+                
+                // 3. CSS Injection pour la couleur (si pas déjà fait)
+                this.injectHighlightCSS(color);
+                
+                // Fermer menu
+                document.getElementById('highlight-menu').classList.add('hidden');
+                this.state.selectedRange = null;
+            },
+
+            removeHighlight() {
+                 if(this.state.selectedRange) {
+                    this.state.rendition.annotations.remove(this.state.selectedRange, 'highlight');
+                    this.state.highlights = this.state.highlights.filter(h => h.cfi !== this.state.selectedRange);
+                    this.saveHighlights();
+                 }
+                 document.getElementById('highlight-menu').classList.add('hidden');
+            },
+
+            injectHighlightCSS(color) {
+                // Correspondance Tailwind colors
+                const map = { 'yellow': '#fde047', 'green': '#86efac', 'pink': '#f9a8d4' };
+                this.state.rendition.themes.register("highlights-" + color, {
+                    [`.highlight-${color}`]: { "fill": map[color], "fill-opacity": "0.3", "mix-blend-mode": "multiply" }
+                });
+                this.state.rendition.themes.select("highlights-" + color); // Ne fonctionne pas cumulatif simplement
+                
+                // Méthode brute CSS
+                const css = `
+                    .epubjs-hl-highlight-${color} { fill: ${map[color]}; fill-opacity: 0.3; }
+                    ::selection { background: ${map[color]}; }
+                `;
+                // Inject via rendition hooks ? Non, simple style annotation suffit généralement.
+                // Epub.js gère les annotations via des SVG overlays ou spans.
+            },
+            
+            saveHighlights() {
+                localStorage.setItem('lumiere-hl-' + this.state.fileName, JSON.stringify(this.state.highlights));
+            },
+            
+            loadHighlights() {
+                const saved = JSON.parse(localStorage.getItem('lumiere-hl-' + this.state.fileName) || '[]');
+                this.state.highlights = saved;
+                saved.forEach(hl => {
+                    this.state.rendition.annotations.add('highlight', hl.cfi, {}, null, `highlight-${hl.color}`);
+                });
+            },
+
+            applySettingsToEpub() {
+                if (!this.state.rendition) return;
+                
+                let bg, text;
+                if(this.state.theme === 'day') { bg = '#F9F7F1'; text = '#2d3436'; }
+                else if(this.state.theme === 'night') { bg = '#1a1a1a'; text = '#d1d5db'; }
+                else { bg = '#f4ecd8'; text = '#5d4037'; }
+
+                this.state.rendition.themes.fontSize(this.state.fontSize + "%");
+                this.state.rendition.themes.font(this.state.fontFamily);
+                
+                // Inject CSS styles for highlights classes
+                const hlCss = `
+                    .epubjs-hl-highlight-yellow { fill: yellow; fill-opacity: 0.3; }
+                    .epubjs-hl-highlight-green { fill: lightgreen; fill-opacity: 0.3; }
+                    .epubjs-hl-highlight-pink { fill: pink; fill-opacity: 0.3; }
+                `;
+
+                this.state.rendition.themes.register("custom", {
+                    "body": { "background-color": `${bg} !important`, "color": `${text} !important`, "padding": "0 20px !important" },
+                    "*": { "background-color": "transparent !important", "color": `${text} !important` },
+                    "a": { "color": `${text} !important`, "text-decoration": "none", "border-bottom": "1px dotted" },
+                    ".epubjs-hl-highlight-yellow": {"fill": "#fde047", "fill-opacity": "0.3"},
+                    ".epubjs-hl-highlight-green": {"fill": "#86efac", "fill-opacity": "0.3"},
+                    ".epubjs-hl-highlight-pink": {"fill": "#f9a8d4", "fill-opacity": "0.3"}
+                });
+                this.state.rendition.themes.select("custom");
+            },
+
+            // --- TTS & TOOLS ---
+            initTTSVoices() {
+                const load = () => {
+                    const voices = this.state.tts.synth.getVoices();
+                    const select = document.getElementById('tts-voice-select');
+                    select.innerHTML = '';
+                    voices.sort((a,b) => a.lang.includes('fr') ? -1 : 1);
+                    voices.forEach(v => {
+                        const opt = document.createElement('option');
+                        opt.value = v.name; opt.text = `${v.name} (${v.lang})`;
+                        if(v.lang.includes('fr') && !this.state.tts.voice) this.state.tts.voice = v;
+                        select.appendChild(opt);
+                    });
+                    select.onchange = (e) => {
+                        this.state.tts.voice = voices.find(v => v.name === e.target.value);
+                        if(this.state.tts.active) this.readCurrentPage();
+                    };
+                };
+                window.speechSynthesis.onvoiceschanged = load;
+                setTimeout(load, 500);
+            },
+            ttsToggle() { this.state.tts.active ? this.stopTTS() : this.startTTS(); },
+            startTTS() {
+                this.state.tts.active = true;
+                document.getElementById('tts-play-btn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                document.getElementById('tts-play-btn').classList.add('speaking-pulse');
+                this.readCurrentPage();
+            },
+            stopTTS() {
+                this.state.tts.active = false;
+                this.state.tts.synth.cancel();
+                document.getElementById('tts-play-btn').innerHTML = '<i class="fa-solid fa-play ml-1"></i>';
+                document.getElementById('tts-play-btn').classList.remove('speaking-pulse');
+            },
+            ttsNext() { this.stopTTS(); this.nextPage(); setTimeout(() => this.startTTS(), 600); },
+            ttsPrev() { this.stopTTS(); this.prevPage(); setTimeout(() => this.startTTS(), 600); },
+            
+            readCurrentPage() {
+                if (!this.state.tts.active) return;
+                this.state.tts.synth.cancel();
+                
+                // Récupération texte
+                let text = "";
+                try {
+                   const loc = this.state.rendition.currentLocation();
+                   if(loc && loc.start && loc.end) text = this.state.rendition.getRange(loc.start.cfi, loc.end.cfi).toString();
+                } catch(e) {}
+                
+                if (!text || text.length < 5) { // Fallback
+                   try { text = this.state.rendition.getContents()[0].document.body.innerText; } catch(e){}
+                }
+
+                if(text) {
+                    const utter = new SpeechSynthesisUtterance(text);
+                    utter.voice = this.state.tts.voice; utter.rate = 1;
+                    utter.onend = () => { if(this.state.tts.active) this.nextPage(); };
+                    this.state.tts.synth.speak(utter);
+                    document.getElementById('tts-status').innerText = "Lecture en cours...";
+                } else {
+                    document.getElementById('tts-status').innerText = "Pas de texte détecté";
+                }
+            },
+
+            // --- PDF BASIC ---
+            async initPDF(data) {
+                this.state.bookType = 'pdf';
+                document.getElementById('epub-area').classList.add('hidden');
+                document.getElementById('pdf-area').classList.remove('hidden');
+                
+                const loadingTask = pdfjsLib.getDocument(data);
+                this.state.pdfDoc = await loadingTask.promise;
+                document.getElementById('book-title').textContent = this.state.fileName;
+                document.getElementById('loading-spinner').classList.add('hidden');
+                this.renderPDFPage(1);
+            },
+            async renderPDFPage(num) {
+                if(!this.state.pdfDoc) return;
+                this.state.pdfPage = num;
+                const page = await this.state.pdfDoc.getPage(num);
+                const canvas = document.getElementById('pdf-canvas');
+                const viewport = page.getViewport({scale: 1.5}); 
+                canvas.height = viewport.height; canvas.width = viewport.width;
+                await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
+                
+                // Filter theme
+                canvas.style.filter = this.state.theme === 'night' ? "invert(1) hue-rotate(180deg)" : this.state.theme === 'sepia' ? "sepia(0.3)" : "none";
+                
+                document.getElementById('reading-time').textContent = `Page ${num} / ${this.state.pdfDoc.numPages}`;
+                document.getElementById('progress-bar').style.width = (num/this.state.pdfDoc.numPages*100) + "%";
+            },
+
+            // --- HELPERS ---
+            prevPage() { this.state.bookType === 'epub' ? this.state.rendition.prev() : this.renderPDFPage(Math.max(1, this.state.pdfPage - 1)); },
+            nextPage() { this.state.bookType === 'epub' ? this.state.rendition.next() : this.renderPDFPage(Math.min(this.state.pdfDoc.numPages, this.state.pdfPage + 1)); },
+            
+            setTheme(t) { 
+                this.state.theme = t; 
+                this.applyTheme(t); 
+                if(this.state.bookType === 'epub') this.applySettingsToEpub(); 
+                if(this.state.bookType === 'pdf') this.renderPDFPage(this.state.pdfPage);
+                this.savePreferences();
+            },
+            applyTheme(tName) {
+                const t = {
+                    day: { bg: '#F9F7F1', text: '#2d3436', ui: 'rgba(255,255,255,0.85)' },
+                    night: { bg: '#1a1a1a', text: '#d1d5db', ui: 'rgba(30,30,30,0.9)' },
+                    sepia: { bg: '#f4ecd8', text: '#5d4037', ui: 'rgba(244, 236, 216, 0.9)' }
+                }[tName];
+                document.documentElement.style.setProperty('--bg-color', t.bg);
+                document.documentElement.style.setProperty('--text-color', t.text);
+                document.documentElement.style.setProperty('--ui-bg', t.ui);
+            },
+            setFont(f) { this.state.fontFamily = f; this.applySettingsToEpub(); },
+            setFontSize(s) { this.state.fontSize = s; this.applySettingsToEpub(); },
+            
+            updateProgress(loc) {
+                const pct = Math.floor(loc.start.percentage * 100);
+                document.getElementById('progress-bar').style.width = pct + "%";
+                document.getElementById('progress-info').textContent = pct + "%";
+                
+                // Smart Time Estimation (Word Count approx)
+                try {
+                    // C'est une estimation très brute pour l'exemple
+                    const chars = loc.end.location - loc.start.location; // Pas fiable dans epubjs
+                    // On utilise une valeur fictive "min left"
+                    const totalPages = this.state.currentBook.locations.total || 500;
+                    const left = totalPages - loc.start.displayed.page;
+                    const mins = Math.ceil(left * 1.5); // 1.5 min par "page"
+                    document.getElementById('reading-time').textContent = `~${mins} min restantes`;
+                } catch(e) { document.getElementById('reading-time').textContent = "Calcul..."; }
+            },
+            
+            toggleMenu(id) { 
+                const el = document.getElementById(id);
+                const hidden = el.classList.contains('hidden');
+                this.closeAllMenus();
+                if(hidden) { el.classList.remove('hidden'); document.getElementById('overlay-bg').classList.remove('hidden'); }
+            },
+            toggleTOC() {
+                const el = document.getElementById('toc-sidebar');
+                const hidden = el.classList.contains('-translate-x-full');
+                this.closeAllMenus();
+                if(hidden) { el.classList.remove('-translate-x-full'); document.getElementById('overlay-bg').classList.remove('hidden'); }
+            },
+            closeAllMenus() {
+                ['settings-modal', 'tts-modal', 'overlay-bg', 'highlight-menu'].forEach(id => document.getElementById(id).classList.add('hidden'));
+                document.getElementById('toc-sidebar').classList.add('-translate-x-full');
+            },
+            generateTOC(toc) {
+                const list = document.getElementById('toc-list'); list.innerHTML = '';
+                const add = (i, l=0) => {
+                    const d = document.createElement('div');
+                    d.className = `py-2 px-3 hover:bg-black/5 rounded cursor-pointer truncate text-sm text-[var(--text-color)] opacity-80 ${l?'pl-6 text-xs':''}`;
+                    d.textContent = i.label;
+                    d.onclick = () => { this.state.rendition.display(i.href); this.closeAllMenus(); };
+                    list.appendChild(d);
+                    if(i.subitems) i.subitems.forEach(sub => add(sub, 1));
+                };
+                toc.forEach(i => add(i));
+            },
+            savePreferences() { localStorage.setItem('lumiere-prefs', JSON.stringify({theme: this.state.theme, font: this.state.fontFamily, size: this.state.fontSize})); },
+            loadPreferences() { const p = JSON.parse(localStorage.getItem('lumiere-prefs')); if(p) { this.state.theme=p.theme; this.state.fontFamily=p.font; this.state.fontSize=p.size;} },
+            addToRecents(n) { let r = JSON.parse(localStorage.getItem('lumiere-recents') || '[]'); if(!r.includes(n)) { r.unshift(n); if(r.length>10) r.pop(); localStorage.setItem('lumiere-recents', JSON.stringify(r)); } }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => App.init());
+    </script>
+</body>
+</html>

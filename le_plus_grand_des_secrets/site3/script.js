@@ -327,7 +327,7 @@ function loadMetadataInternal() {
         if(author) author.textContent = meta.creator;
         book.coverUrl().then(url => {
             const img = document.getElementById('cover-img');
-            if(img) img.src = url || "https://placehold.co/300x450/222/fff?text=No+Cover";
+            if(img) img.src = url || "https://m.media-amazon.com/images/I/81sPmkNKz8L._SY466_.jpg";
         });
     });
 }
@@ -343,7 +343,7 @@ function fillMetadata() {
     if(link) link.href = config.website;
     book.coverUrl().then(url => {
         const img = document.getElementById('cover-img');
-        if(img) img.src = url || "https://placehold.co/300x450/222/fff?text=No+Cover";
+        if(img) img.src = url || "https://m.media-amazon.com/images/I/81sPmkNKz8L._SY466_.jpg";
     });
 }
 
