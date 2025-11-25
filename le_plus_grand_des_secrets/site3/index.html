@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecteur Web Pro</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.5/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@300;400;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; overflow: hidden; user-select: none; }
+
+        /* THEMES */
+        .app-light { --bg: #f3f4f6; --text: #1f2937; --glass: rgba(255, 255, 255, 0.95); --border: rgba(0,0,0,0.1); }
+        .app-dark { --bg: #0f172a; --text: #e2e8f0; --glass: rgba(15, 23, 42, 0.95); --border: rgba(255,255,255,0.1); }
+
+        body { background-color: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; }
+
+        /* UI */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        #viewer { height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; }
+        
+        /* Loader */
+        .loader { border-top-color: #6366f1; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Style du Selecteur */
+        select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+    </style>
+</head>
+<body class="app-light">
+
+    <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg)] transition-opacity duration-500">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
+    </div>
+
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 glass-panel px-4 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-3 md:gap-4 z-40 transition-all hover:scale-105 opacity-0 shadow-2xl" id="toolbar">
+        <button onclick="toggleSidebar()" title="Menu & Voix"><i class="ph ph-list text-xl"></i></button>
+        <div class="h-4 w-px bg-current opacity-20"></div>
+        <button onclick="changeFontSize(-10)" title="A-" class="hover:text-indigo-500 font-serif text-sm font-bold">A-</button>
+        <button onclick="changeFontSize(10)" title="A+" class="hover:text-indigo-500 font-serif text-lg font-bold">A+</button>
+        <div class="h-4 w-px bg-current opacity-20"></div>
+        <button id="spread-btn" onclick="toggleSpread()" title="1 ou 2 pages">
+            <i class="ph ph-file text-xl"></i>
+        </button>
+        <div class="h-4 w-px bg-current opacity-20"></div>
+        <button onclick="applyTheme('light')" title="Jour" class="hover:text-yellow-600"><i class="ph ph-sun text-xl"></i></button>
+        <button onclick="applyTheme('dark')" title="Nuit" class="hover:text-indigo-400"><i class="ph ph-moon text-xl"></i></button>
+        <div class="h-4 w-px bg-current opacity-20"></div>
+        <button id="tts-btn" onclick="toggleTTS()" title="Lecture Vocale"><i class="ph ph-speaker-high text-xl"></i></button>
+        <button onclick="toggleFullscreen()" title="Plein écran"><i class="ph ph-corners-out text-xl"></i></button>
+    </div>
+
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-80 glass-panel transform -translate-x-full transition-transform duration-300 z-50 p-6 flex flex-col text-[var(--text)] overflow-y-auto shadow-2xl">
+        <div class="flex justify-between mb-6">
+            <h2 class="font-bold text-lg">Paramètres</h2>
+            <button onclick="toggleSidebar()"><i class="ph ph-x text-lg"></i></button>
+        </div>
+        
+        <img id="cover-img" class="w-32 mx-auto rounded shadow-lg mb-4 object-cover" src="">
+        <h1 id="book-title" class="text-xl font-bold text-center mb-1"></h1>
+        <p id="book-author" class="text-sm text-center opacity-70 mb-6"></p>
+        
+        <div class="mb-6 p-4 bg-black/5 rounded-xl border border-white/10 shadow-inner">
+            <h3 class="text-xs font-bold uppercase opacity-60 mb-3 flex items-center gap-2">
+                <i class="ph-fill ph-speaker-high"></i> Synthèse Vocale
+            </h3>
+            <label class="block text-xs mb-1 opacity-80">Choisir une voix :</label>
+            <select id="voice-select" class="w-full bg-[var(--bg)] border border-gray-500/30 rounded p-2 text-xs mb-3 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
+                <option value="">Chargement...</option>
+            </select>
+            <div class="text-[10px] opacity-50 italic leading-tight">
+                Conseil : Sélectionnez une voix "Google" ou "Microsoft" pour une meilleure qualité.
+            </div>
+        </div>
+
+        <p id="book-synopsis" class="text-sm text-justify opacity-80 leading-relaxed mb-6 overflow-y-auto flex-1 pr-2"></p>
+        
+        <a id="website-link" href="#" target="_blank" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-center rounded-lg font-bold transition mb-2 shadow-lg">
+            Site Officiel
+        </a>
+    </div>
+
+    <div id="viewer"></div>
+
+    <button onclick="prevPage()" class="fixed left-4 top-1/2 -translate-y-1/2 p-4 rounded-full glass-panel hover:scale-110 transition z-30 opacity-0 hover:opacity-100 shadow-lg hidden md:block">
+        <i class="ph-bold ph-caret-left text-2xl"></i>
+    </button>
+    <button onclick="nextPage()" class="fixed right-4 top-1/2 -translate-y-1/2 p-4 rounded-full glass-panel hover:scale-110 transition z-30 opacity-0 hover:opacity-100 shadow-lg hidden md:block">
+        <i class="ph-bold ph-caret-right text-2xl"></i>
+    </button>
+
+    <div class="fixed bottom-4 right-6 glass-panel px-3 py-1 rounded text-xs font-mono opacity-60 z-30">
+        <span id="progress-text">0%</span>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

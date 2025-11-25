@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lumière • Ultimate Edition</title>
+
+    <!-- FONTS & ICONS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- LIBS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/epubjs/dist/epub.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Merriweather', 'serif'], lora: ['Lora', 'serif'], display: ['Cinzel', 'serif'] },
+                    colors: {
+                        day: { bg: '#F9F7F1', text: '#2d3436' },
+                        night: { bg: '#1a1a1a', text: '#d1d5db' },
+                        sepia: { bg: '#f4ecd8', text: '#5d4037' },
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root { --bg-color: #F9F7F1; --text-color: #2d3436; --ui-bg: rgba(255, 255, 255, 0.85); }
+        
+        body { background-color: var(--bg-color); color: var(--text-color); overflow: hidden; user-select: none; transition: background-color 0.5s ease; }
+        
+        /* Glassmorphism */
+        .glass {
+            background: var(--ui-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.125); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- STYLE BIBLIOTHÈQUE (V4 RETROUVÉ) --- */
+        .book-card { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
+        .book-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); }
+        
+        /* --- MOTEUR PHYSIQUE (V5) --- */
+        .click-zone { z-index: 40; position: absolute; top: 0; bottom: 0; width: 10%; cursor: pointer; }
+        .ui-visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .ui-hidden-top { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+        .ui-hidden-bottom { opacity: 0; transform: translateY(20px); pointer-events: none; }
+        .transition-ui { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        #viewer-perspective {
+            perspective: 2500px;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        .page-wrapper {
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            transform-origin: left center;
+            transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1);
+            background: var(--bg-color);
+            position: relative;
+        }
+
+        .spine-shadow {
+            position: absolute; left: 50%; top: 0; bottom: 0; width: 60px;
+            background: linear-gradient(to right, rgba(0,0,0,0.05), transparent);
+            pointer-events: none; z-index: 10; display: none;
+        }
+
+        .flipping-next { animation: flipNext 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .flipping-prev { animation: flipPrev 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        @keyframes flipNext {
+            0% { transform: rotateY(0deg) translateX(0); opacity: 1; filter: brightness(1); }
+            50% { transform: rotateY(-20deg) translateX(-50px); opacity: 0.8; filter: brightness(0.9); box-shadow: 20px 0 50px rgba(0,0,0,0.2); }
+            100% { transform: rotateY(0deg) translateX(0); opacity: 1; filter: brightness(1); }
+        }
+        @keyframes flipPrev {
+            0% { transform: rotateY(0deg) translateX(0); opacity: 1; filter: brightness(1); }
+            50% { transform: rotateY(20deg) translateX(50px); opacity: 0.8; filter: brightness(0.9); box-shadow: -20px 0 50px rgba(0,0,0,0.2); }
+            100% { transform: rotateY(0deg) translateX(0); opacity: 1; filter: brightness(1); }
+        }
+
+        /* Marque-Page */
+        .bookmark-ribbon {
+            position: absolute; top: -10px; right: 40px;
+            width: 30px; height: 50px;
+            background: #ef4444; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 60;
+            transform: translateY(-100%); transition: transform 0.3s; cursor: pointer;
+        }
+        .bookmark-ribbon.active { transform: translateY(0); }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col font-sans antialiased overflow-hidden">
+
+    <!-- 1. LIBRARY VIEW (DESIGN V4 RETROUVÉ) -->
+    <div id="library-view" class="flex-1 flex flex-col p-8 relative z-50 overflow-y-auto bg-gray-50/50">
+        
+        <div class="max-w-6xl mx-auto w-full pt-10">
+            <header class="mb-12 text-center animate-fade-in">
+                <h1 class="text-6xl font-display font-semibold text-gray-800 mb-4 tracking-tight">LUMIÈRE</h1>
+                <p class="text-gray-500 font-light text-lg">Votre bibliothèque personnelle éthérée.</p>
+            </header>
+
+            <!-- Zone Drag & Drop Stylisée -->
+            <div id="drop-zone" class="mx-auto max-w-2xl border-2 border-dashed border-gray-300 rounded-3xl p-10 text-center hover:border-blue-400 hover:bg-white hover:shadow-xl transition-all cursor-pointer group mb-16 bg-white/40 backdrop-blur-sm animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="w-20 h-20 bg-gradient-to-tr from-blue-100 to-purple-100 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-sm">
+                    <i class="fa-solid fa-plus text-2xl text-gray-600"></i>
+                </div>
+                <h3 class="text-xl font-medium text-gray-700">Ajouter un livre</h3>
+                <p class="text-sm text-gray-400 mt-2">Supporte .epub et .pdf</p>
+                <input type="file" id="file-input" class="hidden" accept=".epub,.pdf">
+            </div>
+
+            <!-- Grille de livres Colorée (Le retour !) -->
+            <div class="text-left animate-fade-in" style="animation-delay: 0.2s;">
+                <h2 class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8 border-b pb-2">Lectures Récentes</h2>
+                <div id="recent-books" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 pb-20">
+                    <!-- Javascript injectera les couvertures colorées ici -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. READER VIEW (FONCTIONNALITÉS V5) -->
+    <div id="reader-view" class="fixed inset-0 z-0 hidden opacity-0 transition-opacity duration-700 bg-[var(--bg-color)]">
+        
+        <div id="bookmark-ribbon" class="bookmark-ribbon" title="Retirer marque-page"></div>
+
+        <!-- Top Bar -->
+        <header id="top-bar" class="fixed top-0 left-0 right-0 h-16 glass z-50 flex items-center justify-between px-6 transition-ui ui-hidden-top">
+            <div class="flex items-center gap-3">
+                <button id="btn-library" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-arrow-left"></i></button>
+                <button id="btn-toc" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-list-ul"></i></button>
+                <button id="btn-bookmark-toggle" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]" title="Marquer cette page"><i class="fa-regular fa-bookmark"></i></button>
+            </div>
+            
+            <h1 id="book-title" class="font-lora italic text-sm opacity-70 truncate max-w-xs text-[var(--text-color)]">Titre</h1>
+
+            <div class="flex items-center gap-3">
+                <button id="btn-spread" class="px-3 py-1 rounded-full border border-current opacity-60 hover:opacity-100 text-xs font-bold text-[var(--text-color)] transition-all">1 PAGE</button>
+                <button id="btn-settings" class="w-9 h-9 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-[var(--text-color)]"><i class="fa-solid fa-font"></i></button>
+            </div>
+        </header>
+
+        <!-- Viewer Area (Moteur Physique) -->
+        <div id="viewer-perspective">
+            <div id="page-wrapper" class="page-wrapper flex items-center justify-center">
+                <div id="spine-shadow" class="spine-shadow"></div>
+                <div id="epub-area" class="w-full h-full max-w-6xl mx-auto shadow-sm"></div>
+                <div id="pdf-area" class="hidden w-full h-full overflow-auto flex justify-center py-10">
+                    <canvas id="pdf-canvas" class="shadow-2xl"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div id="prev-zone" class="click-zone left-0"></div>
+        <div id="next-zone" class="click-zone right-0"></div>
+
+        <!-- Bottom Bar -->
+        <footer id="bottom-bar" class="fixed bottom-0 left-0 right-0 h-10 glass z-50 flex flex-col justify-center px-8 transition-ui ui-hidden-bottom">
+            <div class="w-full h-1 bg-gray-500/10 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-[var(--text-color)] opacity-60 transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </footer>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="fixed top-16 right-6 w-64 glass rounded-xl p-4 shadow-xl hidden z-50 backdrop-blur-xl">
+            <div class="space-y-4">
+                <div class="flex gap-2">
+                    <button class="flex-1 h-8 rounded border border-gray-400 bg-[#F9F7F1] text-[#333]" onclick="App.setTheme('day')">Jour</button>
+                    <button class="flex-1 h-8 rounded border border-gray-600 bg-[#f4ecd8] text-[#5d4037]" onclick="App.setTheme('sepia')">Sépia</button>
+                    <button class="flex-1 h-8 rounded border border-gray-700 bg-[#1a1a1a] text-[#d1d5db]" onclick="App.setTheme('night')">Nuit</button>
+                </div>
+                <input type="range" min="80" max="180" value="100" class="w-full" oninput="App.setFontSize(this.value)">
+            </div>
+        </div>
+
+        <!-- TOC -->
+        <div id="toc-sidebar" class="fixed inset-y-0 left-0 w-80 glass transform -translate-x-full transition-transform duration-300 z-[60] flex flex-col shadow-2xl backdrop-blur-xl">
+            <div id="toc-list" class="flex-1 overflow-y-auto p-4 space-y-1"></div>
+        </div>
+        <div id="overlay-bg" class="fixed inset-0 bg-black/20 z-40 hidden" onclick="App.closeAllMenus()"></div>
+    </div>
+
+    <!-- LOGIC -->
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const App = {
+            state: {
+                currentBook: null, bookType: null, rendition: null, pdfDoc: null, pdfPage: 1,
+                theme: 'day', fontSize: 100, fileName: '', isUIVisible: false,
+                isDoublePage: false, bookmarks: [],
+            },
+
+            init() {
+                this.bindEvents();
+                this.loadPreferences();
+                this.applyTheme(this.state.theme);
+                this.renderLibrary();
+            },
+
+            bindEvents() {
+                const els = {
+                    dropZone: document.getElementById('drop-zone'),
+                    fileInput: document.getElementById('file-input'),
+                    reader: document.getElementById('reader-view'),
+                };
+                
+                // File
+                els.dropZone.onclick = () => els.fileInput.click();
+                els.fileInput.onchange = (e) => this.handleFile(e.target.files[0]);
+                // Drag & Drop visual feedback
+                els.dropZone.ondragover = (e) => { e.preventDefault(); els.dropZone.classList.add('border-blue-400', 'bg-blue-50'); };
+                els.dropZone.ondragleave = (e) => { e.preventDefault(); els.dropZone.classList.remove('border-blue-400', 'bg-blue-50'); };
+                els.dropZone.ondrop = (e) => {
+                    e.preventDefault(); els.dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+                    if (e.dataTransfer.files.length) this.handleFile(e.dataTransfer.files[0]);
+                };
+                
+                // UI Buttons
+                document.getElementById('btn-library').onclick = () => location.reload();
+                document.getElementById('btn-settings').onclick = (e) => { e.stopPropagation(); this.toggleMenu('settings-modal'); };
+                document.getElementById('btn-toc').onclick = (e) => { e.stopPropagation(); this.toggleTOC(); };
+                document.getElementById('btn-spread').onclick = (e) => { e.stopPropagation(); this.toggleSpread(); };
+                document.getElementById('btn-bookmark-toggle').onclick = (e) => { e.stopPropagation(); this.toggleBookmark(); };
+                document.getElementById('bookmark-ribbon').onclick = () => this.toggleBookmark();
+
+                // Navigation
+                document.getElementById('prev-zone').onclick = () => this.prevPage();
+                document.getElementById('next-zone').onclick = () => this.nextPage();
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.prevPage();
+                    if (e.key === 'ArrowRight') this.nextPage();
+                });
+
+                // Zen UI
+                document.addEventListener('mousemove', (e) => {
+                    if (els.reader.classList.contains('hidden')) return;
+                    if (e.clientY < 80 || e.clientY > window.innerHeight - 80) this.showUI();
+                });
+                els.reader.onclick = (e) => {
+                    if(!e.target.closest('button') && !e.target.closest('#settings-modal')) {
+                        this.state.isUIVisible ? this.hideUI() : this.showUI();
+                    }
+                };
+            },
+
+            // --- LIBRARY RENDERER (V4 LOGIC RESTORED) ---
+            renderLibrary() {
+                const recents = JSON.parse(localStorage.getItem('lumiere-recents') || '[]');
+                const container = document.getElementById('recent-books');
+                container.innerHTML = '';
+                
+                if (recents.length === 0) {
+                    container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic mt-10">Votre bibliothèque est vide. Glissez un livre pour commencer.</p>`;
+                    return;
+                }
+
+                // Palettes de couleurs "Pastel / Ether"
+                const gradients = [
+                    'bg-gradient-to-br from-rose-100 to-teal-100',
+                    'bg-gradient-to-tr from-blue-200 to-indigo-100',
+                    'bg-gradient-to-bl from-amber-200 to-orange-100',
+                    'bg-gradient-to-br from-emerald-100 to-cyan-100',
+                    'bg-gradient-to-t from-slate-300 to-slate-100',
+                    'bg-gradient-to-r from-violet-200 to-pink-200'
+                ];
+
+                recents.forEach((name, index) => {
+                    const cleanName = name.replace('.epub', '').replace('.pdf', '').replace(/_/g, ' ');
+                    const grad = gradients[index % gradients.length];
+                    
+                    const card = document.createElement('div');
+                    card.className = "book-card group cursor-pointer animate-fade-in";
+                    card.style.animationDelay = (index * 0.05) + 's';
+                    
+                    // Fonction de clic qui explique la sécurité
+                    card.onclick = () => alert(`🔒 SÉCURITÉ NAVIGATEUR :\n\nPour réouvrir "${cleanName}", veuillez glisser le fichier original à nouveau sur la page.\n\nL'application restaurera automatiquement votre page et vos marque-pages.`);
+                    
+                    card.innerHTML = `
+                        <div class="aspect-[2/3] ${grad} rounded-r-2xl rounded-l-md shadow-md mb-4 relative overflow-hidden flex flex-col items-center justify-center p-4 border-l-4 border-black/5">
+                            <div class="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            
+                            <!-- Titre stylisé -->
+                            <h3 class="font-display font-bold text-gray-800 text-center text-lg leading-tight line-clamp-3 z-10 break-words w-full mix-blend-multiply uppercase">${cleanName}</h3>
+                            
+                            <div class="mt-4 text-xs font-serif italic opacity-50 z-10">Lumière Edition</div>
+                            
+                            <!-- Effet de reliure (Spine) -->
+                            <div class="absolute left-0 top-0 bottom-0 w-4 bg-gradient-to-r from-black/20 to-transparent"></div>
+                            <!-- Effet de pages -->
+                            <div class="absolute right-0 top-2 bottom-2 w-1 bg-white/40 rounded-l"></div>
+                        </div>
+                        <p class="text-xs font-medium text-gray-500 text-center truncate px-2 group-hover:text-black transition-colors">${cleanName}</p>
+                    `;
+                    container.appendChild(card);
+                });
+            },
+
+            // --- PHYSICS & FEATURES ---
+            animateFlip(direction, callback) {
+                const wrapper = document.getElementById('page-wrapper');
+                wrapper.classList.remove('flipping-next', 'flipping-prev');
+                void wrapper.offsetWidth; // Force Reflow
+                if (direction === 'next') wrapper.classList.add('flipping-next');
+                else wrapper.classList.add('flipping-prev');
+                setTimeout(() => callback(), 300);
+                setTimeout(() => wrapper.classList.remove('flipping-next', 'flipping-prev'), 800);
+            },
+
+            toggleSpread() {
+                this.state.isDoublePage = !this.state.isDoublePage;
+                const btn = document.getElementById('btn-spread');
+                const spineShadow = document.getElementById('spine-shadow');
+                
+                if (this.state.isDoublePage) {
+                    btn.textContent = "2 PAGES";
+                    spineShadow.style.display = 'block';
+                    if (this.state.rendition) { this.state.rendition.resize(); this.state.rendition.spread("always"); this.state.rendition.flow("paginated"); }
+                } else {
+                    btn.textContent = "1 PAGE";
+                    spineShadow.style.display = 'none';
+                    if (this.state.rendition) { this.state.rendition.resize(); this.state.rendition.spread("none"); }
+                }
+                if(this.state.bookType === 'epub') {
+                    const width = this.state.isDoublePage ? window.innerWidth : Math.min(window.innerWidth, 800);
+                    this.state.rendition.resize(width, window.innerHeight);
+                }
+            },
+
+            checkBookmark(cfi) {
+                const isBookmarked = this.state.bookmarks.some(b => b.cfi === cfi && b.book === this.state.fileName);
+                const ribbon = document.getElementById('bookmark-ribbon');
+                const btnIcon = document.querySelector('#btn-bookmark-toggle i');
+                if (isBookmarked) { ribbon.classList.add('active'); btnIcon.className = "fa-solid fa-bookmark text-red-500"; }
+                else { ribbon.classList.remove('active'); btnIcon.className = "fa-regular fa-bookmark"; }
+            },
+
+            toggleBookmark() {
+                if (!this.state.rendition) return;
+                const loc = this.state.rendition.currentLocation();
+                const cfi = loc.start.cfi;
+                const index = this.state.bookmarks.findIndex(b => b.cfi === cfi && b.book === this.state.fileName);
+                if (index > -1) this.state.bookmarks.splice(index, 1);
+                else this.state.bookmarks.push({ book: this.state.fileName, cfi: cfi, label: `Page ${loc.start.displayed.page}`, timestamp: Date.now() });
+                this.saveBookmarks();
+                this.checkBookmark(cfi);
+                this.renderTOC();
+            },
+
+            // --- CORE & HELPERS ---
+            handleFile(file) {
+                if (!file) return;
+                this.state.fileName = file.name;
+                this.addToRecents(file.name);
+                document.getElementById('library-view').classList.add('hidden');
+                document.getElementById('reader-view').classList.remove('hidden');
+                setTimeout(() => document.getElementById('reader-view').classList.remove('opacity-0'), 100);
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    file.name.endsWith('.pdf') ? this.initPDF(e.target.result) : this.initEPUB(e.target.result);
+                };
+                reader.readAsArrayBuffer(file);
+            },
+
+            initEPUB(data) {
+                this.state.bookType = 'epub';
+                document.getElementById('epub-area').classList.remove('hidden');
+                this.state.currentBook = ePub(data);
+                this.state.rendition = this.state.currentBook.renderTo("epub-area", { width: "100%", height: "100%", flow: "paginated" });
+
+                this.state.currentBook.ready.then(() => {
+                    let title = this.state.currentBook.package.metadata.title || this.state.fileName;
+                    document.getElementById('book-title').textContent = title;
+                    this.state.currentBook.loaded.navigation.then(nav => { this.state.toc = nav.toc; this.renderTOC(); });
+                    
+                    const savedCfi = localStorage.getItem('lumiere-pos-' + this.state.fileName);
+                    this.state.rendition.display(savedCfi || 0);
+                    this.state.bookmarks = JSON.parse(localStorage.getItem('lumiere-bookmarks') || '[]');
+                    this.applySettingsToEpub();
+                });
+
+                this.state.rendition.on("relocated", (loc) => {
+                    this.updateProgress(loc);
+                    localStorage.setItem('lumiere-pos-' + this.state.fileName, loc.start.cfi);
+                    this.checkBookmark(loc.start.cfi);
+                });
+            },
+
+            prevPage() { this.animateFlip('prev', () => { this.state.bookType === 'epub' ? this.state.rendition.prev() : this.renderPDFPage(Math.max(1, this.state.pdfPage - 1)); }); },
+            nextPage() { this.animateFlip('next', () => { this.state.bookType === 'epub' ? this.state.rendition.next() : this.renderPDFPage(Math.min(this.state.pdfDoc.numPages, this.state.pdfPage + 1)); }); },
+
+            showUI() {
+                document.getElementById('top-bar').classList.remove('ui-hidden-top', 'ui-visible'); // Reset
+                document.getElementById('bottom-bar').classList.remove('ui-hidden-bottom', 'ui-visible');
+                void document.getElementById('top-bar').offsetWidth; // Reflow
+                document.getElementById('top-bar').classList.add('ui-visible');
+                document.getElementById('bottom-bar').classList.add('ui-visible');
+                this.state.isUIVisible = true;
+            },
+            hideUI() {
+                if(!document.getElementById('settings-modal').classList.contains('hidden')) return;
+                document.getElementById('top-bar').classList.remove('ui-visible');
+                document.getElementById('bottom-bar').classList.remove('ui-visible');
+                document.getElementById('top-bar').classList.add('ui-hidden-top');
+                document.getElementById('bottom-bar').classList.add('ui-hidden-bottom');
+                this.state.isUIVisible = false;
+            },
+            
+            setTheme(t) { this.state.theme = t; this.applyTheme(t); if(this.state.bookType === 'epub') this.applySettingsToEpub(); },
+            applyTheme(tName) {
+                const t = { day: { bg: '#F9F7F1', text: '#2d3436', ui: 'rgba(255,255,255,0.85)' }, night: { bg: '#1a1a1a', text: '#d1d5db', ui: 'rgba(30,30,30,0.9)' }, sepia: { bg: '#f4ecd8', text: '#5d4037', ui: 'rgba(244, 236, 216, 0.9)' } }[tName];
+                document.documentElement.style.setProperty('--bg-color', t.bg);
+                document.documentElement.style.setProperty('--text-color', t.text);
+                document.documentElement.style.setProperty('--ui-bg', t.ui);
+            },
+            applySettingsToEpub() {
+                if (!this.state.rendition) return;
+                let bg, text;
+                if(this.state.theme === 'day') { bg = '#F9F7F1'; text = '#2d3436'; } else if(this.state.theme === 'night') { bg = '#1a1a1a'; text = '#d1d5db'; } else { bg = '#f4ecd8'; text = '#5d4037'; }
+                this.state.rendition.themes.fontSize(this.state.fontSize + "%");
+                this.state.rendition.themes.register("custom", { "body": { "background-color": `${bg} !important`, "color": `${text} !important`, "padding": "0 20px !important" }, "*": { "background-color": "transparent !important", "color": `${text} !important` }, "a": { "color": `${text} !important`, "text-decoration": "none" } });
+                this.state.rendition.themes.select("custom");
+            },
+            setFontSize(s) { this.state.fontSize = s; this.applySettingsToEpub(); },
+            updateProgress(loc) { const pct = Math.floor(loc.start.percentage * 100); document.getElementById('progress-bar').style.width = pct + "%"; },
+            
+            renderTOC() {
+                const list = document.getElementById('toc-list'); list.innerHTML = '';
+                const currentBookBookmarks = this.state.bookmarks.filter(b => b.book === this.state.fileName);
+                if (currentBookBookmarks.length > 0) {
+                    list.innerHTML += `<div class="text-xs font-bold uppercase opacity-50 px-3 mt-4 mb-2">Marque-Pages</div>`;
+                    currentBookBookmarks.forEach(bm => {
+                         const d = document.createElement('div'); d.className = "py-2 px-3 hover:bg-black/5 rounded cursor-pointer text-sm flex items-center gap-2 text-red-500";
+                         d.innerHTML = `<i class="fa-solid fa-bookmark"></i> <span>${bm.label || 'Favori'}</span>`;
+                         d.onclick = () => { this.state.rendition.display(bm.cfi); this.closeAllMenus(); };
+                         list.appendChild(d);
+                    });
+                    list.innerHTML += `<div class="h-px bg-black/10 my-4"></div>`;
+                }
+                if(this.state.toc) {
+                    this.state.toc.forEach(i => {
+                        const d = document.createElement('div'); d.className = `py-2 px-3 hover:bg-black/5 rounded cursor-pointer truncate text-sm text-[var(--text-color)] opacity-80`; d.textContent = i.label;
+                        d.onclick = () => { this.state.rendition.display(i.href); this.closeAllMenus(); };
+                        list.appendChild(d);
+                    });
+                }
+            },
+            toggleMenu(id) { const el = document.getElementById(id); const hidden = el.classList.contains('hidden'); this.closeAllMenus(); if(hidden) { el.classList.remove('hidden'); document.getElementById('overlay-bg').classList.remove('hidden'); } },
+            toggleTOC() { const el = document.getElementById('toc-sidebar'); const hidden = el.classList.contains('-translate-x-full'); this.closeAllMenus(); if(hidden) { el.classList.remove('-translate-x-full'); document.getElementById('overlay-bg').classList.remove('hidden'); } },
+            closeAllMenus() { document.getElementById('settings-modal').classList.add('hidden'); document.getElementById('toc-sidebar').classList.add('-translate-x-full'); document.getElementById('overlay-bg').classList.add('hidden'); },
+            saveBookmarks() { localStorage.setItem('lumiere-bookmarks', JSON.stringify(this.state.bookmarks)); },
+            loadPreferences() { const p = JSON.parse(localStorage.getItem('lumiere-prefs')); if(p) { this.state.theme=p.theme; this.state.fontSize=p.size;} },
+            addToRecents(n) { let r = JSON.parse(localStorage.getItem('lumiere-recents') || '[]'); if(!r.includes(n)) { r.unshift(n); localStorage.setItem('lumiere-recents', JSON.stringify(r)); } },
+            // PDF basic implementation
+            async initPDF(data) {
+                this.state.bookType = 'pdf'; document.getElementById('epub-area').classList.add('hidden'); document.getElementById('pdf-area').classList.remove('hidden');
+                const loadingTask = pdfjsLib.getDocument(data); this.state.pdfDoc = await loadingTask.promise;
+                document.getElementById('book-title').textContent = this.state.fileName;
+                this.renderPDFPage(1);
+            },
+            async renderPDFPage(num) {
+                if(!this.state.pdfDoc) return; this.state.pdfPage = num;
+                const page = await this.state.pdfDoc.getPage(num); const canvas = document.getElementById('pdf-canvas');
+                const viewport = page.getViewport({scale: 1.5}); canvas.height = viewport.height; canvas.width = viewport.width;
+                await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
+                canvas.style.filter = this.state.theme === 'night' ? "invert(1) hue-rotate(180deg)" : this.state.theme === 'sepia' ? "sepia(0.3)" : "none";
+                document.getElementById('progress-bar').style.width = (num/this.state.pdfDoc.numPages*100) + "%";
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => App.init());
+    </script>
+</body>
+</html>
