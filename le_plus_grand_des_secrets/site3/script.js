@@ -322,9 +322,41 @@ function updateProgress(location) {
 }
 
 function generateTOC() {
-    // Implémentation optionnelle
+    // On attend que les données de navigation soient chargées
+    book.loaded.navigation.then(function(toc) {
+        const tocContainer = document.getElementById('toc-container');
+        if (!tocContainer) return;
+        
+        // On vide le message "Chargement..."
+        tocContainer.innerHTML = "";
+        
+        // toc est un tableau d'objets (label, href, subitems...)
+        toc.forEach(function(chapter) {
+            // Création du bouton pour le chapitre
+            const item = document.createElement('button');
+            
+            // Style Tailwind pour faire joli (aligné à gauche, padding, hover)
+            item.className = "text-left w-full py-2 px-3 rounded hover:bg-indigo-500/10 transition-colors border-b border-gray-500/10 last:border-0 truncate";
+            
+            // Nettoyage du titre (enlève les espaces inutiles)
+            item.textContent = chapter.label.trim();
+            item.title = chapter.label; // Bulle d'info si le titre est coupé
+            
+            // L'action au clic
+            item.onclick = function() {
+                rendition.display(chapter.href); // Aller au chapitre
+                toggleSidebar(); // Fermer le menu automatiquement
+            };
+            
+            tocContainer.appendChild(item);
+        });
+        
+        // Si le sommaire est vide
+        if (toc.length === 0) {
+            tocContainer.innerHTML = "<p class='text-xs opacity-50'>Aucun sommaire détecté.</p>";
+        }
+    });
 }
-
 function loadMetadataInternal() {
     book.loaded.metadata.then(meta => {
         const title = document.getElementById('book-title');
