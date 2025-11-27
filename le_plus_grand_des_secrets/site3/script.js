@@ -1,7 +1,8 @@
 /**
- * SCRIPT.JS - Lecteur EPUB Pro Final
- * - Correction TTS : Extraction robuste (Range -> Fallback Chapter)
- * - Gestion des voix : Menu dynamique et persistant
+ * SCRIPT.JS - Lecteur EPUB Pro (Version Scroll Vertical)
+ * - Mode: Scrolled (Défilement vertical)
+ * - TTS: Extraction robuste
+ * - Zoom: Jusqu'à 500%
  */
 
 // Config
@@ -19,9 +20,7 @@ let voices = [];
 // ------------------------------------------------------------------
 
 async function init() {
-    // Initialiser les voix immédiatement
     initVoices();
-    // Chrome nécessite parfois un événement
     if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = initVoices;
     }
@@ -36,12 +35,12 @@ async function init() {
             }
         }
     } catch (e) {
-        console.log("Mode local.");
+        console.log("Mode local ou erreur config.");
     }
 }
 
 function initReader(data) {
-    // Nettoyage
+    // Nettoyage UI
     const loader = document.getElementById('loader');
     if(loader) {
         loader.style.opacity = 0;
@@ -50,17 +49,31 @@ function initReader(data) {
     document.getElementById('toolbar').classList.remove('opacity-0');
     document.querySelectorAll('button').forEach(b => b.classList.remove('opacity-0'));
 
-    // Création
+    // Création de l'objet Book
     book = ePub(data);
+
+    // --- CONFIGURATION DU RENDU (MODE SCROLL) ---
     rendition = book.renderTo("viewer", {
-        width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "auto"
+        width: "100%", 
+        height: "100%", 
+        flow: "scrolled",       // Active le défilement vertical
+        manager: "default"   // Charge les chapitres à la suite
     });
 
-    // Thèmes
-	const themeRules = {
-        // J'ai ajouté 'font-size: 100% !important' dans le bloc p, span, div...
-        light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
-        dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
+    // Thèmes CSS (Injection de règles pour forcer la lisibilité)
+    const themeRules = {
+        light: `
+            body { background-color: #ffffff !important; color: #000000 !important; } 
+            p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } 
+            a { color: #4f46e5 !important; }
+        `,
+        dark: `
+            body { background-color: #111827 !important; color: #d1d5db !important; } 
+            p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } 
+            h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } 
+            a { color: #818cf8 !important; } 
+            img { filter: brightness(0.8) contrast(1.2) !important; }
+        `
     };
 
     rendition.hooks.content.register(function(contents) {
@@ -70,16 +83,19 @@ function initReader(data) {
         style.innerHTML = themeRules[currentTheme];
         contents.document.head.appendChild(style);
     });
-	
-	rendition.display().then(() => {
-        // --- NOUVEAU CODE DEBUT ---
-        // Détection mobile basique (si largeur écran < 768px)
+    
+	// Affichage initial
+    rendition.display().then(() => {
+        // --- REGLAGE TAILLE POLICE PAR DEFAUT ---
         const isMobile = window.innerWidth < 768;
         
-        // Si mobile, on met 140% par défaut, sinon 100%
-        window.currentFontSize = isMobile ? 140 : 100;
+        // MODIFICATION ICI :
+        // Si mobile : on met 220% (très grand). 
+        // Si PC : on met 150% (confortable).
+        // Vous pouvez changer ces chiffres : 250, 300, etc.
+        window.currentFontSize = isMobile ? 300 : 150;
+        
         rendition.themes.fontSize(window.currentFontSize + "%");
-        // --- NOUVEAU CODE FIN ---
 
         generateTOC();
         if (!config.title) loadMetadataInternal();
@@ -90,14 +106,12 @@ function initReader(data) {
     rendition.on("relocated", (location) => {
         updateProgress(location);
         
+        // Gestion TTS lors du changement de chapitre
         if (isTTSPlaying) {
             if (isPageTurningForTTS) {
-                // C'est un changement auto -> On continue
                 isPageTurningForTTS = false;
-                // Petite pause pour laisser le temps au texte de s'afficher
                 setTimeout(() => startTTS(true), 600); 
             } else {
-                // Changement manuel -> On arrête
                 stopTTS(); 
             }
         }
@@ -118,7 +132,6 @@ function initVoices() {
     const select = document.getElementById('voice-select');
     if (!select) return;
     
-    // Sauvegarde de la sélection actuelle
     const currentVal = select.value;
     select.innerHTML = "";
     
@@ -129,7 +142,6 @@ function initVoices() {
         return;
     }
 
-    // Trier : Français en premier
     voices.sort((a, b) => {
         const aFr = a.lang.startsWith('fr');
         const bFr = b.lang.startsWith('fr');
@@ -141,27 +153,22 @@ function initVoices() {
     voices.forEach((voice, index) => {
         const option = document.createElement('option');
         option.value = index;
-        // Marqueur visuel pour les voix FR
         const label = voice.lang.startsWith('fr') ? '🇫🇷 ' : '';
         option.textContent = `${label}${voice.name}`;
         select.appendChild(option);
     });
 
-    // Restaurer choix utilisateur
     const savedVoice = localStorage.getItem('reader-voice');
     if (savedVoice && voices[savedVoice]) {
         select.value = savedVoice;
     } else {
-        // Sinon, première voix FR par défaut
         const frIndex = voices.findIndex(v => v.lang.startsWith('fr'));
         if (frIndex !== -1) select.value = frIndex;
     }
 
-    // Changement de voix
     select.onchange = (e) => {
         localStorage.setItem('reader-voice', e.target.value);
         if (isTTSPlaying) {
-            // Redémarrer la lecture avec la nouvelle voix
             window.speechSynthesis.cancel();
             setTimeout(() => startTTS(false), 100);
         }
@@ -169,7 +176,7 @@ function initVoices() {
 }
 
 // ------------------------------------------------------------------
-// 3. TTS (SYNTHÈSE VOCALE) AVEC FALLBACK
+// 3. TTS (SYNTHÈSE VOCALE)
 // ------------------------------------------------------------------
 
 function toggleTTS() {
@@ -179,46 +186,37 @@ function toggleTTS() {
 
 function startTTS(autoContinue = false) {
     const location = rendition.currentLocation();
-    
     if (!location || !location.start || !location.end) return;
 
-    // --- ETOILE DU CODE : La logique d'extraction ---
     const startCfi = location.start.cfi;
     const endCfi = location.end.cfi;
 
-    // 1. Essai précis (Page visible)
     book.getRange(startCfi + "-" + endCfi).then(range => {
         let text = range.toString(); 
-        
-        // Si range.toString() échoue, on tente cloneContents (plus lourd mais capture plus)
         if (!text || text.trim().length === 0) {
             try { text = range.cloneContents().textContent; } catch(e){}
         }
 
         text = text.replace(/\s+/g, ' ').trim();
 
-        // 2. Fallback : Si le texte est toujours vide (bug fréquent epub.js sur certaines pages)
-        // On essaie de lire tout le chapitre visible, c'est mieux que rien
         if (!text || text.length < 5) {
-            console.warn("TTS: Texte page vide, tentative lecture chapitre...");
+            console.warn("TTS: Texte vide, lecture chapitre complet...");
             const chapter = book.spine.get(location.start.index);
             chapter.load(book.load.bind(book)).then(contents => {
                 let fullText = contents.textContent.replace(/\s+/g, ' ').trim();
                 if(fullText.length > 5) {
-                    speakText(fullText, autoContinue); // On lit le chapitre
+                    speakText(fullText, autoContinue);
                 } else {
-                    if(autoContinue) nextPageTTS(); // Vraiment vide, on passe
+                    if(autoContinue) nextPageTTS();
                     else { alert("Page vide ou image."); stopTTS(); }
                 }
             });
             return;
         }
-
-        // Si on a du texte précis, on le lit
         speakText(text, autoContinue);
 
     }).catch(err => {
-        console.error("Erreur Range TTS:", err);
+        console.error("Erreur TTS:", err);
         stopTTS();
     });
 }
@@ -228,18 +226,16 @@ function speakText(text, autoContinue) {
     
     speechUtterance = new SpeechSynthesisUtterance(text);
     
-    // Appliquer la voix
     const select = document.getElementById('voice-select');
     const voiceIndex = select ? select.value : 0;
     
     if (voices[voiceIndex]) {
         speechUtterance.voice = voices[voiceIndex];
-        speechUtterance.lang = voices[voiceIndex].lang; // Important pour l'accent
+        speechUtterance.lang = voices[voiceIndex].lang;
     }
     
-    speechUtterance.rate = 1.0; // Vitesse normale
+    speechUtterance.rate = 1.0;
 
-    // Fin de lecture -> Page suivante
     speechUtterance.onend = () => {
         if (isTTSPlaying) nextPageTTS();
     };
@@ -278,13 +274,9 @@ function updateTTSIcon(playing) {
 function prevPage() { if(rendition) rendition.prev(); }
 function nextPage() { if(rendition) rendition.next(); }
 
+// Note: En mode "scrolled", spread ne fait rien visuellement, mais on garde la fonction pour éviter les erreurs
 function toggleSpread() {
-    if (!rendition) return;
-    const settings = rendition.settings;
-    const newSpread = settings.spread === "none" ? "auto" : "none";
-    rendition.spread(newSpread);
-    const icon = document.querySelector('#spread-btn i');
-    if(icon) icon.className = newSpread === "none" ? "ph ph-file text-xl" : "ph ph-book-open text-xl";
+    console.log("Mode Spread désactivé en mode défilement");
 }
 
 function applyTheme(theme) {
@@ -294,8 +286,8 @@ function applyTheme(theme) {
 
     if (rendition) {
         const rules = {
-			light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
-			dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
+            light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
+            dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
         };
         rendition.getContents().forEach(contents => {
             let styleTag = contents.document.getElementById("reader-custom-style");
@@ -311,17 +303,15 @@ function applyTheme(theme) {
 
 function changeFontSize(amount) {
     if (!rendition) return;
-    // Si la taille n'est pas définie, on part de 100
     if (!window.currentFontSize) window.currentFontSize = 100;
-    // On ajoute le montant (ex: +25 ou -25)
+    
     window.currentFontSize += amount;
-    // NOUVEAUX REGLAGES :
-    // Minimum 50% (inchangé)
+    
+    // LIMITES : 50% à 500%
     if (window.currentFontSize < 50) window.currentFontSize = 50;
-    // Maximum augmenté à 500% (au lieu de 250%)
     if (window.currentFontSize > 500) window.currentFontSize = 500;
+    
     rendition.themes.fontSize(window.currentFontSize + "%");
-    // Petit feedback console pour vous aider à tester
     console.log("Taille actuelle : " + window.currentFontSize + "%");
 }
 
@@ -332,7 +322,7 @@ function updateProgress(location) {
 }
 
 function generateTOC() {
-    // Implémentation optionnelle TOC
+    // Implémentation optionnelle
 }
 
 function loadMetadataInternal() {

@@ -13,7 +13,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Merriweather:wght@300;400;700&display=swap');
         
-        body { font-family: 'Inter', sans-serif; overflow: hidden; user-select: none; }
+        /* CORRECTION 1 : Autoriser le défilement vertical (overflow-y: auto) */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow-y: auto; 
+            user-select: none; 
+        }
 
         /* THEMES */
         .app-light { --bg: #f3f4f6; --text: #1f2937; --glass: rgba(255, 255, 255, 0.95); --border: rgba(0,0,0,0.1); }
@@ -30,7 +35,14 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
         }
 
-        #viewer { height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: center; }
+        /* CORRECTION 2 : Adapter le viewer pour le mode scroll (Block au lieu de Flex) */
+        #viewer { 
+            width: 100%; 
+            min-height: 100vh; /* Prend au moins toute la hauteur */
+            display: block;    /* Permet l'empilement du texte */
+            padding-top: 80px; /* Espace pour la barre d'outils */
+            padding-bottom: 50px;
+        }
         
         /* Loader */
         .loader { border-top-color: #6366f1; animation: spin 1s linear infinite; }
@@ -57,12 +69,16 @@
     <div class="fixed top-4 left-1/2 transform -translate-x-1/2 glass-panel px-4 py-2 md:px-6 md:py-3 rounded-full flex items-center gap-3 md:gap-4 z-40 transition-all hover:scale-105 opacity-0 shadow-2xl" id="toolbar">
         <button onclick="toggleSidebar()" title="Menu & Voix"><i class="ph ph-list text-xl"></i></button>
         <div class="h-4 w-px bg-current opacity-20"></div>
+        
         <button onclick="changeFontSize(-25)" title="A-" class="hover:text-indigo-500 font-serif text-sm font-bold">A-</button>
         <button onclick="changeFontSize(25)" title="A+" class="hover:text-indigo-500 font-serif text-lg font-bold">A+</button>
+        
         <div class="h-4 w-px bg-current opacity-20"></div>
-		<button id="spread-btn" onclick="toggleSpread()" title="Mode affichage (Auto / 1 page)">
+        
+        <button id="spread-btn" onclick="toggleSpread()" title="Mode affichage (Auto / 1 page)">
             <i class="ph ph-book-open text-xl"></i>
         </button>
+        
         <div class="h-4 w-px bg-current opacity-20"></div>
         <button onclick="applyTheme('light')" title="Clair" class="hover:text-yellow-600"><i class="ph ph-sun text-xl"></i></button>
         <button onclick="applyTheme('dark')" title="Sombre" class="hover:text-indigo-400"><i class="ph ph-moon text-xl"></i></button>
@@ -77,7 +93,8 @@
             <button onclick="toggleSidebar()"><i class="ph ph-x text-lg"></i></button>
         </div>
         
-        <img id="cover-img" class="w-32 mx-auto rounded shadow-lg mb-4 object-cover" src="">
+        <img id="cover-img" class="w-32 mx-auto rounded shadow-lg mb-4 object-cover" src="cover.jpg" alt="Couverture">
+        
         <h1 id="book-title" class="text-xl font-bold text-center mb-1"></h1>
         <p id="book-author" class="text-sm text-center opacity-70 mb-6"></p>
         
@@ -102,14 +119,13 @@
     </div>
 
     <div id="viewer"></div>
-
-    <button onclick="prevPage()" class="fixed left-4 top-1/2 -translate-y-1/2 p-4 rounded-full glass-panel hover:scale-110 transition z-30 opacity-0 hover:opacity-100 shadow-lg hidden md:block">
+	
+	<button onclick="prevPage()" class="fixed left-4 bottom-6 p-3 rounded-full glass-panel hover:scale-110 transition z-30 shadow-lg flex items-center justify-center bg-white/80 dark:bg-black/50" title="Chapitre précédent">
         <i class="ph-bold ph-caret-left text-2xl"></i>
     </button>
-    <button onclick="nextPage()" class="fixed right-4 top-1/2 -translate-y-1/2 p-4 rounded-full glass-panel hover:scale-110 transition z-30 opacity-0 hover:opacity-100 shadow-lg hidden md:block">
+    <button onclick="nextPage()" class="fixed right-4 bottom-6 p-3 rounded-full glass-panel hover:scale-110 transition z-30 shadow-lg flex items-center justify-center bg-white/80 dark:bg-black/50" title="Chapitre suivant">
         <i class="ph-bold ph-caret-right text-2xl"></i>
     </button>
-
     <div class="fixed bottom-4 right-6 glass-panel px-3 py-1 rounded text-xs font-mono opacity-60 z-30">
         <span id="progress-text">0%</span>
     </div>
