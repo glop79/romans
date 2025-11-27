@@ -104,41 +104,53 @@
 		</div>
 	</div>
 
-    <div id="sidebar" class="fixed left-0 top-0 h-full w-80 glass-panel transform -translate-x-full transition-transform duration-300 z-50 p-6 flex flex-col text-[var(--text)] overflow-y-auto shadow-2xl">
-        <div class="flex justify-between mb-6">
-            <h2 class="font-bold text-lg">Paramètres</h2>
-            <button onclick="toggleSidebar()"><i class="ph ph-x text-lg"></i></button>
+	<div id="sidebar" class="fixed left-0 top-0 h-full w-80 md:w-96 glass-panel transform -translate-x-full transition-transform duration-300 z-50 flex flex-col text-[var(--text)] shadow-2xl">
+        
+        <div class="flex justify-between items-center p-5 border-b border-gray-500/10">
+            <h2 class="font-bold text-xl font-serif">Menu</h2>
+            <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-500/10 rounded-full transition"><i class="ph ph-x text-lg"></i></button>
+        </div>
+
+        <div class="flex border-b border-gray-500/10 bg-black/5 dark:bg-white/5">
+            <button onclick="switchTab('toc')" id="tab-toc" class="flex-1 py-3 text-sm font-bold border-b-2 border-indigo-500 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 transition-colors">
+                <i class="ph-bold ph-list-numbers mr-1"></i> CHAPITRES
+            </button>
+            <button onclick="switchTab('info')" id="tab-info" class="flex-1 py-3 text-sm font-bold border-b-2 border-transparent opacity-60 hover:opacity-100 hover:bg-gray-500/5 transition-colors">
+                <i class="ph-bold ph-info mr-1"></i> INFO & AUDIO
+            </button>
         </div>
         
-        <img id="cover-img" class="w-32 mx-auto rounded shadow-lg mb-4 object-cover" src="cover.jpg" alt="Couverture">
-        
-        <h1 id="book-title" class="text-xl font-bold text-center mb-1"></h1>
-        <p id="book-author" class="text-sm text-center opacity-70 mb-6"></p>
-        
-        <div class="mb-6 p-4 bg-black/5 rounded-xl border border-white/10 shadow-inner">
-            <h3 class="text-xs font-bold uppercase opacity-60 mb-3 flex items-center gap-2">
-                <i class="ph-fill ph-speaker-high"></i> Synthèse Vocale
-            </h3>
-            <label class="block text-xs mb-1 opacity-80">Choisir une voix :</label>
-            <select id="voice-select" class="w-full bg-[var(--bg)] border border-gray-500/30 rounded p-2 text-xs mb-3 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer">
-                <option value="">Chargement...</option>
-            </select>
-            <div class="text-[10px] opacity-50 italic leading-tight">
-                Conseil : Sélectionnez une voix "Google" ou "Microsoft" pour une meilleure qualité.
+        <div id="content-toc" class="flex-1 overflow-y-auto p-2 scroll-smooth">
+            <div id="toc-container" class="flex flex-col gap-1">
+                <p class="text-center opacity-50 italic mt-10">Chargement du sommaire...</p>
             </div>
         </div>
 
-        <p id="book-synopsis" class="text-sm text-justify opacity-80 leading-relaxed mb-6 overflow-y-auto flex-1 pr-2"></p>
-        
-        <a id="website-link" href="#" target="_blank" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-center rounded-lg font-bold transition mb-2 shadow-lg">
-            Site Officiel
-        </a>
-		<div class="mt-6 border-t border-gray-500/20 pt-4">
-        <h3 class="text-xs font-bold uppercase opacity-60 mb-3 flex items-center gap-2">
-            <i class="ph-fill ph-list-numbers"></i> Sommaire
-        </h3>
-        <div id="toc-container" class="flex flex-col gap-1 text-sm overflow-y-auto max-h-60">
-            <p class="opacity-50 text-xs italic">Chargement du sommaire...</p>
+        <div id="content-info" class="hidden flex-1 overflow-y-auto p-6">
+            <div class="text-center mb-6">
+                <img id="cover-img" class="w-32 mx-auto rounded-lg shadow-xl mb-4 object-cover transform hover:scale-105 transition duration-500" src="" alt="Couverture">
+                <h1 id="book-title" class="text-xl font-bold font-serif mb-1 leading-tight"></h1>
+                <p id="book-author" class="text-sm opacity-70 font-medium tracking-wide text-indigo-500"></p>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-500/5 rounded-xl border border-gray-500/10">
+                <h3 class="text-xs font-bold uppercase opacity-60 mb-3 flex items-center gap-2">
+                    <i class="ph-fill ph-speaker-high"></i> Lecture Vocale
+                </h3>
+                <label class="block text-xs mb-2 opacity-80">Voix de lecture :</label>
+                <select id="voice-select" class="w-full bg-[var(--bg)] border border-gray-500/30 rounded p-2 text-xs mb-2 focus:outline-none focus:border-indigo-500 transition-colors cursor-pointer shadow-sm">
+                    <option value="">Chargement...</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <h3 class="text-xs font-bold uppercase opacity-60 mb-2">Synopsis</h3>
+                <p id="book-synopsis" class="text-sm text-justify opacity-80 leading-relaxed font-serif"></p>
+            </div>
+            
+            <a id="website-link" href="#" target="_blank" class="block w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-center rounded-lg font-bold transition shadow-lg text-sm">
+                Visiter le Site Officiel
+            </a>
         </div>
     </div>
     </div>

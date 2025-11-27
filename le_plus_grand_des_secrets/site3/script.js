@@ -332,7 +332,6 @@ function updateProgress(location) {
 }
 
 // Génération du Sommaire (NOUVEAU)
-// Génération du Sommaire (VERSION COMPACTE)
 function generateTOC() {
     book.loaded.navigation.then(function(toc) {
         const tocContainer = document.getElementById('toc-container');
@@ -340,27 +339,29 @@ function generateTOC() {
         
         tocContainer.innerHTML = "";
         
-        toc.forEach(function(chapter) {
+        toc.forEach(function(chapter, index) {
             const item = document.createElement('button');
             
-            // MODIFICATIONS ICI :
-            // 1. "text-sm" : Taille de police petite (vous pouvez mettre "text-xs" pour encore plus petit)
-            // 2. "py-1" : Moins d'espace en hauteur (c'était py-2 avant)
-            item.className = "text-left w-full py-1 px-3 text-sm rounded hover:bg-indigo-500/10 transition-colors border-b border-gray-500/10 last:border-0 truncate";
+            // DESIGN AMÉLIORÉ : Plus grand, plus aéré
+            item.className = "text-left w-full py-3 px-4 text-base font-medium rounded-lg hover:bg-indigo-500/10 transition-all border-b border-gray-500/5 last:border-0 flex items-center group";
             
-            item.textContent = chapter.label.trim();
-            item.title = chapter.label;
+            // Ajout d'un petit numéro ou puce pour faire joli
+            item.innerHTML = `
+                <span class="w-6 h-6 flex items-center justify-center bg-gray-500/10 rounded-full text-xs mr-3 opacity-50 group-hover:bg-indigo-500 group-hover:text-white transition-colors">${index + 1}</span>
+                <span class="truncate opacity-90 group-hover:opacity-100">${chapter.label.trim()}</span>
+            `;
             
             item.onclick = function() {
                 rendition.display(chapter.href);
-                toggleSidebar(); 
+                // Sur mobile, on ferme le menu après le clic. Sur grand écran, on peut laisser le choix.
+                if(window.innerWidth < 768) toggleSidebar(); 
             };
             
             tocContainer.appendChild(item);
         });
         
         if (toc.length === 0) {
-            tocContainer.innerHTML = "<p class='text-xs opacity-50'>Aucun sommaire détecté.</p>";
+            tocContainer.innerHTML = "<div class='p-4 text-center opacity-50'>Aucun chapitre détecté.</div>";
         }
     });
 }
@@ -397,6 +398,38 @@ function toggleSidebar() { document.getElementById('sidebar').classList.toggle('
 function toggleFullscreen() { 
     if (!document.fullscreenElement) document.documentElement.requestFullscreen();
     else if (document.exitFullscreen) document.exitFullscreen();
+}
+
+// Fonction pour changer d'onglet dans le menu
+function switchTab(tabName) {
+    const tabToc = document.getElementById('tab-toc');
+    const tabInfo = document.getElementById('tab-info');
+    const contentToc = document.getElementById('content-toc');
+    const contentInfo = document.getElementById('content-info');
+
+    if (tabName === 'toc') {
+        // Activer l'onglet TOC
+        contentToc.classList.remove('hidden');
+        contentInfo.classList.add('hidden');
+        
+        // Styles des boutons
+        tabToc.classList.add('border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-500/10', 'opacity-100');
+        tabToc.classList.remove('border-transparent', 'opacity-60');
+        
+        tabInfo.classList.remove('border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-500/10', 'opacity-100');
+        tabInfo.classList.add('border-transparent', 'opacity-60');
+    } else {
+        // Activer l'onglet Info
+        contentInfo.classList.remove('hidden');
+        contentToc.classList.add('hidden');
+        
+        // Styles des boutons
+        tabInfo.classList.add('border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-500/10', 'opacity-100');
+        tabInfo.classList.remove('border-transparent', 'opacity-60');
+        
+        tabToc.classList.remove('border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400', 'bg-indigo-500/10', 'opacity-100');
+        tabToc.classList.add('border-transparent', 'opacity-60');
+    }
 }
 
 // Démarrage
