@@ -184,42 +184,41 @@ function toggleTTS() {
     else startTTS(false);
 }
 
+
 function startTTS(autoContinue = false) {
-    const location = rendition.currentLocation();
-    if (!location || !location.start || !location.end) return;
+    // 1. On vérifie s'il y a un contenu affiché
+    const currentViews = rendition.getContents();
+    if (!currentViews || currentViews.length === 0) {
+        console.warn("TTS: Aucun contenu détecté.");
+        return;
+    }
 
-    const startCfi = location.start.cfi;
-    const endCfi = location.end.cfi;
+    // 2. En mode "scrolled", on prend simplement tout le texte du chapitre
+    // C'est beaucoup plus robuste que de chercher des coordonnées CFI
+    const view = currentViews[0];
+    let text = view.document.body.innerText; // "innerText" respecte la mise en forme visible
 
-    book.getRange(startCfi + "-" + endCfi).then(range => {
-        let text = range.toString(); 
-        if (!text || text.trim().length === 0) {
-            try { text = range.cloneContents().textContent; } catch(e){}
+    // 3. Nettoyage du texte (enlève les retours à la ligne inutiles)
+    text = text.replace(/\s+/g, ' ').trim();
+
+    if (!text || text.length < 5) {
+        // Si le chapitre est vide (ex: juste une image), on passe au suivant
+        console.warn("TTS: Chapitre vide ou image seule.");
+        if (autoContinue) {
+            nextPageTTS();
+        } else {
+            alert("Ce chapitre ne contient pas de texte lisible.");
+            stopTTS();
         }
+        return;
+    }
 
-        text = text.replace(/\s+/g, ' ').trim();
-
-        if (!text || text.length < 5) {
-            console.warn("TTS: Texte vide, lecture chapitre complet...");
-            const chapter = book.spine.get(location.start.index);
-            chapter.load(book.load.bind(book)).then(contents => {
-                let fullText = contents.textContent.replace(/\s+/g, ' ').trim();
-                if(fullText.length > 5) {
-                    speakText(fullText, autoContinue);
-                } else {
-                    if(autoContinue) nextPageTTS();
-                    else { alert("Page vide ou image."); stopTTS(); }
-                }
-            });
-            return;
-        }
-        speakText(text, autoContinue);
-
-    }).catch(err => {
-        console.error("Erreur TTS:", err);
-        stopTTS();
-    });
+    // 4. Lancer la lecture
+    // Note : Si on est en "autoContinue", on ne relit pas le titre s'il est redondant, 
+    // mais ici on lit tout pour être sûr.
+    speakText(text, autoContinue);
 }
+
 
 function speakText(text, autoContinue) {
     if (speechUtterance) window.speechSynthesis.cancel();
@@ -251,7 +250,7 @@ function speakText(text, autoContinue) {
 }
 
 function stopTTS() {
-    window.speechSynthesis.cancel();
+    window.speechSynthesis.cancel(); // Coupe net le son
     isTTSPlaying = false;
     isPageTurningForTTS = false;
     updateTTSIcon(false);
