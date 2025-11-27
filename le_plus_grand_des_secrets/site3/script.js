@@ -53,7 +53,7 @@ function initReader(data) {
     // Création
     book = ePub(data);
     rendition = book.renderTo("viewer", {
-        width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "none"
+        width: "100%", height: "100%", flow: "paginated", manager: "default", spread: "auto"
     });
 
     // Thèmes
