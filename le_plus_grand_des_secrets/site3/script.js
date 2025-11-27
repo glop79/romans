@@ -1,19 +1,21 @@
 /**
- * SCRIPT.JS - Lecteur EPUB Pro (Version Scroll Vertical)
+ * SCRIPT.JS - Lecteur EPUB Pro (Version Finale)
  * - Mode: Scrolled (Défilement vertical)
- * - TTS: Extraction robuste
- * - Zoom: Jusqu'à 500%
+ * - Navigation: Chapitre par Chapitre
+ * - TTS: Compatible Mobile (Chunking/Queueing)
+ * - UI: Police XXL par défaut
  */
 
 // Config
 let config = { bookPath: "", title: "Lecteur Web", author: "", website: "#" };
 
-// Variables
+// Variables Globales
 let book, rendition;
 let isTTSPlaying = false;
 let speechUtterance = null;
 let isPageTurningForTTS = false;
-let voices = []; 
+let voices = [];
+let ttsQueue = []; // File d'attente pour la lecture phrase par phrase (Crucial pour Mobile)
 
 // ------------------------------------------------------------------
 // 1. INITIALISATION
@@ -21,6 +23,7 @@ let voices = [];
 
 async function init() {
     initVoices();
+    // Chrome/Android nécessitent parfois cet événement pour charger les voix
     if (speechSynthesis.onvoiceschanged !== undefined) {
         speechSynthesis.onvoiceschanged = initVoices;
     }
@@ -40,15 +43,14 @@ async function init() {
 }
 
 function initReader(data) {
-    // Nettoyage UI
+    // Nettoyage de l'écran de chargement
     const loader = document.getElementById('loader');
     if(loader) {
         loader.style.opacity = 0;
         setTimeout(() => loader.remove(), 500);
     }
     document.getElementById('toolbar').classList.remove('opacity-0');
-    document.querySelectorAll('button').forEach(b => b.classList.remove('opacity-0'));
-
+    
     // Création de l'objet Book
     book = ePub(data);
 
@@ -57,7 +59,7 @@ function initReader(data) {
         width: "100%", 
         height: "100%", 
         flow: "scrolled",       // Active le défilement vertical
-        manager: "default"   // Charge les chapitres à la suite
+        manager: "default"      // "default" est plus stable que "continuous" pour le scroll
     });
 
     // Thèmes CSS (Injection de règles pour forcer la lisibilité)
@@ -76,6 +78,7 @@ function initReader(data) {
         `
     };
 
+    // Application des styles au contenu de l'EPUB
     rendition.hooks.content.register(function(contents) {
         const style = contents.document.createElement("style");
         style.id = "reader-custom-style";
@@ -84,20 +87,16 @@ function initReader(data) {
         contents.document.head.appendChild(style);
     });
     
-	// Affichage initial
+    // Affichage initial
     rendition.display().then(() => {
         // --- REGLAGE TAILLE POLICE PAR DEFAUT ---
         const isMobile = window.innerWidth < 768;
         
-        // MODIFICATION ICI :
-        // Si mobile : on met 220% (très grand). 
-        // Si PC : on met 150% (confortable).
-        // Vous pouvez changer ces chiffres : 250, 300, etc.
-        window.currentFontSize = isMobile ? 300 : 150;
-        
+        // Mobile : 220% | PC : 150%
+        window.currentFontSize = isMobile ? 220 : 150;
         rendition.themes.fontSize(window.currentFontSize + "%");
 
-        generateTOC();
+        generateTOC(); // Générer le sommaire
         if (!config.title) loadMetadataInternal();
         setTimeout(initVoices, 500);
     });
@@ -106,17 +105,20 @@ function initReader(data) {
     rendition.on("relocated", (location) => {
         updateProgress(location);
         
-        // Gestion TTS lors du changement de chapitre
+        // Gestion TTS lors du changement automatique de chapitre
         if (isTTSPlaying) {
             if (isPageTurningForTTS) {
                 isPageTurningForTTS = false;
-                setTimeout(() => startTTS(true), 600); 
+                // Petite pause pour laisser le DOM charger avant de relancer la lecture
+                setTimeout(() => startTTS(true), 1000); 
             } else {
+                // Si l'utilisateur change de chapitre manuellement, on coupe le son
                 stopTTS(); 
             }
         }
     });
 
+    // Clavier (Flèches)
     document.addEventListener("keyup", (e) => {
         if (e.key === "ArrowLeft") prevPage();
         if (e.key === "ArrowRight") nextPage();
@@ -132,6 +134,7 @@ function initVoices() {
     const select = document.getElementById('voice-select');
     if (!select) return;
     
+    // Sauvegarde sélection
     const currentVal = select.value;
     select.innerHTML = "";
     
@@ -142,6 +145,7 @@ function initVoices() {
         return;
     }
 
+    // Trier : Français en premier
     voices.sort((a, b) => {
         const aFr = a.lang.startsWith('fr');
         const bFr = b.lang.startsWith('fr');
@@ -158,6 +162,7 @@ function initVoices() {
         select.appendChild(option);
     });
 
+    // Restaurer choix
     const savedVoice = localStorage.getItem('reader-voice');
     if (savedVoice && voices[savedVoice]) {
         select.value = savedVoice;
@@ -169,14 +174,14 @@ function initVoices() {
     select.onchange = (e) => {
         localStorage.setItem('reader-voice', e.target.value);
         if (isTTSPlaying) {
-            window.speechSynthesis.cancel();
-            setTimeout(() => startTTS(false), 100);
+            stopTTS();
+            setTimeout(() => startTTS(false), 200);
         }
     };
 }
 
 // ------------------------------------------------------------------
-// 3. TTS (SYNTHÈSE VOCALE)
+// 3. TTS (SYNTHÈSE VOCALE) - VERSION MOBILE & SCROLL
 // ------------------------------------------------------------------
 
 function toggleTTS() {
@@ -184,50 +189,53 @@ function toggleTTS() {
     else startTTS(false);
 }
 
-
 function startTTS(autoContinue = false) {
-    // 1. On vérifie s'il y a un contenu affiché
+    // 1. Récupération du texte du chapitre entier
     const currentViews = rendition.getContents();
-    if (!currentViews || currentViews.length === 0) {
-        console.warn("TTS: Aucun contenu détecté.");
-        return;
-    }
+    if (!currentViews || currentViews.length === 0) return;
 
-    // 2. En mode "scrolled", on prend simplement tout le texte du chapitre
-    // C'est beaucoup plus robuste que de chercher des coordonnées CFI
     const view = currentViews[0];
-    let text = view.document.body.innerText; // "innerText" respecte la mise en forme visible
-
-    // 3. Nettoyage du texte (enlève les retours à la ligne inutiles)
+    let text = view.document.body.innerText; 
+    
+    // Nettoyage basique
     text = text.replace(/\s+/g, ' ').trim();
 
     if (!text || text.length < 5) {
-        // Si le chapitre est vide (ex: juste une image), on passe au suivant
-        console.warn("TTS: Chapitre vide ou image seule.");
-        if (autoContinue) {
-            nextPageTTS();
-        } else {
-            alert("Ce chapitre ne contient pas de texte lisible.");
-            stopTTS();
-        }
+        console.warn("TTS: Chapitre vide ou image.");
+        if (autoContinue) nextPageTTS();
+        else { alert("Ce chapitre ne contient pas de texte."); stopTTS(); }
         return;
     }
 
-    // 4. Lancer la lecture
-    // Note : Si on est en "autoContinue", on ne relit pas le titre s'il est redondant, 
-    // mais ici on lit tout pour être sûr.
-    speakText(text, autoContinue);
+    // 2. DÉCOUPAGE EN PHRASES (Chunking)
+    // Indispensable pour Android qui plante si le texte > 4000 caractères
+    const sentences = text.match(/[^.!?:]+[.!?:]+["']?|[^.!?:]+$/g);
+    
+    if (sentences) {
+        ttsQueue = sentences; // On remplit la file d'attente
+        playNextChunk(autoContinue); // On lance la première phrase
+        isTTSPlaying = true;
+        updateTTSIcon(true);
+    }
 }
 
+function playNextChunk(autoContinue) {
+    // Si la file est vide, le chapitre est fini
+    if (ttsQueue.length === 0) {
+        nextPageTTS(); // On passe au chapitre suivant
+        return;
+    }
 
-function speakText(text, autoContinue) {
+    // On prend la première phrase de la liste
+    const chunk = ttsQueue.shift();
+
     if (speechUtterance) window.speechSynthesis.cancel();
-    
-    speechUtterance = new SpeechSynthesisUtterance(text);
-    
+
+    speechUtterance = new SpeechSynthesisUtterance(chunk);
+
+    // Configuration de la voix
     const select = document.getElementById('voice-select');
     const voiceIndex = select ? select.value : 0;
-    
     if (voices[voiceIndex]) {
         speechUtterance.voice = voices[voiceIndex];
         speechUtterance.lang = voices[voiceIndex].lang;
@@ -235,22 +243,25 @@ function speakText(text, autoContinue) {
     
     speechUtterance.rate = 1.0;
 
+    // Quand cette phrase est finie, on lance la suivante (Récursivité)
     speechUtterance.onend = () => {
-        if (isTTSPlaying) nextPageTTS();
+        if (isTTSPlaying) {
+            playNextChunk(autoContinue);
+        }
     };
 
     speechUtterance.onerror = (e) => {
-        console.error("Erreur Audio", e);
-        stopTTS();
+        console.error("Erreur TTS Chunk", e);
+        // En cas d'erreur ponctuelle, on essaie de forcer la suite
+        if (isTTSPlaying) playNextChunk(autoContinue);
     };
 
     window.speechSynthesis.speak(speechUtterance);
-    isTTSPlaying = true;
-    updateTTSIcon(true);
 }
 
 function stopTTS() {
-    window.speechSynthesis.cancel(); // Coupe net le son
+    window.speechSynthesis.cancel();
+    ttsQueue = []; // Important : on vide la file pour ne pas que ça reparte
     isTTSPlaying = false;
     isPageTurningForTTS = false;
     updateTTSIcon(false);
@@ -263,7 +274,7 @@ function nextPageTTS() {
 
 function updateTTSIcon(playing) {
     const icon = document.querySelector('#tts-btn i');
-    if(icon) icon.className = playing ? "ph-fill ph-stop-circle text-xl text-red-500" : "ph ph-speaker-high text-xl";
+    if(icon) icon.className = playing ? "ph-fill ph-stop-circle text-3xl text-red-500" : "ph ph-speaker-high text-3xl";
 }
 
 // ------------------------------------------------------------------
@@ -273,9 +284,9 @@ function updateTTSIcon(playing) {
 function prevPage() { if(rendition) rendition.prev(); }
 function nextPage() { if(rendition) rendition.next(); }
 
-// Note: En mode "scrolled", spread ne fait rien visuellement, mais on garde la fonction pour éviter les erreurs
+// Spread désactivé en mode scroll, mais fonction gardée pour éviter erreur JS
 function toggleSpread() {
-    console.log("Mode Spread désactivé en mode défilement");
+    console.log("Mode Spread inactif en défilement vertical");
 }
 
 function applyTheme(theme) {
@@ -320,42 +331,34 @@ function updateProgress(location) {
     if(text) text.innerText = `${Math.round(percent * 100)}%`;
 }
 
+// Génération du Sommaire (NOUVEAU)
 function generateTOC() {
-    // On attend que les données de navigation soient chargées
     book.loaded.navigation.then(function(toc) {
         const tocContainer = document.getElementById('toc-container');
         if (!tocContainer) return;
         
-        // On vide le message "Chargement..."
         tocContainer.innerHTML = "";
         
-        // toc est un tableau d'objets (label, href, subitems...)
         toc.forEach(function(chapter) {
-            // Création du bouton pour le chapitre
             const item = document.createElement('button');
-            
-            // Style Tailwind pour faire joli (aligné à gauche, padding, hover)
             item.className = "text-left w-full py-2 px-3 rounded hover:bg-indigo-500/10 transition-colors border-b border-gray-500/10 last:border-0 truncate";
-            
-            // Nettoyage du titre (enlève les espaces inutiles)
             item.textContent = chapter.label.trim();
-            item.title = chapter.label; // Bulle d'info si le titre est coupé
+            item.title = chapter.label;
             
-            // L'action au clic
             item.onclick = function() {
-                rendition.display(chapter.href); // Aller au chapitre
-                toggleSidebar(); // Fermer le menu automatiquement
+                rendition.display(chapter.href);
+                toggleSidebar(); // Fermer le menu après clic
             };
             
             tocContainer.appendChild(item);
         });
         
-        // Si le sommaire est vide
         if (toc.length === 0) {
             tocContainer.innerHTML = "<p class='text-xs opacity-50'>Aucun sommaire détecté.</p>";
         }
     });
 }
+
 function loadMetadataInternal() {
     book.loaded.metadata.then(meta => {
         const title = document.getElementById('book-title');
