@@ -332,7 +332,6 @@ function updateProgress(location) {
 }
 
 // Génération du Sommaire (NOUVEAU)
-// Génération du Sommaire (VERSION COMPACTE)
 function generateTOC() {
     book.loaded.navigation.then(function(toc) {
         const tocContainer = document.getElementById('toc-container');
@@ -342,18 +341,13 @@ function generateTOC() {
         
         toc.forEach(function(chapter) {
             const item = document.createElement('button');
-            
-            // MODIFICATIONS ICI :
-            // 1. "text-sm" : Taille de police petite (vous pouvez mettre "text-xs" pour encore plus petit)
-            // 2. "py-1" : Moins d'espace en hauteur (c'était py-2 avant)
-            item.className = "text-left w-full py-1 px-3 text-sm rounded hover:bg-indigo-500/10 transition-colors border-b border-gray-500/10 last:border-0 truncate";
-            
+            item.className = "text-left w-full py-2 px-3 rounded hover:bg-indigo-500/10 transition-colors border-b border-gray-500/10 last:border-0 truncate";
             item.textContent = chapter.label.trim();
             item.title = chapter.label;
             
             item.onclick = function() {
                 rendition.display(chapter.href);
-                toggleSidebar(); 
+                toggleSidebar(); // Fermer le menu après clic
             };
             
             tocContainer.appendChild(item);
