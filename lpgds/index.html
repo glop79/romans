@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Plus Grand Des Secrets - Audiobook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #111111;
+            --accent: #00d2ff; /* Cyan électrique */
+            --accent-dim: rgba(0, 210, 255, 0.1);
+            --text-main: #e0e0e0;
+            --text-sec: #888;
+            --border: #222;
+        }
+
+        * { box-sizing: border_box; margin: 0; padding: 0; outline: none; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Fond subtil style "Data/Matrix" */
+            background-image: 
+                linear-gradient(rgba(5,5,5,0.9), rgba(5,5,5,0.9)),
+                url('https://www.transparenttextures.com/patterns/cubes.png');
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1200px;
+            height: 85vh;
+            background: var(--bg-panel);
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            display: flex;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Effet de lueur sur le bord */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        /* Zone Gauche : Contrôles & Info */
+        .player-zone {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border-right: 1px solid var(--border);
+            background: radial-gradient(circle at top left, #1a1a1a, #111);
+            position: relative;
+        }
+
+        .book-info h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .book-info h2 {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 400;
+            letter-spacing: 2px;
+        }
+
+        /* Visualisation couverture */
+        .cover-art {
+            width: 280px;
+            height: 280px;
+            margin: 30px auto;
+            background: #000;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #333;
+        }
+
+        .cover-art img {
+            width: 100%; height: 100%; object-fit: cover;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        /* Effet "Soundwave" animé */
+        .sound-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 30px;
+            gap: 3px;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .playing .sound-wave { opacity: 1; }
+
+        .bar {
+            width: 4px;
+            height: 10px;
+            background: var(--accent);
+            animation: wave 1s infinite ease-in-out;
+        }
+        
+        .bar:nth-child(1) { animation-delay: 0.0s; }
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0%, 100% { height: 5px; opacity: 0.5; }
+            50% { height: 20px; opacity: 1; }
+        }
+
+        /* Contrôles */
+        .progress-wrapper {
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #333;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+            transition: height 0.2s;
+        }
+
+        .progress-wrapper:hover .progress-bar { height: 6px; }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            width: 0%;
+            box-shadow: 0 0 10px var(--accent);
+            transition: width 0.1s linear;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-sec);
+            margin-top: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .btn {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover { color: var(--accent); transform: scale(1.1); }
+        
+        .btn-skip { font-size: 1.2rem; color: var(--text-sec); }
+        .btn-main { 
+            width: 60px; height: 60px; 
+            border-radius: 50%; 
+            border: 1px solid var(--text-sec);
+            font-size: 1.5rem;
+        }
+        .btn-main:hover { border-color: var(--accent); background: var(--accent-dim); }
+
+        /* Zone Droite : Playlist */
+        .playlist-zone {
+            width: 400px;
+            background: #0e0e0e;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .playlist-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+            color: var(--text-sec);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .track-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        /* Custom Scrollbar */
+        .track-list::-webkit-scrollbar { width: 6px; }
+        .track-list::-webkit-scrollbar-track { background: #0e0e0e; }
+        .track-list::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        .track-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #1a1a1a;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .track-item:hover { background: #161616; color: #fff; }
+
+        .track-item.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+
+        .track-num {
+            width: 30px;
+            font-size: 0.8rem;
+            color: var(--text-sec);
+        }
+
+        .track-info { flex: 1; }
+        .track-duration { font-size: 0.8rem; color: var(--text-sec); }
+
+        /* Indicateur audio dans la liste */
+        .playing-icon {
+            width: 15px; height: 15px;
+            margin-right: 10px;
+            display: none;
+        }
+        .active .playing-icon { display: block; fill: var(--accent); }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            .container { flex-direction: column; height: 100vh; width: 100%; border-radius: 0; }
+            .player-zone { height: 55%; padding: 20px; border-right: none; border-bottom: 1px solid var(--border); }
+            .playlist-zone { width: 100%; height: 45%; }
+            .cover-art { width: 180px; height: 180px; margin: 15px auto; }
+            .book-info h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Partie Gauche : Lecteur -->
+    <div class="player-zone" id="player-zone">
+        <div class="book-info">
+            <h1>Le Plus Grand Des Secrets</h1>
+            <h2>Franck PLATON</h2>
+        </div>
+
+        <div class="cover-art">
+            <!-- Remplacer src par votre image 'cover.jpg' si vous en avez une -->
+            <img src="https://placehold.co/400x400/111/00d2ff?text=AUDIOBOOK" alt="Cover" id="cover-img">
+            
+            <!-- Animation ondes sonores -->
+            <div class="sound-wave">
+                <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
+        </div>
+
+        <div class="chapter-display">
+            <div style="color: var(--text-sec); font-size: 0.9rem; margin-bottom: 5px;">LECTURE EN COURS</div>
+            <div id="current-chapter-title" style="color: #fff; font-size: 1.1rem;">Sélectionnez un chapitre</div>
+        </div>
+
+        <div class="controls-wrapper">
+            <div class="progress-wrapper" id="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="time-info">
+                    <span id="curr-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-skip" id="prev-track" title="Précédent">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M11 19V5l-7 7 7 7zm9 0V5l-7 7 7 7z"/></svg>
+                </button>
+                <button class="btn btn-skip" id="rw-15" title="-15 sec">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><text x="12" y="18" font-size="8" text-anchor="middle" fill="currentColor" stroke="none">15</text></svg>
+                </button>
+                
+                <button class="btn btn-main" id="play-pause">
+                    <!-- Play Icon -->
+                    <svg id="play-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    <!-- Pause Icon (Hidden default) -->
+                    <svg id="pause-icon" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+
+                <button class="btn btn-skip" id="ff-15" title="+15 sec">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><text x="12" y="18" font-size="8" text-anchor="middle" fill="currentColor" stroke="none">15</text></svg>
+                </button>
+                <button class="btn btn-skip" id="next-track" title="Suivant">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4 5v14l7-7-7-7zm9 0v14l7-7-7-7z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Partie Droite : Playlist -->
+    <div class="playlist-zone">
+        <div class="playlist-header">Sommaire des chapitres</div>
+        <div class="track-list" id="playlist">
+            <!-- JS insérera les pistes ici -->
+        </div>
+    </div>
+</div>
+
+<audio id="audio" preload="metadata"></audio>
+
+<script>
+    // Liste EXACTE des fichiers fournis
+    const playlistData = [
+        { file: "LPGDS_chapitre_00b.mp3", title: "Prologue : Le Commencement" },
+        { file: "LPGDS_chapitre_01b.mp3", title: "Chapitre 1" },
+        { file: "LPGDS_chapitre_02b.mp3", title: "Chapitre 2" },
+        { file: "LPGDS_chapitre_03b.mp3", title: "Chapitre 3" },
+        { file: "LPGDS_chapitre_04b.mp3", title: "Chapitre 4" },
+        { file: "LPGDS_chapitre_05b.mp3", title: "Chapitre 5" },
+        { file: "LPGDS_chapitre_06b.mp3", title: "Chapitre 6" },
+        { file: "LPGDS_chapitre_07b.mp3", title: "Chapitre 7" },
+        { file: "LPGDS_chapitre_08b.mp3", title: "Chapitre 8" },
+        { file: "LPGDS_chapitre_09b.mp3", title: "Chapitre 9" },
+        { file: "LPGDS_chapitre_10b.mp3", title: "Chapitre 10" },
+        { file: "LPGDS_chapitre_11b.mp3", title: "Chapitre 11" },
+        { file: "LPGDS_chapitre_12c.mp3", title: "Chapitre 12" },
+        { file: "LPGDS_chapitre_13c.mp3", title: "Chapitre 13" },
+        { file: "LPGDS_chapitre_14c.mp3", title: "Chapitre 14" },
+        { file: "LPGDS_chapitre_15c.mp3", title: "Chapitre 15" },
+        { file: "LPGDS_chapitre_16c.mp3", title: "Chapitre 16" },
+        { file: "LPGDS_chapitre_17c.mp3", title: "Chapitre 17" },
+        { file: "LPGDS_chapitre_18c.mp3", title: "Chapitre 18" },
+        { file: "LPGDS_chapitre_19c.mp3", title: "Chapitre 19" },
+        { file: "LPGDS_chapitre_20c.mp3", title: "Chapitre 20" },
+        { file: "LPGDS_chapitre_21c.mp3", title: "Chapitre 21" },
+        { file: "LPGDS_chapitre_22c.mp3", title: "Chapitre 22" },
+        { file: "LPGDS_chapitre_23c.mp3", title: "Chapitre 23" },
+        { file: "LPGDS_chapitre_99c.mp3", title: "Épilogue" }
+    ];
+
+    // Variables
+    let currentTrack = 0;
+    const audio = document.getElementById('audio');
+    const playBtn = document.getElementById('play-pause');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const progressBar = document.getElementById('progress-fill');
+    const progressContainer = document.getElementById('progress-container');
+    const currTimeEl = document.getElementById('curr-time');
+    const totalTimeEl = document.getElementById('total-time');
+    const chapterTitle = document.getElementById('current-chapter-title');
+    const playlistEl = document.getElementById('playlist');
+    const playerZone = document.getElementById('player-zone');
+
+    // Clé de sauvegarde locale
+    const STORAGE_KEY = 'LPGDS_audiobook_progress';
+
+    // Initialisation
+    function init() {
+        renderPlaylist();
+        loadSavedProgress();
+    }
+
+    // Afficher la playlist
+    function renderPlaylist() {
+        playlistEl.innerHTML = '';
+        playlistData.forEach((track, index) => {
+            const div = document.createElement('div');
+            div.className = `track-item ${index === currentTrack ? 'active' : ''}`;
+            div.innerHTML = `
+                <div class="playing-icon">
+                    <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                </div>
+                <span class="track-num">${index < 10 ? '0'+index : index}</span>
+                <span class="track-info">${track.title}</span>
+            `;
+            div.onclick = () => playTrack(index);
+            playlistEl.appendChild(div);
+        });
+    }
+
+    // Charger une piste
+    function loadTrack(index) {
+        currentTrack = index;
+        audio.src = playlistData[index].file;
+        chapterTitle.textContent = playlistData[index].title;
+        
+        // Mise à jour visuelle playlist
+        const items = document.querySelectorAll('.track-item');
+        items.forEach(item => item.classList.remove('active'));
+        items[index].classList.add('active');
+        
+        // Scroll automatique vers la piste
+        items[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Reset affichage
+        progressBar.style.width = '0%';
+        currTimeEl.textContent = '0:00';
+    }
+
+    // Jouer une piste spécifique
+    function playTrack(index) {
+        loadTrack(index);
+        audio.play();
+        updatePlayButton(true);
+    }
+
+    // Toggle Play/Pause
+    function togglePlay() {
+        if (audio.paused) {
+            audio.play();
+            updatePlayButton(true);
+        } else {
+            audio.pause();
+            updatePlayButton(false);
+        }
+    }
+
+    // Mise à jour bouton et animation
+    function updatePlayButton(isPlaying) {
+        if (isPlaying) {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+            playerZone.classList.add('playing');
+        } else {
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+            playerZone.classList.remove('playing');
+        }
+    }
+
+    // Barre de progression
+    function updateProgress(e) {
+        const { duration, currentTime } = e.srcElement;
+        if (isNaN(duration)) return;
+
+        const percent = (currentTime / duration) * 100;
+        progressBar.style.width = `${percent}%`;
+        
+        currTimeEl.textContent = formatTime(currentTime);
+        totalTimeEl.textContent = formatTime(duration);
+
+        // Sauvegarde auto
+        saveProgress();
+    }
+
+    function setProgress(e) {
+        const width = this.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audio.duration;
+        audio.currentTime = (clickX / width) * duration;
+    }
+
+    // Formatage temps (MM:SS)
+    function formatTime(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = Math.floor(seconds % 60);
+        return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+    }
+
+    // Sauvegarde progression
+    function saveProgress() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            trackIndex: currentTrack,
+            currentTime: audio.currentTime
+        }));
+    }
+
+    // Chargement progression
+    function loadSavedProgress() {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved) {
+            loadTrack(saved.trackIndex);
+            audio.currentTime = saved.currentTime;
+            // On ne lance pas la lecture auto pour ne pas surprendre
+        } else {
+            loadTrack(0);
+        }
+    }
+
+    // Événements
+    playBtn.addEventListener('click', togglePlay);
+    
+    document.getElementById('prev-track').addEventListener('click', () => {
+        if (currentTrack > 0) playTrack(currentTrack - 1);
+    });
+    
+    document.getElementById('next-track').addEventListener('click', () => {
+        if (currentTrack < playlistData.length - 1) playTrack(currentTrack + 1);
+    });
+
+    // Boutons -15s / +15s
+    document.getElementById('rw-15').addEventListener('click', () => audio.currentTime -= 15);
+    document.getElementById('ff-15').addEventListener('click', () => audio.currentTime += 15);
+
+    audio.addEventListener('timeupdate', updateProgress);
+    progressContainer.addEventListener('click', setProgress);
+    
+    // Fin de piste = Piste suivante auto
+    audio.addEventListener('ended', () => {
+        if (currentTrack < playlistData.length - 1) {
+            playTrack(currentTrack + 1);
+        } else {
+            updatePlayButton(false);
+        }
+    });
+
+    // Charger durée quand métadonnées prêtes
+    audio.addEventListener('loadedmetadata', () => {
+        totalTimeEl.textContent = formatTime(audio.duration);
+    });
+
+    // Lancement
+    init();
+
+</script>
+
+</body>
+</html>
