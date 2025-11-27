@@ -57,9 +57,10 @@ function initReader(data) {
     });
 
     // Thèmes
-    const themeRules = {
-        light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
-        dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
+	const themeRules = {
+        // J'ai ajouté 'font-size: 100% !important' dans le bloc p, span, div...
+        light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
+        dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
     };
 
     rendition.hooks.content.register(function(contents) {
@@ -69,11 +70,19 @@ function initReader(data) {
         style.innerHTML = themeRules[currentTheme];
         contents.document.head.appendChild(style);
     });
+	
+	rendition.display().then(() => {
+        // --- NOUVEAU CODE DEBUT ---
+        // Détection mobile basique (si largeur écran < 768px)
+        const isMobile = window.innerWidth < 768;
+        
+        // Si mobile, on met 140% par défaut, sinon 100%
+        window.currentFontSize = isMobile ? 140 : 100;
+        rendition.themes.fontSize(window.currentFontSize + "%");
+        // --- NOUVEAU CODE FIN ---
 
-    rendition.display().then(() => {
         generateTOC();
         if (!config.title) loadMetadataInternal();
-        // Ré-initialiser les voix après chargement pour être sûr
         setTimeout(initVoices, 500);
     });
 
@@ -285,8 +294,8 @@ function applyTheme(theme) {
 
     if (rendition) {
         const rules = {
-            light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
-            dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
+			light: `body { background-color: #ffffff !important; color: #000000 !important; } p, span, div, li, h1, h2, h3 { font-size: 100% !important; color: #000000 !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } a { color: #4f46e5 !important; }`,
+			dark: `body { background-color: #111827 !important; color: #d1d5db !important; } p, span, div, li { font-size: 100% !important; color: #d1d5db !important; font-family: 'Merriweather', serif !important; line-height: 1.6 !important; } h1, h2, h3 { color: #ffffff !important; font-family: 'Inter', sans-serif !important; } a { color: #818cf8 !important; } img { filter: brightness(0.8) contrast(1.2) !important; }`
         };
         rendition.getContents().forEach(contents => {
             let styleTag = contents.document.getElementById("reader-custom-style");
@@ -302,11 +311,18 @@ function applyTheme(theme) {
 
 function changeFontSize(amount) {
     if (!rendition) return;
+    // Si la taille n'est pas définie, on part de 100
     if (!window.currentFontSize) window.currentFontSize = 100;
+    // On ajoute le montant (ex: +25 ou -25)
     window.currentFontSize += amount;
+    // NOUVEAUX REGLAGES :
+    // Minimum 50% (inchangé)
     if (window.currentFontSize < 50) window.currentFontSize = 50;
-    if (window.currentFontSize > 250) window.currentFontSize = 250;
+    // Maximum augmenté à 500% (au lieu de 250%)
+    if (window.currentFontSize > 500) window.currentFontSize = 500;
     rendition.themes.fontSize(window.currentFontSize + "%");
+    // Petit feedback console pour vous aider à tester
+    console.log("Taille actuelle : " + window.currentFontSize + "%");
 }
 
 function updateProgress(location) {
