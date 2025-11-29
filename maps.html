@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QG GARDIENS - Interface Tactique v8.0 (Final)</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-red: #ff003c;
+            --neon-gold: #ffd700;
+            --bg-dark: #050a10;
+            --panel-bg: rgba(8, 12, 18, 0.95);
+            --grid-color: rgba(0, 243, 255, 0.03);
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-dark);
+            font-family: 'Share Tech Mono', monospace;
+            color: white; overflow: hidden;
+        }
+
+        #map {
+            height: 100vh; width: 100%; z-index: 1;
+            /* Look "Satellite Négatif" */
+            filter: sepia(15%) contrast(115%) saturate(50%) hue-rotate(185deg) invert(5%);
+        }
+
+        /* --- FX COUCHES VISUELLES --- */
+        .grid-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(var(--grid-color) 1px, transparent 1px), linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 60px 60px; z-index: 9000; pointer-events: none;
+        }
+        
+        .scanlines {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%);
+            background-size: 100% 4px; z-index: 9001; pointer-events: none;
+        }
+        
+        .vignette {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            box-shadow: 0 0 250px rgba(0,0,0,0.9) inset; z-index: 9002; pointer-events: none;
+        }
+
+        .radar-sweep {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 150vmax; height: 150vmax; border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, transparent 320deg, rgba(0, 243, 255, 0.05) 340deg, rgba(0, 243, 255, 0.15) 360deg);
+            z-index: 8000; pointer-events: none; animation: radarSpin 10s linear infinite; mix-blend-mode: screen;
+        }
+        @keyframes radarSpin { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+        /* --- HUD --- */
+        .hud-header {
+            position: absolute; top: 0; left: 0; width: 100%; padding: 20px 30px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.95), transparent);
+            z-index: 10000; pointer-events: none; display: flex; justify-content: space-between;
+            border-top: 4px solid var(--neon-blue); box-sizing: border-box;
+        }
+        
+        .title-box { pointer-events: auto; }
+        .title-box h1 { 
+            margin: 0; font-family: 'Rajdhani', sans-serif; font-weight: 800; font-size: 36px; 
+            letter-spacing: 4px; color: var(--neon-blue); text-shadow: 0 0 15px var(--neon-blue);
+        }
+        
+        .status-box { text-align: right; }
+        .status-badge {
+            background: rgba(0, 243, 255, 0.1); border: 1px solid var(--neon-blue); color: var(--neon-blue); 
+            padding: 4px 10px; font-size: 11px; display: inline-block; margin-bottom: 5px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        /* --- MARKERS --- */
+        .marker-icon {
+            background: rgba(0,0,0,0.9); border: 1px solid white; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 10px; width: 100%; height: 100%; transition: all 0.3s;
+            position: relative; z-index: 100;
+        }
+        .shape-circle { border-radius: 50%; }
+        .shape-square { transform: rotate(45deg); }
+        .shape-hex { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); background: var(--neon-gold); color: black; border: none; }
+
+        .marker-danger .marker-icon { border-color: var(--neon-red); color: var(--neon-red); box-shadow: 0 0 10px var(--neon-red); }
+        .marker-safe .marker-icon { border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+        .marker-intel .marker-icon { border-color: var(--neon-gold); color: var(--neon-gold); box-shadow: 0 0 10px var(--neon-gold); }
+
+        .marker-icon:hover { transform: scale(1.4); z-index: 9999; cursor: pointer; background: white; color: black !important; }
+
+        /* Animation Target Lock */
+        .target-lock {
+            position: absolute; width: 80px; height: 80px; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            pointer-events: none; z-index: 90; display: none;
+        }
+        .target-lock::before {
+            content: ''; position: absolute; inset: 0; border: 1px dashed var(--neon-blue); border-radius: 50%;
+            animation: spin 6s linear infinite; opacity: 0.7;
+        }
+        .target-lock::after {
+            content: ''; position: absolute; inset: 15px; border: 2px solid var(--neon-blue); 
+            border-left: transparent; border-right: transparent; border-radius: 50%;
+            animation: spin 3s linear infinite reverse;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- SIDEBAR --- */
+        #info-panel {
+            position: absolute; top: 0; right: -600px; width: 500px; height: 100vh;
+            background: var(--panel-bg); border-left: 2px solid var(--neon-blue);
+            z-index: 10001; padding: 40px; transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            box-shadow: -30px 0 100px rgba(0,0,0,0.95); display: flex; flex-direction: column;
+            backdrop-filter: blur(10px);
+        }
+        #info-panel.active { right: 0; }
+        
+        .folder-tab {
+            position: absolute; top: 150px; left: -40px; width: 40px; height: 140px;
+            background: var(--neon-blue); color: black; font-family: 'Rajdhani'; font-weight: 800; font-size: 16px;
+            writing-mode: vertical-rl; text-align: center; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 90%);
+            transition: all 0.2s; box-shadow: -5px 0 15px rgba(0, 243, 255, 0.3);
+        }
+        .folder-tab:hover { background: white; color: black; }
+
+        .data-header { border-bottom: 2px solid #333; margin-bottom: 20px; padding-bottom: 15px; position: relative; }
+        .data-title { font-family: 'Rajdhani', sans-serif; font-size: 32px; font-weight: 800; margin: 0; text-transform: uppercase; line-height: 0.95; }
+        .data-meta { display: flex; justify-content: space-between; margin-top: 10px; font-size: 11px; color: #777; font-family: 'Courier New'; }
+
+        .classified-stamp {
+            position: absolute; top: -10px; right: 0; border: 3px solid var(--neon-red); color: var(--neon-red);
+            font-size: 14px; font-weight: 900; padding: 5px 12px; transform: rotate(-12deg);
+            opacity: 0.8; letter-spacing: 2px; mix-blend-mode: screen; pointer-events: none;
+        }
+
+        .data-content { flex-grow: 1; overflow-y: auto; padding-right: 10px; }
+        
+        .typewriter-text {
+            font-size: 14px; line-height: 1.6; color: #ddd; margin-bottom: 25px;
+            border-left: 2px solid #333; padding-left: 15px;
+        }
+        .cursor::after { content: '█'; animation: blink 1s infinite; color: var(--neon-blue); }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        .evidence-box { background: rgba(0,0,0,0.4); border: 1px solid #333; padding: 4px; margin-top: 20px; }
+        .evidence-header { background: #111; color: #888; padding: 5px 10px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .evidence-img {
+            width: 100%; height: 260px; background: #000;
+            display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative;
+        }
+        .evidence-img img {
+            width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1s;
+            filter: contrast(1.1) saturate(0.9) sepia(0.1);
+        }
+        .evidence-img img.loaded { opacity: 1; }
+        .evidence-overlay {
+            position: absolute; top:0; left:0; width:100%; height:100%;
+            background: linear-gradient(to bottom, transparent 85%, black 100%);
+            pointer-events: none;
+        }
+
+        /* --- CONTROLS --- */
+        .controls-container {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            width: 80%; max-width: 900px; z-index: 10000;
+            display: flex; flex-direction: column; gap: 15px; pointer-events: none;
+        }
+        
+        .timeline-wrapper {
+            background: rgba(0,0,0,0.9); border: 1px solid #333; border-radius: 5px;
+            padding: 15px 30px; pointer-events: auto; display: flex; flex-direction: column; gap: 5px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8); position: relative;
+            clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
+        }
+        .timeline-wrapper::before {
+            content:''; position: absolute; top:-2px; left:30%; right:30%; height:2px; background: var(--neon-blue);
+        }
+
+        .year-display {
+            text-align: center; font-size: 14px; color: var(--neon-blue); font-weight: bold; letter-spacing: 3px;
+        }
+        
+        input[type=range] { width: 100%; cursor: pointer; height: 4px; background: #333; -webkit-appearance: none; margin: 15px 0; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 20px; width: 20px; background: black; border: 2px solid var(--neon-blue);
+            cursor: pointer; transform: rotate(45deg); box-shadow: 0 0 15px var(--neon-blue);
+        }
+
+        .filter-bar {
+            display: flex; justify-content: center; gap: 15px; pointer-events: auto;
+        }
+        .btn-tac {
+            background: rgba(0,0,0,0.9); border: 1px solid #444; color: #888;
+            padding: 10px 25px; font-family: 'Share Tech Mono'; cursor: pointer;
+            text-transform: uppercase; font-size: 11px; transition: all 0.2s;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+        }
+        .btn-tac:hover, .btn-tac.active {
+            background: var(--neon-blue); color: black; border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+        .btn-tac.danger:hover, .btn-tac.danger.active {
+            background: var(--neon-red); color: white; border-color: var(--neon-red); box-shadow: 0 0 20px rgba(255, 0, 60, 0.4);
+        }
+
+        .story-btn {
+            position: absolute; top: 120px; right: 40px; z-index: 10000; pointer-events: auto;
+            background: var(--neon-red); color: white; border: none;
+            padding: 15px 40px; font-family: 'Rajdhani'; font-weight: 800; font-size: 20px;
+            cursor: pointer; clip-path: polygon(20px 0, 100% 0, 100% 100%, 0 100%, 0 20px);
+            animation: pulse-red 2s infinite; text-transform: uppercase; letter-spacing: 3px;
+            transition: all 0.3s;
+        }
+        .story-btn:hover { background: white; color: var(--neon-red); }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(255, 0, 60, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 60, 0); } }
+
+        /* Controls */
+        .btn-next-step {
+            margin-top: 25px; width: 100%; background: var(--neon-blue); color: black;
+            border: none; padding: 15px; font-family: 'Rajdhani'; font-weight: 800; font-size: 18px;
+            cursor: pointer; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            transition: all 0.2s; letter-spacing: 2px;
+        }
+        .btn-next-step:hover { background: white; box-shadow: 0 0 20px var(--neon-blue); }
+
+        .autoplay-control {
+            position: absolute; top: 190px; right: 40px; z-index: 10000; pointer-events: auto;
+            background: rgba(0,0,0,0.8); border: 1px solid #444; padding: 8px 15px;
+            font-size: 12px; color: var(--neon-blue); display: flex; align-items: center; gap: 10px;
+            font-family: 'Share Tech Mono'; clip-path: polygon(5px 0, 100% 0, 100% 100%, 0 100%, 0 5px);
+        }
+        input[type="checkbox"] { width: auto; margin: 0; cursor: pointer; accent-color: var(--neon-blue); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-blue); }
+
+    </style>
+</head>
+<body>
+
+    <div class="grid-overlay"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="radar-sweep"></div>
+
+    <div class="hud-header">
+        <div class="title-box">
+            <h1>CHRONOS <span style="color:white; font-size:14px; margin-left:10px;">// TACTICAL MAP</span></h1>
+            <div style="font-size: 10px; color: #888; letter-spacing: 2px; margin-top:5px;">SECURE CONNECTION ESTABLISHED TO PRAGUE SERVER</div>
+        </div>
+        <div class="status-box">
+            <div class="status-badge">LIVE FEED</div>
+            <div id="date-display" style="font-size: 32px; font-weight:bold; color:white; font-family:'Rajdhani';">2025</div>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <button class="story-btn" id="btn-story" onclick="toggleStoryMode()">LANCER LA TRAQUE</button>
+    
+    <div class="autoplay-control">
+        <input type="checkbox" id="autoPlayCheck">
+        <label for="autoPlayCheck">AUTO-PILOTE</label>
+    </div>
+
+    <div class="controls-container">
+        <div class="timeline-wrapper">
+            <div class="year-display">ANNÉE CIBLE : <span id="timeline-val" style="color:white;">2025</span></div>
+            <input type="range" min="2025" max="2034" value="2025" step="1" id="timeline-slider" oninput="updateTimeline(this.value)">
+            <div style="display:flex; justify-content:space-between; width:100%; font-size:9px; color:#555;">
+                <span>2025</span><span>2026</span><span>2027</span><span>2028</span><span>2029</span><span>2030</span><span>2031</span><span>2032</span><span>2033</span><span>2034</span>
+            </div>
+        </div>
+        
+        <div class="filter-bar">
+            <button class="btn-tac active" onclick="setFilter('all')">TOUS</button>
+            <button class="btn-tac danger" onclick="setFilter('danger')">MENACES (VEILLEURS)</button>
+            <button class="btn-tac" onclick="setFilter('safe')">REFUGES (GARDIENS)</button>
+            <button class="btn-tac" onclick="setFilter('intel')">ARCHIVES</button>
+        </div>
+    </div>
+
+    <div id="info-panel">
+        <div class="folder-tab" onclick="closePanel()">FERMER X</div>
+        <div id="panel-content"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map', { zoomControl: false, attributionControl: false, center: [40, 10], zoom: 3 });
+        
+        // Calque Sombre Tactique
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            subdomains: 'abcd', maxZoom: 19
+        }).addTo(map);
+
+        // --- DONNÉES EXHAUSTIVES (47 LIEUX) ---
+        const locations = [
+            // 2025
+            { id: 1, type: 'intel', lat: 32.54, lng: 44.42, year: 2025, order: 1, title: 'BABYLONE', date: 'PROLOGUE', desc: 'Point zéro. Le Pr. Shepherd découvre la Tablette de Nabonide cachée dans un mur. Il est assassiné par les Veilleurs après avoir envoyé les preuves.', artifact: 'Tablette Argile', code: 'CLÉ : 6-7-6-7-10' },
+            { id: 2, type: 'safe', lat: 40.344, lng: -74.655, year: 2025, order: 2, title: 'PRINCETON UNI.', date: 'CHAPITRE 1', desc: 'Bureau de Rébecca. Réception du message. Cyberattaque. Fuite in extremis via le laboratoire informatique.', artifact: 'Fichier Fragment_B7', code: 'X-A-D-R-I-N-A' },
+            { id: 3, type: 'safe', lat: 40.35, lng: -74.66, year: 2025, order: 3, title: 'REFUGE KELLER', date: 'NUIT', desc: 'Maison sécurisée à Princeton. Activation du Protocole Prométhée. Attaque par gaz. Fuite par les égouts.', artifact: 'Clé USB Cryptée', code: 'PROTOCOLE PROMÉTHÉE' },
+            { id: 4, type: 'safe', lat: 40.27, lng: -74.57, year: 2025, order: 4, title: 'TEMPLE BETH EL', date: 'AUBE', desc: 'East Windsor. Rencontre avec Rabbi Lévi. Secret des 7000 ans. Assassinat du Rabbin.', artifact: 'Lettre d\'Elijah', code: 'CHRONOLOGIE 6000' },
+            { id: 5, type: 'intel', lat: 40.349, lng: -74.663, year: 2025, order: 5, title: 'BIBLIOTHÈQUE THÉO.', date: 'MATIN', desc: 'Princeton. Rencontre avec Dr. Cohen. Embuscade de Galloway. Fusillade.', artifact: 'Manuscrit Ancien', code: 'CODE 4-9-7-3' },
+            { id: 6, type: 'safe', lat: 40.352, lng: -74.658, year: 2025, order: 6, title: 'THE DAILY GRIND', date: 'JOURNÉE', desc: 'Café. Rébecca analyse le Sefer Yetzirah et découvre le lien avec le Roi Josaphat (1640).', artifact: 'Livre Sefer Yetzirah', code: '1640 = JOSAPHAT' },
+            { id: 7, type: 'intel', lat: 40.351, lng: -74.661, year: 2025, order: 7, title: 'CIMETIÈRE', date: 'NUIT', desc: 'Chapelle abandonnée. Rencontre avec Élias. Don de l\'Amulette de Nabonide.', artifact: 'Amulette Bronze', code: 'ASTROLABE' },
+            { id: 8, type: 'safe', lat: 40.76, lng: -73.92, year: 2025, order: 8, title: 'QUEENS LOCK-UP', date: 'NUIT', desc: 'NY. Box 418. Récupération du kit "Ghost". Transformation en Susan Reid.', artifact: 'Faux Passeport', code: 'CODE 19-84-18' },
+            { id: 9, type: 'safe', lat: 50.37, lng: 7.28, year: 2025, order: 9, title: 'MENDIG (TUNNEL)', date: 'MAI 2025', desc: 'Allemagne. Saut du train de marchandises pour échapper aux contrôles.', artifact: 'Carte Ferroviaire', code: 'FUITE' },
+            { id: 10, type: 'safe', lat: 50.40, lng: 7.25, year: 2025, order: 10, title: 'MARIA LAACH', date: 'MAI 2025', desc: 'Abbaye. Bibliothèque Jésuite cachée. Révélation des manuscrits.', artifact: 'Manuscrit Bénédictin', code: 'CODE DE BENOÎT' },
+            { id: 11, type: 'intel', lat: 41.90, lng: 12.45, year: 2025, order: 11, title: 'VATICAN', date: 'JUIN 2025', desc: 'Bibliothèque secrète. Décodage de la prophétie. Fuite par le Passetto.', artifact: 'Mosaïque de la Genèse', code: '7 JOURS' },
+            { id: 12, type: 'safe', lat: 50.08, lng: 14.40, year: 2025, order: 12, title: 'QG PRAGUE', date: 'JUIN 2025', desc: 'Notre-Dame-sous-la-Chaîne. Base opérationnelle des Gardiens.', artifact: 'Serveurs Lames', code: 'BASE ALPHA' },
+            { id: 13, type: 'danger', lat: 46.23, lng: 6.05, year: 2025, order: 13, title: 'CERN - GENÈVE', date: '10 JUIN 2025', desc: 'Sabotage cryogénique. Infiltration tunnel SPS. Fuite par conduits d\'hélium.', artifact: 'Aimant Supraconducteur', code: 'PROPHÉTIE : FEU SANS FLAMME' },
+            { id: 14, type: 'danger', lat: 37.74, lng: -25.67, year: 2025, order: 14, title: 'AÇORES', date: '3 SEPT 2025', desc: 'Sabotage des digues sous-marines. Tentative de tsunami déjouée.', artifact: 'Drone sous-marin', code: 'PROPHÉTIE : EAUX' },
+            
+            // 2026
+            { id: 15, type: 'danger', lat: 40.75, lng: -73.97, year: 2026, order: 15, title: 'NY BLACKOUT', date: '1 JAN 2026', desc: 'Attaque réseau électrique. Contre-mesure depuis Grand Central.', artifact: 'Oscillateur à Quartz', code: 'PROPHÉTIE : NUIT SANS FIN' },
+            { id: 16, type: 'safe', lat: 40.72, lng: -74.00, year: 2026, order: 16, title: 'SOHO LOFT', date: 'JAN 2026', desc: 'QG temporaire à Manhattan.', artifact: 'Écrans Surveillance', code: 'BASE BÊTA' },
+            { id: 17, type: 'danger', lat: -29.26, lng: -70.73, year: 2026, order: 17, title: 'ATACAMA', date: '21 JUIN 2026', desc: 'Dissonance Cosmique. Antennes ELF. Destruction par résonance.', artifact: 'Cristal de Lithium', code: 'PROPHÉTIE : BOUSSOLE' },
+            { id: 18, type: 'danger', lat: 60.00, lng: 100.00, year: 2026, order: 17, title: 'SIBÉRIE', date: '21 JUIN 2026', desc: 'Antennes miroirs de Burke. Partie du système d\'arme global.', artifact: 'Antenne Radar', code: 'RÉSEAU ELF' },
+
+            // 2027
+            { id: 19, type: 'danger', lat: 52.13, lng: -106.67, year: 2027, order: 18, title: 'AGROGEN', date: 'AVRIL 2027', desc: 'Canada. Découverte de la Rouille du Blé modifiée.', artifact: 'Plume de Grue', code: 'CIBLE : FAMINE' },
+            { id: 20, type: 'danger', lat: 59.93, lng: 30.30, year: 2027, order: 19, title: 'INSTITUT VAVILOV', date: '14 AVR 2027', desc: 'St Pétersbourg. Vol de la souche originelle. Fuite tunnel Tourbe.', artifact: 'Fiole de Spores', code: 'PROPHÉTIE : POUSSIÈRE ROUGE' },
+            { id: 21, type: 'safe', lat: 59.94, lng: 30.31, year: 2027, order: 20, title: 'ERMITAGE', date: '14 AVR 2027', desc: 'Exfiltration par hydroptère vers Helsinki.', artifact: 'Bateau Hydroptère', code: 'EXTRACTION' },
+            { id: 22, type: 'danger', lat: 0.00, lng: -18.00, year: 2027, order: 21, title: 'FOSSE ROMANCHE', date: '10 JUIL 2027', desc: 'Grande Déconnexion. Attaque des câbles sous-marins.', artifact: 'Câble Fibre Optique', code: 'PROPHÉTIE : SILENCE' },
+
+            // 2028-2029
+            { id: 23, type: 'danger', lat: 50.85, lng: 4.35, year: 2028, order: 22, title: 'BRUXELLES (OTAN)', date: '7 SEPT 2028', desc: 'Deepfake de guerre mondiale. Démasqué par un tableau de Monet.', artifact: 'Tableau de Monet', code: 'PROPHÉTIE : TRAHISON' },
+            { id: 24, type: 'danger', lat: 36.77, lng: -119.41, year: 2029, order: 23, title: 'CALIFORNIE', date: '15 MARS 2029', desc: 'Chute des Abeilles. Contre-mesure acoustique via éoliennes.', artifact: 'Abeille Dorée', code: 'PROPHÉTIE : DANSEUSE' },
+            { id: 25, type: 'danger', lat: 51.50, lng: -0.08, year: 2029, order: 24, title: 'LONDRES - SHARD', date: '31 JUIL 2029', desc: 'Crypto-Crash. Attaque quantique. QG financier de Burke.', artifact: 'Serveur Quantique', code: 'PROPHÉTIE : OR DU SERPENT' },
+
+            // 2030
+            { id: 26, type: 'danger', lat: 51.95, lng: 4.14, year: 2030, order: 25, title: 'ROTTERDAM', date: '18 AVR 2030', desc: 'Peste de l\'Acier. Sabotage du déchargement avec un Reach Stacker.', artifact: 'Poutrelle Corrodée', code: 'PROPHÉTIE : ROUILLE' },
+            { id: 27, type: 'danger', lat: -75.50, lng: -106.00, year: 2030, order: 26, title: 'THWAITES', date: '5 NOV 2030', desc: 'Antarctique. Intervention sous-glaciaire avec le ROV Styx.', artifact: 'Carotte de Glace', code: 'PROPHÉTIE : CŒUR DE GLACE' },
+
+            // 2031-2032
+            { id: 28, type: 'danger', lat: 30.82, lng: 111.00, year: 2031, order: 27, title: '3 GORGES', date: '2 SEPT 2031', desc: 'Chine. Piratage du barrage. Inondation évitée.', artifact: 'Serveur IA', code: 'PROPHÉTIE : GRAND DRAGON' },
+            { id: 29, type: 'safe', lat: 39.90, lng: 116.40, year: 2031, order: 28, title: 'PÉKIN', date: '2 SEPT 2031', desc: 'Café Starbucks. Point d\'accès pour pirater le barrage.', artifact: 'Ordinateur Portable', code: 'HACKING' },
+            { id: 30, type: 'danger', lat: 67.85, lng: 20.22, year: 2032, order: 29, title: 'KIRUNA', date: '22 MARS 2032', desc: 'Espace. Syndrome de Kessler. Déplacement satellite.', artifact: 'Débris Spatial', code: 'PROPHÉTIE : PLUIE DE FER' },
+            { id: 31, type: 'danger', lat: -7.94, lng: -14.37, year: 2032, order: 30, title: 'ASCENSION', date: '20 AOUT 2032', desc: 'Aveuglement GPS. Sabotage station.', artifact: 'Répéteur Pirate', code: 'PROPHÉTIE : ÉTOILES' },
+            { id: 32, type: 'danger', lat: 8.71, lng: 167.73, year: 2032, order: 31, title: 'KWAJALEIN', date: '20 AOUT 2032', desc: 'Pacifique. Site sabotage GPS.', artifact: 'Antenne GPS', code: 'CIBLE SECONDAIRE' },
+            { id: 33, type: 'danger', lat: 28.39, lng: -80.60, year: 2032, order: 32, title: 'CAP CANAVERAL', date: '20 AOUT 2032', desc: 'Floride. Site sabotage GPS.', artifact: 'Antenne GPS', code: 'CIBLE TERTIAIRE' },
+
+            // 2033
+            { id: 34, type: 'danger', lat: 36.58, lng: -89.52, year: 2033, order: 33, title: 'NEW MADRID', date: '21 JAN 2033', desc: 'Arkansas. Amplification sismique. David protège sa région.', artifact: 'Résonateur Sonique', code: 'PROPHÉTIE : CHANT DE PIERRE' },
+            { id: 35, type: 'danger', lat: 37.05, lng: -3.31, year: 2033, order: 34, title: 'SIERRA NEVADA', date: '4 AVR 2033', desc: 'Espagne. Labo Virus Éridanus. Destruction par irradiation.', artifact: 'Fiole Virus Éridanus', code: 'PROPHÉTIE : FIÈVRE DU CIEL' },
+            { id: 36, type: 'intel', lat: 47.37, lng: 8.54, year: 2033, order: 35, title: 'ZURICH', date: 'SEPT 2033', desc: 'Centre de calcul de Burke. Fausse piste lors de la traque.', artifact: 'Serveur Bancaire', code: 'PISTE FINANCIÈRE' },
+            { id: 37, type: 'danger', lat: 78.23, lng: 15.49, year: 2033, order: 36, title: 'SVALBARD', date: '7 OCT 2033', desc: 'Projet Arca. Assaut du bunker. Mort de Blackwood.', artifact: 'Disque Dur Genesis', code: 'CIBLE PRIORITAIRE' },
+            { id: 38, type: 'danger', lat: 45.07, lng: 7.68, year: 2033, order: 37, title: 'TURIN', date: 'OCT 2033', desc: 'Vol du Suaire. Souterrains. Piège au gaz.', artifact: 'Caisson en Titane', code: 'PROPHÉTIE : IMAGE CONSUMÉE' },
+            { id: 39, type: 'safe', lat: 40.81, lng: 14.21, year: 2033, order: 38, title: 'VILLA LYSIS', date: 'NOV 2033', desc: 'Naples. QG temporaire opération Volcan.', artifact: 'Carte Sismique', code: 'BASE GAMMA' },
+            { id: 40, type: 'danger', lat: 40.83, lng: 14.14, year: 2033, order: 39, title: 'POUZZOLES', date: '12 NOV 2033', desc: 'Temple Sérapis. Sabotage 1.', artifact: 'Obturateur Cryo', code: 'PROPHÉTIE : ABÎME' },
+            { id: 41, type: 'danger', lat: 40.84, lng: 14.07, year: 2033, order: 40, title: 'LAC AVERNE', date: '12 NOV 2033', desc: 'Sabotage 2.', artifact: 'Obturateur Cryo', code: 'PROPHÉTIE : ABÎME' },
+            { id: 42, type: 'danger', lat: 40.86, lng: 14.25, year: 2033, order: 41, title: 'CATACOMBES', date: '12 NOV 2033', desc: 'San Gennaro. Sabotage final.', artifact: 'Obturateur Cryo', code: 'PROPHÉTIE : ABÎME' },
+
+            // 2034
+            { id: 43, type: 'danger', lat: 45.96, lng: 63.30, year: 2034, order: 42, title: 'BAÏKONOUR', date: '20 MARS 2034', desc: 'Lancement missile Satan (Genesis-12).', artifact: 'Plan de vol ICBM', code: 'MENACE TERMINALE' },
+            { id: 44, type: 'safe', lat: 31.774, lng: 35.222, year: 2034, order: 43, title: 'KING DAVID', date: '21 MARS 2034', desc: 'Jérusalem. Salle de crise finale. Keller pirate l\'Arche.', artifact: 'Terminal Crypté', code: 'QG FINAL' },
+            { id: 45, type: 'intel', lat: 31.77, lng: 35.23, year: 2034, order: 44, title: 'JÉRUSALEM', date: '21 MARS 2034', desc: 'LE FINAL. Dôme du Rocher. Transmutation. Chute de Burke.', artifact: 'Pierre Angulaire', code: 'NOUVEAU MILLÉNAIRE' },
+            
+            // 2074
+            { id: 46, type: 'intel', lat: 32.80, lng: 34.99, year: 2034, order: 45, title: 'HAÏFA (2074)', date: 'FUTUR', desc: 'Épilogue. Retraite de Samuel.', artifact: 'Livre de Samuel', code: 'HÉRITAGE' },
+            { id: 47, type: 'intel', lat: 31.74, lng: 35.46, year: 2034, order: 46, title: 'QUMRÂN (2074)', date: 'FUTUR', desc: 'Dernière lettre d\'Elijah.', artifact: 'Parchemin Ancien', code: 'MÉMOIRE' }
+        ];
+
+        let markers = [];
+        let polylineLayer = null;
+        let currentFilter = 'all';
+        let currentStoryIndex = 0;
+        let storyModeActive = false;
+        let typingTimeout;
+        let storyTimer;
+
+        // --- 3. MOTEUR ---
+        function initMap() {
+            markers.forEach(m => map.removeLayer(m));
+            markers = [];
+            if(polylineLayer) map.removeLayer(polylineLayer);
+
+            const sortedLocs = [...locations].sort((a, b) => a.order - b.order);
+            const latlngs = sortedLocs.map(loc => [loc.lat, loc.lng]);
+
+            polylineLayer = L.polyline(latlngs, {
+                color: 'var(--neon-blue)', weight: 1, opacity: 0.3, dashArray: '4, 8', lineCap: 'square'
+            }).addTo(map);
+
+            locations.forEach(loc => {
+                const shapeClass = loc.type === 'danger' ? 'shape-square' : (loc.type === 'intel' ? 'shape-hex' : 'shape-circle');
+                const html = `<div class="marker-icon marker-${loc.type} ${shapeClass}" id="marker-${loc.id}">${loc.id}</div><div class="target-lock" id="lock-${loc.id}"></div>`;
+                
+                const icon = L.divIcon({
+                    className: 'custom-div-icon', html: html, iconSize: [24, 24], iconAnchor: [12, 12]
+                });
+
+                const marker = L.marker([loc.lat, loc.lng], {icon: icon})
+                    .addTo(map)
+                    .on('click', () => selectLocation(loc));
+                
+                marker.data = loc; markers.push(marker);
+            });
+            updateTimeline(document.getElementById('timeline-slider').value);
+        }
+
+        function updateTimeline(year) {
+            document.getElementById('timeline-val').innerText = year;
+            document.getElementById('date-display').innerText = year;
+            
+            markers.forEach(marker => {
+                const isVisibleTime = marker.data.year <= year;
+                const isVisibleType = currentFilter === 'all' || marker.data.type === currentFilter;
+                
+                if (isVisibleTime && isVisibleType) {
+                    if (!map.hasLayer(marker)) map.addLayer(marker);
+                    marker.setOpacity(marker.data.year < year ? 0.5 : 1);
+                } else {
+                    map.removeLayer(marker);
+                }
+            });
+        }
+
+        function setFilter(type) {
+            currentFilter = type;
+            document.querySelectorAll('.btn-tac').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            updateTimeline(document.getElementById('timeline-slider').value);
+        }
+
+        function selectLocation(data) {
+            document.querySelectorAll('.target-lock').forEach(el => el.style.display = 'none');
+            document.getElementById(`lock-${data.id}`).style.display = 'block';
+
+            const panel = document.getElementById('info-panel');
+            const content = document.getElementById('panel-content');
+            
+            let badgeClass = 'classified-stamp';
+            let color = 'white';
+            if (data.type === 'danger') { color = 'var(--neon-red)'; badgeClass += ' danger'; }
+            else if (data.type === 'safe') { color = 'var(--neon-blue)'; }
+            else { color = 'var(--neon-gold)'; }
+
+            const seed = 12345 + data.id; // Graine unique par lieu
+            const prompt = encodeURIComponent(`cinematic wide shot of ${data.title} ${data.artifact}, spy thriller movie scene, dark atmospheric lighting, high tech, detailed 8k render, unreal engine 5`);
+            const imgUrl = `https://image.pollinations.ai/prompt/${prompt}?seed=${seed}&width=600&height=400&nologo=true`;
+
+            // Bouton Suivant pour le mode Histoire
+            let nextBtn = '';
+            if(storyModeActive) {
+                nextBtn = `<button class="btn-next-step" onclick="forceNextStep()">ÉTAPE SUIVANTE >></button>`;
+            }
+
+            content.innerHTML = `
+                <div class="data-header" style="border-color:${color}">
+                    <h2 class="data-title" style="color:${color}">${data.title}</h2>
+                    <div class="data-meta">
+                        <span>COORDINATES: ${data.lat.toFixed(4)} N / ${data.lng.toFixed(4)} E</span>
+                        <span>[ ${data.date} ]</span>
+                    </div>
+                    <div class="${badgeClass}" style="border-color:${color}; color:${color}">${data.code}</div>
+                </div>
+                
+                <div class="data-content">
+                    <p class="typewriter-text" id="desc-box"></p>
+                    
+                    <div class="evidence-box">
+                        <div class="evidence-header">VISUAL EVIDENCE REF-${data.id}</div>
+                        <div class="evidence-img">
+                            <img src="${imgUrl}" onload="this.classList.add('loaded')" alt="Evidence">
+                            <div class="evidence-overlay"></div>
+                        </div>
+                    </div>
+                    ${nextBtn}
+                </div>
+            `;
+
+            panel.classList.add('active');
+            map.flyTo([data.lat, data.lng], 6, {duration: 1.5});
+
+            // Typewriter
+            const text = data.desc;
+            const el = document.getElementById('desc-box');
+            el.innerHTML = ''; el.classList.add('cursor');
+            if (typingTimeout) clearInterval(typingTimeout);
+            let i = 0;
+            typingTimeout = setInterval(() => {
+                if (i < text.length) { el.innerHTML += text.charAt(i); i++; }
+                else { el.classList.remove('cursor'); clearInterval(typingTimeout); }
+            }, 20);
+        }
+
+        function closePanel() {
+            document.getElementById('info-panel').classList.remove('active');
+            document.querySelectorAll('.target-lock').forEach(el => el.style.display = 'none');
+            if (!storyModeActive) map.flyTo([40, 10], 3);
+        }
+
+        // --- MODE HISTOIRE AVANCÉ ---
+        function toggleStoryMode() {
+            if(storyModeActive) { stopStoryMode(); } else { startStoryMode(); }
+        }
+
+        function startStoryMode() {
+            currentStoryIndex = 0;
+            storyModeActive = true;
+            document.getElementById('btn-story').innerText = "ARRÊTER";
+            document.getElementById('btn-story').style.background = "#333";
+            processStep();
+        }
+
+        function stopStoryMode() {
+            storyModeActive = false;
+            clearTimeout(storyTimer);
+            document.getElementById('btn-story').innerText = "LANCER LA TRAQUE";
+            document.getElementById('btn-story').style.background = "var(--neon-red)";
+            closePanel();
+        }
+
+        function processStep() {
+            if (!storyModeActive) return;
+            
+            if (currentStoryIndex >= locations.length) {
+                alert("FIN DE LA SIMULATION.");
+                stopStoryMode();
+                return;
+            }
+
+            const loc = locations.sort((a,b) => a.order - b.order)[currentStoryIndex];
+            
+            document.getElementById('timeline-slider').value = loc.year;
+            updateTimeline(loc.year);
+            selectLocation(loc);
+
+            // Incrémenter pour la prochaine étape
+            currentStoryIndex++;
+
+            // Vérifier si Auto-Pilote est activé
+            const isAuto = document.getElementById('autoPlayCheck').checked;
+            if (isAuto) {
+                clearTimeout(storyTimer);
+                storyTimer = setTimeout(processStep, 8000); // Délai auto
+            }
+        }
+
+        function forceNextStep() {
+            clearTimeout(storyTimer); // Stop timer actuel
+            processStep(); // Force l'étape suivante
+        }
+
+        initMap();
+
+    </script>
+</body>
+</html>
