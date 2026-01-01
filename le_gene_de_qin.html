@@ -32,7 +32,10 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
+			min-height: 100vh;       /* Fallback pour vieux navigateurs */
+			min-height: 100dvh;      /* Nouvelle unité qui prend en compte les barres mobiles */
+			/* On ajoute un padding en bas pour que le contenu ne colle jamais au bord bas */
+			padding-bottom: env(safe-area-inset-bottom);
         }
 
         #game-container {
@@ -45,6 +48,7 @@
             flex-direction: column;
             box-shadow: 0 0 50px rgba(0,0,0,0.8);
             min-height: 100vh;
+			min-height: 100dvh;
         }
 
         /* --- Header --- */
@@ -212,13 +216,14 @@
         }
 
         /* --- Choix --- */
-        #choices-box {
-            padding: 0 40px 40px 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
+		#choices-box {
+			padding: 0 40px 80px 40px; /* J'ai changé le dernier 40px en 80px */
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+			/* Ajout pour être sûr que ça ne déborde pas */
+			box-sizing: border-box; 
+		}
         .btn {
             background: transparent;
             border: 1px solid #555;
@@ -271,14 +276,24 @@
             margin: 20px;
             background: rgba(183, 28, 28, 0.1);
         }
+		
+		@media (max-width: 600px) {
+			#visual-scene { height: 250px; }
+			#narrative-box { padding: 20px; }
+			#book-title { font-size: 1.5rem; }
+			.tts-container { justify-content: center; }
 
-        @media (max-width: 600px) {
-            #visual-scene { height: 250px; }
-            #narrative-box { padding: 20px; }
-            #choices-box { padding: 0 20px 20px 20px; }
-            #book-title { font-size: 1.5rem; }
-            .tts-container { justify-content: center; }
-        }
+			/* CORRECTION MOBILE ICI */
+			#choices-box { 
+				padding: 0 20px 100px 20px; /* On met 100px en bas pour être large sur Android */
+			}
+			
+			/* Optionnel : Rendre les boutons plus faciles à taper sur mobile */
+			.btn {
+				padding: 18px 20px; /* Zone de touche plus grande */
+				margin-bottom: 5px;
+			}
+		}
     </style>
 </head>
 <body>
